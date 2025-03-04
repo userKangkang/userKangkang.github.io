@@ -1,0 +1,439 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"><title>计算机系统工程之：AI计算与训练优化 | Hexo</title><meta name="keywords" content="计算机系统工程"><meta name="author" content="Weiquan Huang,hwqqz678@sjtu.edu.cn"><meta name="copyright" content="Weiquan Huang"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#f7f9fe"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-touch-fullscreen" content="yes"><meta name="apple-mobile-web-app-title" content="计算机系统工程之：AI计算与训练优化"><meta name="application-name" content="计算机系统工程之：AI计算与训练优化"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="#f7f9fe"><meta property="og:type" content="article"><meta property="og:title" content="计算机系统工程之：AI计算与训练优化"><meta property="og:url" content="https://userkangkang.github.io/project/2025/03/05/cse-aicomputing/index.html"><meta property="og:site_name" content="Hexo"><meta property="og:description" content="Distributed (and parallel) programming前面讲了很多，都是关于AI需要庞大计算量的引子，引出后续针对如何加快计算速度的策略讲解比如训练一个神经网络，前向和后向的一次迭代总共是6倍的$sizeof(W)*B$，$W$为矩阵元素个数，$B$为自变量特征数，注意这里的$"><meta property="og:locale" content="zh-CN"><meta property="og:image" content="https://avatars.githubusercontent.com/u/114564389?v=4"><meta property="article:author" content="Weiquan Huang"><meta property="article:tag"><meta name="twitter:card" content="summary"><meta name="twitter:image" content="https://avatars.githubusercontent.com/u/114564389?v=4"><meta name="description" content="Distributed (and parallel) programming前面讲了很多，都是关于AI需要庞大计算量的引子，引出后续针对如何加快计算速度的策略讲解比如训练一个神经网络，前向和后向的一次迭代总共是6倍的$sizeof(W)*B$，$W$为矩阵元素个数，$B$为自变量特征数，注意这里的$"><link rel="shortcut icon" href="/favicon.ico"><link rel="canonical" href="https://userkangkang.github.io/project/2025/03/05/cse-aicomputing/"><link rel="preconnect" href="//cdn.cbd.int"/><meta name="google-site-verification" content="xxx"/><meta name="baidu-site-verification" content="code-xxx"/><meta name="msvalidate.01" content="xxx"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.cbd.int/node-snackbar@0.1.16/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.cbd.int/@fancyapps/ui@5.0.28/dist/fancybox/fancybox.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  linkPageTop: undefined,
+  peoplecanvas: {"enable":true,"img":"https://upload-bbs.miyoushe.com/upload/2024/07/27/125766904/ba62475f396df9de3316a08ed9e65d86_5680958632268053399..png"},
+  postHeadAiDescription: {"enable":true,"gptName":"AnZhiYu","mode":"local","switchBtn":false,"btnLink":"https://afdian.net/item/886a79d4db6711eda42a52540025c377","randomNum":3,"basicWordCount":1000,"key":"xxxx","Referer":"https://xx.xx/"},
+  diytitle: {"enable":true,"leaveTitle":"w(ﾟДﾟ)w 不要走！再看看嘛！","backTitle":"♪(^∇^*)欢迎肥来！"},
+  LA51: undefined,
+  greetingBox: undefined,
+  twikooEnvId: '',
+  commentBarrageConfig:undefined,
+  music_page_default: "nav_music",
+  root: '/',
+  preloader: {"source":3},
+  friends_vue_info: undefined,
+  navMusic: true,
+  mainTone: {"mode":"api","api":"https://img2color-go.vercel.app/api?img=","cover_change":true},
+  authorStatus: {"skills":null},
+  algolia: undefined,
+  localSearch: undefined,
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"简","rightMenuMsgToTraditionalChinese":"转为繁体","rightMenuMsgToSimplifiedChinese":"转为简体"},
+  noticeOutdate: {"limitDay":365,"position":"top","messagePrev":"It has been","messageNext":"days since the last update, the content of the article may be outdated."},
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":330},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    simplehomepage: true,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"copy":true,"copyrightEbable":false,"limitCount":50,"languages":{"author":"作者: Weiquan Huang","link":"链接: ","source":"来源: Hexo","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。","copySuccess":"复制成功，复制和转载请标注本文地址"}},
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#425AEF","bgDark":"#1f1f1f","position":"top-center"},
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.cbd.int/flickr-justified-gallery@2.1.2/dist/fjGallery.min.js',
+      css: 'https://cdn.cbd.int/flickr-justified-gallery@2.1.2/dist/fjGallery.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isAnchor: false,
+  shortcutKey: undefined,
+  autoDarkmode: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  configTitle: 'Hexo',
+  title: '计算机系统工程之：AI计算与训练优化',
+  postAI: '',
+  pageFillDescription: 'Distributed (and parallel) programming, parallelism in single node, accessing memory, MapReduce, Computation Graph, Distributed Training, Data Parallelism, Model Parallelism前面讲了很多都是关于需要庞大计算量的引子引出后续针对如何加快计算速度的策略讲解比如训练一个神经网络前向和后向的一次迭代总共是倍的为矩阵元素个数为自变量特征数注意这里的是所有层的参数首先多核多线程的计算效率肯定高于单核单线程单核的问题在于流水线的制约可以改良流水线以及加快处理一个指令的速度多核的问题是每个核有自己的缓存而缓存的数据来源于内存但是每个核的缓存有可能是不与内存完全同步的就导致了计算结果正确性不能保证设计比如单个核缓存更改后广播至其他核或者只广播或者全局版本号已修改数据的版本号等要拿的时候再去对应的核拿最新数据这个缓存一致性问题严重制约了当前处理器增加核数所带来的性能提升通过增加开发者开发难度的方式实现有限的保证缓存一致性的方法增加每个核的计算单元也可以同时处理互相之间无关的计算指令不能同时处理有互相依赖的指令比如就有给添加适配于单核多计算单元的接口能够让一个指令执行多个浮点数的计算但是其实无法达到理想的增加几倍的就增加几倍的效率这取决于计算指令之间的互相依赖关系访存时间与纯寄存器计算的时间差异木桶效应所以这里的制约是访问内存的位宽主要影响原因是从到内存的延迟访存时间取决于两个因素访问延迟位宽每个设备有自己的表示设备最快能够每秒执行多少个浮点计算表示对于某个浮点计算任务每访问一个能够执行多少个浮点运算比如假设个浮点数为那么两个不同的浮点数计算需要那么在比较低的时候性能受限于系统的带宽因为可以认为处理计算任务和访问内存是同时进行的在较低的时候就意味着访问内存的时间高于处理计算任务的时间在一定时间内为空闲等待状态那么就相当于系统性能受限于带宽而带宽为可以从单位推导反之较高的时候就取决于的计算速度那么就是受限于硬件的极限了单纯靠的机制仍然无法满足需求比如如果出现了带分支的计算那么常规情况下由于无法判断每个元素要怎么计算因此会从并行退化成串行不过有自己的解决方式就是将两个分支的结果都算一遍然后通过条件判断式保留正确计算过程的结果虽然会有被浪费掉的计算资源但是至少并行是被充分利用的改良方法单个指令由多个线程执行每个线程执行相同的代码但是这段代码对不同的数据进行了分支判断和计算正确分支统一直到所有线程执行完毕感觉就是是将数据分成几个块每个块单独处理成为映射就是汇总的信息然后计算出总的结果比如数单词个数就可以先数每个单词在各自文件的个数然后再统一汇总起来不过在发给的中间文件最好对其进行这样可以获取到比较集中的数据相同的数据尽可能在同一个位置方便于后续的数据集中同时最好也对来自不同的文件进行算是一个小优化之前也需要把要处理的文件进行分片而由于文件是在体系中存储因此最好设置为的这样可以尽最大的努力让尽可能少的请求传输最多的数据也会将中间结果分片不同的片针对不同的这样就可以让不同的尽可能少地进行提取出需要让这个做的数据而不是让这个去扫把文件存在类的系统里对于暂时失效的重启并且重新执行即可同一个任务做两遍其实只需要覆盖就行了他也不需要担心误判失效带来的重复计算的问题如果挂了最好是把自己的执行日志通过机制来存放到系统中这样重启或者新开一个之后就不会出现要重新执行之前已经执行的任务的情况了如果执行的时候出现了错误比如因为文件格式问题出现那么一般是直接让这个丢弃这个任务做下一个每个节点都从读取文件数据那么会比单纯靠网络传输要快在文件系统上运行如果一个很慢会让别的陷入等待可以采用多个执行同一个任务来进行备份从而只要有一个备份完成了就可以继续但是这对资源比较稀缺的计算还是不太现实的方法也有可能就先暂时放任他这么慢了不建议只有一个集群的系统对多个任务进行类流水线的流因为这会造成下面两种比如非最后阶段的产出的结果其实没必要写到磁盘里但是只有一个体系就意味着没有能够接盘的其他体系而且一个针对不同的任务也要做初始化这其实和串行也没什么差了没有发挥出流水线的作用可以抽象成多分图二分图的扩展版本很多都可以从推出在机器学习模型的训练过程中可以将这些训练过程中常用的操作记录为计算图的一个节点使用计算图的好处有记录中间结果以方便反向传播计算梯度用于拟合不同的硬件会为相同的深度学习计算图节点实现不同的底层汇编逻辑一般来说将要计算的内容和计算图的节点发送给让其去计算将结果发回给这里面就涉及到了访存的开销将数据和算子发送也是需要开销的于是就产生了两个合并算子的流派第一种是将几个经常连在一起的算子合并成一个大算子发送给这样做的缺点是比较难以编程第二种是将多个算子打包发送在上再拆解并逐步计算英伟达在计算梯度的时候首先要计算损失函数而这里有一个累加的过程是可以通过将累加的过程并行化来实现的思路的不过主要的问题其实就是在于如何将每个节点的给传播出去从而得到汇总值已进行下一步的计算同时也会受到木桶效应的影响即速度最慢的节点会明显让其他节点陷入空闲用于优化这一流程的技术被称为优化的目标有减少数据传输的量以及降低数据在同一时刻大量地打到某个网卡的现象因为这会极大地拖慢这个网卡对网络数据的吞吐速率用一个中央服务器来接受每个部分的参数来计算总体的值但是这里的问题是每个节点都会发送参数大小为的数据这里的表示的是每个节点携带的参数量而且有个节点那么不仅数据传输量比较大而且对于某一时刻对于的负载也会很大这在上课讲的一个实例中可以看到这种方法即使是计算一个比较小的模型而且使用最好的网卡网络传输也是一个很大的瓶颈将数据拆成个部分每台机器负责不同的部分在传输的时候也需要传输对应的部分即可这样对于接收者来说其接收到的数据量降低到了的量级因为只需要接收到自己负责计算的部分以及其他节点计算好了的他们负责的那部分原来是而且只需要一轮即每台机器训练完成之后就将不同的数据立即分发到不同的机器上不过这里对于同一时间涌入网卡的数据量还是在量级英文称为去中心化可以采用比较流水线的策略比如每个节点要发布各自的部分的时候如此交错对彼此的网卡不影响单一时间涌入网卡的数据量就是总体的数据接收量是不太好因为这里的思路仍然是汇总之后分别计算综合和将每个节点的参数继续分成份用类流水线方法进行传递传递之后将每个节点汇总好的结果在继续按照流水线的方式进行传递这样不仅兼顾了和的好处而且为了降低每个节点要维护的连接数量每个节点只需要和相邻的节点进行通信那么也就只需要维护和相邻之间节点的连接的缺点主要是轮数太多如果每轮的数据量不多的话其实没什么优势而且其实在的浮点数计算中其实加法是不能结合律的不同的顺序会有不同的结果会造成细微的差别但是这并不影响是一个非常好的分布式架构使用二分法来进行分片比的轮加法会更高效一点相当于将加法做了其效率变成了对数级别的总结模型的训练是可以分层的每一层可以按照类流水线的方式去分给不同的机器做由于前向和后向是具有依赖关系的最简单的分层就会如图所示出现很多个造成计算资源的等待和浪费可以使用这种方法来略微减少一点毕竟这也算是用到了流水线的思想只是前向和后向依然无法摆脱依赖理想情况下上图应该是一个长方形所耗时间是的轮数和前向后向传播的耗时即下图所展示的但是由于的出现导致有的时间是空耗掉的上图中底部没有被有色正方形覆盖的长度比率为更改数量是不现实的因为太小的即很大会让之前所讲的的计算资源利用率很低因为每轮计算可以同时计算较多的数据太小会让这些计算资源没有办法得到充分利用太大的则会导致梯度训练的效率下降因为太大会让模型训练的梯度变小以一个更慢的速度趋近于极小值更改也不是很合理因为本身就是因为参数的数量级太大了单个无法承载才去做分开的存储和计算的减小的瓶颈就在于设备本身的内存大小不过还有一个方法可以将权重矩阵分给不同的机器对去计算不同的最后再拼接起来这样并没有违反矩阵计算的规律汇总的算法倒是可以借鉴上面的的通信代价比较高比较实际的架构为单服务器内部的带宽比较高使用并行而服务器之间的带宽比较低使用',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2025-03-05 00:23:01',
+  postMainColor: '',
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#18171d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#f7f9fe')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+          const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+          const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+          const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+          if (t === undefined) {
+            if (isLightMode) activateLightMode()
+            else if (isDarkMode) activateDarkMode()
+            else if (isNotSpecified || hasNoSupport) {
+              const now = new Date()
+              const hour = now.getHours()
+              const isNight = hour <= 6 || hour >= 18
+              isNight ? activateDarkMode() : activateLightMode()
+            }
+            window.matchMedia('(prefers-color-scheme: dark)').addListener(e => {
+              if (saveToLocal.get('theme') === undefined) {
+                e.matches ? activateDarkMode() : activateLightMode()
+              }
+            })
+          } else if (t === 'light') activateLightMode()
+          else activateDarkMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><meta name="generator" content="Hexo 7.3.0"></head><body data-type="anzhiyu"><div id="web_bg"></div><div id="an_music_bg"></div><div id="loading-box" onclick="document.getElementById(&quot;loading-box&quot;).classList.add(&quot;loaded&quot;)"><div class="loading-bg"><img class="loading-img nolazyload" alt="加载头像" src="https://npm.elemecdn.com/anzhiyu-blog-static@1.0.4/img/avatar.jpg"/><div class="loading-image-dot"></div></div></div><script>const preloader = {
+  endLoading: () => {
+    document.getElementById('loading-box').classList.add("loaded");
+  },
+  initLoading: () => {
+    document.getElementById('loading-box').classList.remove("loaded")
+  }
+}
+window.addEventListener('load',()=> { preloader.endLoading() })
+setTimeout(function(){preloader.endLoading();},10000)
+
+if (true) {
+  document.addEventListener('pjax:send', () => { preloader.initLoading() })
+  document.addEventListener('pjax:complete', () => { preloader.endLoading() })
+}</script><link rel="stylesheet" href="https://cdn.cbd.int/anzhiyu-theme-static@1.1.10/progress_bar/progress_bar.css"/><script async="async" src="https://cdn.cbd.int/pace-js@1.2.4/pace.min.js" data-pace-options="{ &quot;restartOnRequestAfter&quot;:false,&quot;eventLag&quot;:false}"></script><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><div id="nav-group"><span id="blog_name"><div class="back-home-button"><i class="anzhiyufont anzhiyu-icon-grip-vertical"></i><div class="back-menu-list-groups"><div class="back-menu-list-group"><div class="back-menu-list-title">网页</div><div class="back-menu-list"><a class="back-menu-item" target="_blank" rel="noopener" href="https://github.com/userKangkang" title="Github"><img class="back-menu-item-icon" src="/img/github-mark.svg" alt="Github"/><span class="back-menu-item-text">Github</span></a></div></div></div></div><a id="site-name" href="/" accesskey="h"><div class="title">Hexo</div><i class="anzhiyufont anzhiyu-icon-house-chimney"></i></a></span><div class="mask-name-container"><div id="name-container"><a id="page-name" href="javascript:anzhiyu.scrollToDest(0, 500)">PAGE_NAME</a></div></div><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 文章</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/archives/"><i class="anzhiyufont anzhiyu-icon-box-archive faa-tada" style="font-size: 0.9em;"></i><span> 隧道</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/categories/"><i class="anzhiyufont anzhiyu-icon-shapes faa-tada" style="font-size: 0.9em;"></i><span> 分类</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/tags/"><i class="anzhiyufont anzhiyu-icon-tags faa-tada" style="font-size: 0.9em;"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 友链</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/link/"><i class="anzhiyufont anzhiyu-icon-link faa-tada" style="font-size: 0.9em;"></i><span> 友人帐</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/fcircle/"><i class="anzhiyufont anzhiyu-icon-artstation faa-tada" style="font-size: 0.9em;"></i><span> 朋友圈</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/comments/"><i class="anzhiyufont anzhiyu-icon-envelope faa-tada" style="font-size: 0.9em;"></i><span> 留言板</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 我的</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/music/"><i class="anzhiyufont anzhiyu-icon-music faa-tada" style="font-size: 0.9em;"></i><span> 音乐馆</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/bangumis/"><i class="anzhiyufont anzhiyu-icon-bilibili faa-tada" style="font-size: 0.9em;"></i><span> 追番页</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/album/"><i class="anzhiyufont anzhiyu-icon-images faa-tada" style="font-size: 0.9em;"></i><span> 相册集</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/air-conditioner/"><i class="anzhiyufont anzhiyu-icon-fan faa-tada" style="font-size: 0.9em;"></i><span> 小空调</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 关于</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/about/"><i class="anzhiyufont anzhiyu-icon-paper-plane faa-tada" style="font-size: 0.9em;"></i><span> 关于本人</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/essay/"><i class="anzhiyufont anzhiyu-icon-lightbulb faa-tada" style="font-size: 0.9em;"></i><span> 闲言碎语</span></a></li><li><a class="site-page child faa-parent animated-hover" href="javascript:toRandomPost()"><i class="anzhiyufont anzhiyu-icon-shoe-prints1 faa-tada" style="font-size: 0.9em;"></i><span> 随便逛逛</span></a></li></ul></div></div></div><div id="nav-right"><div class="nav-button" id="randomPost_button"><a class="site-page" onclick="toRandomPost()" title="随机前往一个文章" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-dice"></i></a></div><input id="center-console" type="checkbox"/><label class="widget" for="center-console" title="中控台" onclick="anzhiyu.switchConsole();"><i class="left"></i><i class="widget center"></i><i class="widget right"></i></label><div id="console"><div class="console-card-group-reward"><ul class="reward-all console-card"><li class="reward-item"><a href="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-weichat.png" target="_blank"><img class="post-qr-code-img" alt="微信" src="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-weichat.png"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-alipay.png" target="_blank"><img class="post-qr-code-img" alt="支付宝" src="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-alipay.png"/></a><div class="post-qr-code-desc">支付宝</div></li></ul></div><div class="console-card-group"><div class="console-card-group-left"><div class="console-card" id="card-newest-comments"><div class="card-content"><div class="author-content-item-tips">互动</div><span class="author-content-item-title"> 最新评论</span></div><div class="aside-list"><span>正在加载中...</span></div></div></div><div class="console-card-group-right"><div class="console-card tags"><div class="card-content"><div class="author-content-item-tips">兴趣点</div><span class="author-content-item-title">寻找你感兴趣的领域</span><div class="card-tags"><div class="item-headline"></div><div class="card-tag-cloud"><a href="/tags/%E5%85%A5%E9%97%A8/" style="font-size: 1.05rem;">入门<sup>1</sup></a><a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E5%B7%A5%E7%A8%8B/" style="font-size: 1.05rem;">计算机系统工程<sup>9</sup></a></div></div><hr/></div></div><div class="console-card history"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-box-archiv"></i><span>文章</span></div><div class="card-archives"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-archive"></i><span>归档</span></div><ul class="card-archive-list"><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2025/03/"><span class="card-archive-list-date">三月 2025</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">10</span><span>篇</span></div></a></li></ul></div><hr/></div></div></div><div class="button-group"><div class="console-btn-item"><a class="darkmode_switchbutton" title="显示模式切换" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-moon"></i></a></div><div class="console-btn-item" id="consoleHideAside" onclick="anzhiyu.hideAsideBtn()" title="边栏显示控制"><a class="asideSwitch"><i class="anzhiyufont anzhiyu-icon-arrows-left-right"></i></a></div><div class="console-btn-item" id="consoleMusic" onclick="anzhiyu.musicToggle()" title="音乐开关"><a class="music-switch"><i class="anzhiyufont anzhiyu-icon-music"></i></a></div></div><div class="console-mask" onclick="anzhiyu.hideConsole()" href="javascript:void(0);"></div></div><div class="nav-button" id="nav-totop"><a class="totopbtn" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i><span id="percent" onclick="anzhiyu.scrollToDest(0,500)">0</span></a></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);" title="切换"><i class="anzhiyufont anzhiyu-icon-bars"></i></a></div></div></div></nav><div id="post-info"><div id="post-firstinfo"><div class="meta-firstline"><a class="post-meta-original">原创</a><span class="post-meta-categories"><span class="post-meta-separator"></span><i class="anzhiyufont anzhiyu-icon-inbox post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F/" itemprop="url">计算机系统</a><i class="anzhiyufont anzhiyu-icon-angle-right post-meta-separator"></i><i class="anzhiyufont anzhiyu-icon-inbox post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F/AI%E8%AE%A1%E7%AE%97/" itemprop="url">AI计算</a></span><span class="article-meta tags"><a class="article-meta__tags" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E5%B7%A5%E7%A8%8B/" tabindex="-1" itemprop="url"> <span> <i class="anzhiyufont anzhiyu-icon-hashtag"></i>计算机系统工程</span></a></span></div></div><h1 class="post-title" itemprop="name headline">计算机系统工程之：AI计算与训练优化<a class="post-edit-link" href="undefined_posts/cse-aicomputing.md" title="在 GitHub 上编辑 - 计算机系统工程之：AI计算与训练优化" target="_blank"><i class="anzhiyufont anzhiyu-icon-pencil"></i></a></h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="anzhiyufont anzhiyu-icon-calendar-days post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" itemprop="dateCreated datePublished" datetime="2025-03-04T16:14:44.965Z" title="发表于 2025-03-05 00:14:44">2025-03-05</time><span class="post-meta-separator"></span><i class="anzhiyufont anzhiyu-icon-history post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" itemprop="dateCreated datePublished" datetime="2025-03-04T16:23:01.573Z" title="更新于 2025-03-05 00:23:01">2025-03-05</time></span></div><div class="meta-secondline"><span class="post-meta-separator">       </span><span class="post-meta-position" title="作者IP属地为上海"><i class="anzhiyufont anzhiyu-icon-location-dot"></i>上海</span></div></div></div><section class="main-hero-waves-area waves-area"><svg class="waves-svg" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto"><defs><path id="gentle-wave" d="M -160 44 c 30 0 58 -18 88 -18 s 58 18 88 18 s 58 -18 88 -18 s 58 18 88 18 v 44 h -352 Z"></path></defs><g class="parallax"><use href="#gentle-wave" x="48" y="0"></use><use href="#gentle-wave" x="48" y="3"></use><use href="#gentle-wave" x="48" y="5"></use><use href="#gentle-wave" x="48" y="7"></use></g></svg></section><div id="post-top-cover"><img class="nolazyload" id="post-top-bg" src=""></div></header><main id="blog-container"><div class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container" itemscope itemtype="https://userkangkang.github.io/project/2025/03/05/cse-aicomputing/"><header><a class="post-meta-categories" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F/" itemprop="url">计算机系统</a><a class="post-meta-categories" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F/AI%E8%AE%A1%E7%AE%97/" itemprop="url">AI计算</a><a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E5%B7%A5%E7%A8%8B/" tabindex="-1" itemprop="url">计算机系统工程</a><h1 id="CrawlerTitle" itemprop="name headline">计算机系统工程之：AI计算与训练优化</h1><span itemprop="author" itemscope itemtype="http://schema.org/Person">Weiquan Huang</span><time itemprop="dateCreated datePublished" datetime="2025-03-04T16:14:44.965Z" title="发表于 2025-03-05 00:14:44">2025-03-05</time><time itemprop="dateCreated datePublished" datetime="2025-03-04T16:23:01.573Z" title="更新于 2025-03-05 00:23:01">2025-03-05</time></header><h3 id="Distributed-and-parallel-programming"><a href="#Distributed-and-parallel-programming" class="headerlink" title="Distributed (and parallel) programming"></a>Distributed (and parallel) programming</h3><p>前面讲了很多，都是关于AI需要庞大计算量的引子，引出后续针对如何加快计算速度的策略讲解<br>比如训练一个神经网络，前向和后向的一次迭代总共是6倍的$sizeof(W)*B$，$W$为矩阵元素个数，$B$为自变量特征数，注意这里的$W$是所有层的参数 </p>
+<h4 id="parallelism-in-single-node"><a href="#parallelism-in-single-node" class="headerlink" title="parallelism in single node"></a>parallelism in single node</h4><ul>
+<li>首先多核（多线程）的计算效率肯定高于单核单线程，单核的问题在于流水线的制约，可以改良流水线以及加快CPU处理一个指令的速度</li>
+<li>多核的问题是：每个核有自己的L1&#x2F;2缓存，而缓存的数据来源于内存，但是每个核的缓存有可能是不与内存完全同步的，就导致了计算结果正确性不能保证（设计<em>cache coherence protocols</em>，比如单个核缓存更改后广播至其他核，或者只广播（或者全局版本号<em>dir</em>）已修改数据的版本号等要拿的时候再去对应的核拿最新数据）；这个缓存一致性问题严重制约了当前处理器增加核数所带来的性能提升&#x2F;通过<strong>增加开发者开发难度的方式</strong>实现有限的保证缓存一致性的方法</li>
+<li>增加每个核的计算单元ALU，也可以同时处理互相之间无关的计算指令（不能同时处理有互相依赖的指令），比如SIMD就有给C++添加适配于单核多计算单元的接口，能够让一个指令执行多个浮点数的计算；但是其实无法达到理想的增加几倍的ALU就增加几倍的效率，这取决于计算指令之间的互相依赖关系、访存时间与纯寄存器计算的时间差异（木桶效应），所以这里的制约是CPU访问内存的“位宽”（主要影响原因是从CPU到内存的延迟）<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/cse/aisys1.png"></li>
+</ul>
+<h4 id="accessing-memory"><a href="#accessing-memory" class="headerlink" title="accessing memory"></a>accessing memory</h4><p>访存时间取决于两个因素：访问延迟+位宽</p>
+<p>每个设备有自己的Peak Flops，表示设备最快能够每秒执行多少个浮点计算；OI(Operation Intense)表示对于某个浮点计算任务，每访问一个Byte能够执行多少个浮点运算（比如假设1个浮点数为2Byte，那么两个不同的浮点数计算需要4Byte，那么OI&#x3D;1&#x2F;4）；在OI比较低的时候，性能受限于系统的带宽，因为可以认为CPU&#x2F;GPU处理计算任务和访问内存是同时进行的，在OI较低的时候就意味着访问内存的时间高于CPU&#x2F;GPU处理计算任务的时间，CPU&#x2F;GPU在一定时间内为空闲等待状态，那么就相当于系统性能受限于带宽，而带宽为Peak Flops&#x2F;OI（可以从单位推导）；反之，OI较高的时候就取决于CPU&#x2F;GPU的计算速度，那么就是受限于硬件的极限了<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/cse/aisys2.png"><br>单纯靠SIMD的机制仍然无法满足需求，比如如果出现了带分支的计算，那么常规情况下由于无法判断每个元素要怎么计算，因此会从并行退化成串行；不过SIMD有自己的解决方式，就是将两个分支的结果都算一遍，然后通过条件判断式保留正确计算过程的结果（mask），虽然会有被浪费掉的计算资源，但是至少并行是被充分利用的<img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/cse/aisys3.png"><br>改良方法SIMT：单个指令由多个线程执行，每个线程执行相同的代码，但是这段代码对不同的数据进行了分支判断和计算正确分支，统一block直到所有线程执行完毕</p>
+<h4 id="MapReduce"><a href="#MapReduce" class="headerlink" title="MapReduce"></a>MapReduce</h4><p>感觉就是Map是将数据分成几个块，每个块单独处理，成为映射；Reduce就是汇总Map的信息，然后计算出总的结果；比如数单词个数，就可以先数每个单词在各自文件的个数，然后再统一汇总起来；不过在Map发给Reduce的中间文件最好对其进行sort，这样Reducer可以获取到比较集中的数据（相同key的数据尽可能在同一个位置），方便于后续Reducer的数据集中；同时Reducer最好也对来自不同Map的文件进行merge sort，算是一个小优化</p>
+<p>Map之前也需要把要处理的文件进行shard分片，而由于文件是在GFS体系中存储，因此最好设置shard size为GFS的chunk size，这样可以尽最大的努力让尽可能少的RPC请求传输最多的数据；Map也会将中间结果分片，不同的片针对不同的Reducer，这样就可以让不同的Reducer尽可能少地进行random access，提取出需要让这个Reducer做的数据，而不是让这个Reducer去扫<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/cse/aisys4.png"></p>
+<p>Fault Tolarance：把文件存在类GFS的系统里，对于暂时失效的worker重启并且重新执行即可，同一个任务做两遍其实只需要覆盖就行了，他也不需要担心误判失效带来的重复计算的问题；如果master挂了，最好是master把自己的执行日志通过checkpoint机制来存放到GFS系统中，这样重启或者新开一个master之后就不会出现要重新执行之前已经执行的任务的情况了；如果worker执行的时候出现了错误，比如因为文件格式问题出现SegFault，那么一般是master直接让这个worker丢弃这个任务，做下一个</p>
+<p>Locality：每个节点都从GFS读取文件数据，那么会比单纯靠网络传输要快，MapReduce在GFS文件系统上运行</p>
+<p>Redundant Execution：如果一个worker很慢会让别的worker陷入等待，可以采用多个worker执行同一个任务来进行备份，从而只要有一个备份完成了就可以继续，但是这对资源比较稀缺的AI计算还是不太现实的方法，也有可能就先暂时放任他这么慢了</p>
+<p>不建议只有一个MapReduce集群的系统对多个任务进行类流水线的MapReduce流，因为这会造成下面两种Penalty，比如非最后阶段的Reduce产出的结果其实没必要写到磁盘里，但是只有一个MR体系就意味着没有能够接盘的其他体系；而且一个MR针对不同的任务也要做初始化，这其实和串行也没什么差了，没有发挥出流水线的作用<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/cse/aisys5.png"></p>
+<p>MapReduce可以抽象成“多分图”（二分图的扩展版本hh），很多都可以从MapReduce推出</p>
+<h4 id="Computation-Graph"><a href="#Computation-Graph" class="headerlink" title="Computation Graph"></a>Computation Graph</h4><p>在机器学习模型的训练过程中，可以将这些训练过程中常用的操作记录为计算图的一个节点，使用计算图的好处有：记录中间结果，以方便反向传播计算梯度用于拟合、不同的硬件会为相同的深度学习计算图节点实现不同的底层汇编逻辑<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/cse/aisys6.png"><br>一般来说，CPU将要计算的内容和计算图的节点发送给GPU让其去计算，GPU将结果发回给CPU；这里面就涉及到了访存的开销，CPU将数据和算子发送也是需要开销的；于是就产生了两个合并算子的流派：第一种是将几个经常连在一起的算子合并成一个大算子发送给GPU，这样做的缺点是比较难以编程；第二种是将多个算子打包发送，在GPU上再拆解并逐步计算（英伟达）<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/cse/aisys7.png"></p>
+<h3 id="Distributed-Training"><a href="#Distributed-Training" class="headerlink" title="Distributed Training"></a>Distributed Training</h3><h4 id="Data-Parallelism"><a href="#Data-Parallelism" class="headerlink" title="Data Parallelism"></a>Data Parallelism</h4><p>在计算梯度的时候，首先要计算损失函数，而这里有一个累加的过程，是可以通过将累加的过程并行化来实现MR的思路的<img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/cse/aisys8.png"><br>不过主要的问题其实就是在于，如何将每个节点的$\delta w$给传播出去，从而得到汇总值已进行下一步的计算；同时也会受到木桶效应的影响，即速度最慢的节点会明显让其他节点陷入空闲；用于优化这一流程的技术被称为AllReduce，优化的目标有：减少数据传输的量、以及降低数据在同一时刻大量地打到某个网卡的现象（因为这会极大地拖慢这个网卡对网络数据的吞吐速率）</p>
+<ul>
+<li>Parameter Server：用一个中央服务器来接受每个部分的参数来计算总体的值，但是这里的问题是，每个节点都会发送参数大小为$N$的数据（这里的$N$表示的是每个节点携带的参数量），而且有$P$个节点，那么不仅数据传输量比较大，而且对于某一时刻对于PS的负载也会很大；这在上课讲的一个实例中可以看到这种方法即使是计算一个比较小的模型，而且使用最好的网卡，网络传输也是一个很大的瓶颈<img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/cse/aisys9.png"></li>
+<li>Sharded PS：将数据拆成$P$个部分，每台机器负责不同的部分，在传输的时候也需要传输对应的部分即可，这样对于接收者来说，其接收到的数据量降低到了$O(N)$的量级，因为只需要接收到自己负责计算的部分，以及其他节点计算好了的他们负责的那部分（原来是$O(PN)$），而且只需要一轮communication，即每台机器训练完成之后就将不同的数据立即分发到不同的机器上，不过这里对于“同一时间涌入网卡的数据量“还是在$O(P)$量级，英文称为fan-in <img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/cse/aisys10.png"></li>
+<li>De-centralized：去中心化，可以采用比较流水线的策略，比如每个节点要发布各自的部分的时候，0-&gt;1,1-&gt;2,2-&gt;3,3-&gt;4…，如此交错，对彼此的网卡不影响，单一时间涌入网卡的数据量就是$O(N&#x2F;P)$，总体的数据接收量是$O(NP)$，不太好，因为这里的思路仍然是汇总之后分别计算<img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/cse/aisys13.png"></li>
+<li>Ring AllReduce：综合shard和de-centralized，将每个节点的参数继续分成$P$份，用类流水线方法进行传递，传递之后将每个节点汇总好的结果在继续按照流水线的方式进行传递；这样不仅兼顾了shard和de-centralized的好处，而且为了降低每个节点要维护的连接数量，每个节点只需要和相邻的节点进行通信，那么也就只需要维护和相邻之间节点的连接 <img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/cse/aisys14.png"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/cse/aisys15.png">Ring AllReduce的缺点主要是轮数太多，如果每轮的数据量不多的话其实没什么优势，而且其实在Python的浮点数计算中其实加法是不能结合律的，不同的顺序会有不同的结果，会造成细微的差别！但是这并不影响Ring AllReduce是一个非常好的分布式MR架构</li>
+<li>Tree AllReduce：使用二分法来进行分片，比Ring的P轮加法会更高效一点，相当于将加法做了merge，其效率变成了对数级别的 <img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/cse/aisys16.png"></li>
+<li>总结<img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/cse/aisys17.png"></li>
+</ul>
+<h4 id="Model-Parallelism"><a href="#Model-Parallelism" class="headerlink" title="Model Parallelism"></a>Model Parallelism</h4><p>模型的训练是可以分层的，每一层可以按照类流水线的方式去分给不同的机器做<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/cse/aisys18.png"><br>由于前向和后向是具有依赖关系的，最简单的分层就会如图所示出现很多个bubble，造成计算资源的等待和浪费<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/cse/aisys19.png"><br>可以使用这种方法来略微减少一点bubble，毕竟这也算是用到了流水线的思想，只是前向和后向依然无法摆脱依赖<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/cse/aisys20.png"><br>理想情况下，上图应该是一个长方形，所耗时间是batch的轮数和前向、后向传播的耗时，即下图所展示的$m·(t_f+t_b)$，但是由于bubble的出现，导致有$(p-1)·(t_f+t_b)$的时间是空耗掉的（上图中底部没有被有色正方形覆盖的长度），比率为$\frac{p-1}{m}$<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/cse/aisys21.png"><br>更改batch数量是不现实的，因为太小的batch（即m很大），会让之前所讲的GPU的计算资源利用率很低，因为每轮计算GPU可以同时计算较多的数据，batch太小会让这些计算资源没有办法得到充分利用；太大的batch则会导致梯度训练的效率下降，因为batch太大会让模型训练的梯度变小，以一个更慢的速度趋近于极小值<br>更改p也不是很合理，因为p本身就是因为<strong>参数的数量级太大了，单个GPU无法承载</strong>才去做分开的存储和计算的，减小p的瓶颈就在于设备本身的内存大小</p>
+<p>不过还有一个方法，Tensor Parallelism！可以将权重矩阵$W$分给不同的机器，对$x$去计算不同的$W_i$，最后再拼接起来，这样并没有违反矩阵计算的规律，汇总的算法倒是可以借鉴上面的Ring AllReduce<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/cse/aisys22.png"><br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/cse/aisys23.png"><br>Tensor Parallelism的通信代价比较高</p>
+<p>比较实际的架构为单服务器内部GPU的带宽比较高，使用Tensor并行；而服务器之间的带宽比较低，使用Pipeline</p>
+</article><div class="post-copyright"><div class="copyright-cc-box"><i class="anzhiyufont anzhiyu-icon-copyright"></i></div><div class="post-copyright__author_box"><a class="post-copyright__author_img" href="/" title="头像"><img class="post-copyright__author_img_back" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://avatars.githubusercontent.com/u/114564389?v=4" title="头像" alt="头像"><img class="post-copyright__author_img_front" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://avatars.githubusercontent.com/u/114564389?v=4" title="头像" alt="头像"></a><div class="post-copyright__author_name">Weiquan Huang</div><div class="post-copyright__author_desc">userKangkang</div></div><div class="post-copyright__post__info"><a class="post-copyright__original" title="该文章为原创文章，注意版权协议" href="https://userkangkang.github.io/project/2025/03/05/cse-aicomputing/">原创</a><a class="post-copyright-title"><span onclick="rm.copyPageUrl('https://userkangkang.github.io/project/2025/03/05/cse-aicomputing/')">计算机系统工程之：AI计算与训练优化</span></a></div><div class="post-tools" id="post-tools"><div class="post-tools-left"><div class="rewardLeftButton"></div><div class="shareRight"><div class="share-link mobile"><div class="share-qrcode"><div class="share-button" title="使用手机访问这篇文章"><i class="anzhiyufont anzhiyu-icon-qrcode"></i></div><div class="share-main"><div class="share-main-all"><div id="qrcode" title="https://userkangkang.github.io/project/2025/03/05/cse-aicomputing/"></div><div class="reward-dec">使用手机访问这篇文章</div></div></div></div></div><div class="share-link weibo"><a class="share-button" target="_blank" href="https://service.weibo.com/share/share.php?title=计算机系统工程之：AI计算与训练优化&amp;url=https://userkangkang.github.io/project/2025/03/05/cse-aicomputing/&amp;pic=" rel="external nofollow noreferrer noopener"><i class="anzhiyufont anzhiyu-icon-weibo"></i></a></div><script>function copyCurrentPageUrl() {
+  var currentPageUrl = window.location.href;
+  var input = document.createElement("input");
+  input.setAttribute("value", currentPageUrl);
+  document.body.appendChild(input);
+  input.select();
+  input.setSelectionRange(0, 99999);
+  document.execCommand("copy");
+  document.body.removeChild(input);
+}</script><div class="share-link copyurl"><div class="share-button" id="post-share-url" title="复制链接" onclick="copyCurrentPageUrl()"><i class="anzhiyufont anzhiyu-icon-link"></i></div></div></div></div></div><div class="post-copyright__notice"><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://userKangkang.github.io/project" target="_blank">Hexo</a>！</span></div></div><div class="post-tools-right"><div class="tag_share"><div class="post-meta__box"><div class="post-meta__box__tag-list"><a class="post-meta__box__tags" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E5%B7%A5%E7%A8%8B/"><span class="tags-punctuation"> <i class="anzhiyufont anzhiyu-icon-tag"></i></span>计算机系统工程<span class="tagsPageCount">9</span></a></div></div></div><div class="post_share"><div class="social-share" data-image="https://avatars.githubusercontent.com/u/114564389?v=4" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.cbd.int/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"/><script src="https://cdn.cbd.int/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer="defer"></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2025/03/05/cse-network/"><img class="prev-cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">计算机系统工程之：网络</div></div></a></div><div class="next-post pull-right"><a href="/2025/03/05/cse-security/"><img class="next-cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">计算机系统工程之：计算机系统安全</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="anzhiyufont anzhiyu-icon-thumbs-up fa-fw" style="font-size: 1.5rem; margin-right: 4px"></i><span>喜欢这篇文章的人也看了</span></div><div class="relatedPosts-list"><div><a href="/2025/03/03/cse-filesystem/" title="计算机系统工程之：INode文件系统"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/" alt="cover"><div class="content is-center"><div class="date"><i class="anzhiyufont anzhiyu-icon-calendar-days fa-fw"></i> 2025-03-03</div><div class="title">计算机系统工程之：INode文件系统</div></div></a></div><div><a href="/2025/03/04/cse-rpc/" title="计算机系统工程之：RPC"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/" alt="cover"><div class="content is-center"><div class="date"><i class="anzhiyufont anzhiyu-icon-calendar-days fa-fw"></i> 2025-03-04</div><div class="title">计算机系统工程之：RPC</div></div></a></div><div><a href="/2025/03/04/cse-dfs/" title="计算机系统工程之：分布式文件系统"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/" alt="cover"><div class="content is-center"><div class="date"><i class="anzhiyufont anzhiyu-icon-calendar-days fa-fw"></i> 2025-03-04</div><div class="title">计算机系统工程之：分布式文件系统</div></div></a></div><div><a href="/2025/03/04/cse-kv/" title="计算机系统工程之：键值存储系统"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/" alt="cover"><div class="content is-center"><div class="date"><i class="anzhiyufont anzhiyu-icon-calendar-days fa-fw"></i> 2025-03-04</div><div class="title">计算机系统工程之：键值存储系统</div></div></a></div><div><a href="/2025/03/04/cse-tx/" title="计算机系统工程之：事务与分布式事务"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/" alt="cover"><div class="content is-center"><div class="date"><i class="anzhiyufont anzhiyu-icon-calendar-days fa-fw"></i> 2025-03-04</div><div class="title">计算机系统工程之：事务与分布式事务</div></div></a></div><div><a href="/2025/03/04/cse-paxos/" title="计算机系统工程之：Paxos"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/" alt="cover"><div class="content is-center"><div class="date"><i class="anzhiyufont anzhiyu-icon-calendar-days fa-fw"></i> 2025-03-04</div><div class="title">计算机系统工程之：Paxos</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-content"><div class="author-info__sayhi" id="author-info__sayhi" onclick="anzhiyu.changeSayHelloText()"></div><div class="author-info-avatar"><img class="avatar-img" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://avatars.githubusercontent.com/u/114564389?v=4" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/><div class="author-status"><img class="g-status" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://bu.dusays.com/2023/08/24/64e6ce9c507bb.png" alt="status"/></div></div><div class="author-info__description">个人博客，计划在这里记录上海交通大学软件学院本科部分课程，由于本专业主攻计算机系统，因此可能这方面居多</div><div class="author-info__bottom-group"><a class="author-info__bottom-group-left" href="/"><h1 class="author-info__name">Weiquan Huang</h1><div class="author-info__desc">userKangkang</div></a><div class="card-info-social-icons is-center"><a class="social-icon faa-parent animated-hover" href="https://github.com/userKangkang" target="_blank" title="Github"><i class="anzhiyufont anzhiyu-icon-github"></i></a></div></div></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-bars"></i><span>文章目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#Distributed-and-parallel-programming"><span class="toc-number">1.</span> <span class="toc-text">Distributed (and parallel) programming</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#parallelism-in-single-node"><span class="toc-number">1.1.</span> <span class="toc-text">parallelism in single node</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#accessing-memory"><span class="toc-number">1.2.</span> <span class="toc-text">accessing memory</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#MapReduce"><span class="toc-number">1.3.</span> <span class="toc-text">MapReduce</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Computation-Graph"><span class="toc-number">1.4.</span> <span class="toc-text">Computation Graph</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Distributed-Training"><span class="toc-number">2.</span> <span class="toc-text">Distributed Training</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Data-Parallelism"><span class="toc-number">2.1.</span> <span class="toc-text">Data Parallelism</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Model-Parallelism"><span class="toc-number">2.2.</span> <span class="toc-text">Model Parallelism</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-history"></i><span>最近发布</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/03/05/cse-security/" title="计算机系统工程之：计算机系统安全">计算机系统工程之：计算机系统安全</a><time datetime="2025-03-04T16:23:16.386Z" title="发表于 2025-03-05 00:23:16">2025-03-05</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/03/05/cse-aicomputing/" title="计算机系统工程之：AI计算与训练优化">计算机系统工程之：AI计算与训练优化</a><time datetime="2025-03-04T16:14:44.965Z" title="发表于 2025-03-05 00:14:44">2025-03-05</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/03/05/cse-network/" title="计算机系统工程之：网络">计算机系统工程之：网络</a><time datetime="2025-03-04T16:05:44.126Z" title="发表于 2025-03-05 00:05:44">2025-03-05</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/03/04/cse-paxos/" title="计算机系统工程之：Paxos">计算机系统工程之：Paxos</a><time datetime="2025-03-04T14:39:12.779Z" title="发表于 2025-03-04 22:39:12">2025-03-04</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/03/04/cse-tx/" title="计算机系统工程之：事务与分布式事务">计算机系统工程之：事务与分布式事务</a><time datetime="2025-03-04T14:21:23.000Z" title="发表于 2025-03-04 22:21:23">2025-03-04</time></div></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div id="workboard"><img class="workSituationImg boardsign" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://npm.elemecdn.com/anzhiyu-blog@2.0.4/img/badge/安知鱼-上班摸鱼中.svg" alt="距离月入25k也就还差一个大佬带我~" title="距离月入25k也就还差一个大佬带我~"/><div id="runtimeTextTip"></div></div></div><div id="footer-bar"><div class="footer-bar-links"><div class="footer-bar-left"><div id="footer-bar-tips"><div class="copyright">&copy;2025 By <a class="footer-bar-link" href="/" title="Weiquan Huang" target="_blank">Weiquan Huang</a></div></div><div id="footer-type-tips"></div></div><div class="footer-bar-right"><a class="footer-bar-link" target="_blank" rel="noopener" href="https://github.com/anzhiyu-c/hexo-theme-anzhiyu" title="主题">主题</a></div></div></div></footer></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="sidebar-site-data site-data is-center"><a href="/archives/" title="archive"><div class="headline">文章</div><div class="length-num">10</div></a><a href="/tags/" title="tag"><div class="headline">标签</div><div class="length-num">2</div></a><a href="/categories/" title="category"><div class="headline">分类</div><div class="length-num">5</div></a></div><span class="sidebar-menu-item-title">功能</span><div class="sidebar-menu-item"><a class="darkmode_switchbutton menu-child" href="javascript:void(0);" title="显示模式"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i><span>显示模式</span></a></div><div class="back-menu-list-groups"><div class="back-menu-list-group"><div class="back-menu-list-title">网页</div><div class="back-menu-list"><a class="back-menu-item" target="_blank" rel="noopener" href="https://github.com/userKangkang" title="Github"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/img/github-mark.svg" alt="Github"/><span class="back-menu-item-text">Github</span></a></div></div></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 文章</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/archives/"><i class="anzhiyufont anzhiyu-icon-box-archive faa-tada" style="font-size: 0.9em;"></i><span> 隧道</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/categories/"><i class="anzhiyufont anzhiyu-icon-shapes faa-tada" style="font-size: 0.9em;"></i><span> 分类</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/tags/"><i class="anzhiyufont anzhiyu-icon-tags faa-tada" style="font-size: 0.9em;"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 友链</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/link/"><i class="anzhiyufont anzhiyu-icon-link faa-tada" style="font-size: 0.9em;"></i><span> 友人帐</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/fcircle/"><i class="anzhiyufont anzhiyu-icon-artstation faa-tada" style="font-size: 0.9em;"></i><span> 朋友圈</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/comments/"><i class="anzhiyufont anzhiyu-icon-envelope faa-tada" style="font-size: 0.9em;"></i><span> 留言板</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 我的</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/music/"><i class="anzhiyufont anzhiyu-icon-music faa-tada" style="font-size: 0.9em;"></i><span> 音乐馆</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/bangumis/"><i class="anzhiyufont anzhiyu-icon-bilibili faa-tada" style="font-size: 0.9em;"></i><span> 追番页</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/album/"><i class="anzhiyufont anzhiyu-icon-images faa-tada" style="font-size: 0.9em;"></i><span> 相册集</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/air-conditioner/"><i class="anzhiyufont anzhiyu-icon-fan faa-tada" style="font-size: 0.9em;"></i><span> 小空调</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 关于</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/about/"><i class="anzhiyufont anzhiyu-icon-paper-plane faa-tada" style="font-size: 0.9em;"></i><span> 关于本人</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/essay/"><i class="anzhiyufont anzhiyu-icon-lightbulb faa-tada" style="font-size: 0.9em;"></i><span> 闲言碎语</span></a></li><li><a class="site-page child faa-parent animated-hover" href="javascript:toRandomPost()"><i class="anzhiyufont anzhiyu-icon-shoe-prints1 faa-tada" style="font-size: 0.9em;"></i><span> 随便逛逛</span></a></li></ul></div></div><span class="sidebar-menu-item-title">标签</span><div class="card-tags"><div class="item-headline"></div><div class="card-tag-cloud"><a href="/tags/%E5%85%A5%E9%97%A8/" style="font-size: 0.88rem;">入门<sup>1</sup></a><a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E5%B7%A5%E7%A8%8B/" style="font-size: 0.88rem;">计算机系统工程<sup>9</sup></a></div></div><hr/></div></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="anzhiyufont anzhiyu-icon-book-open"></i></button><button id="translateLink" type="button" title="简繁转换">繁</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="anzhiyufont anzhiyu-icon-arrows-left-right"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="anzhiyufont anzhiyu-icon-gear"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="anzhiyufont anzhiyu-icon-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i></button></div></div><div id="nav-music"><a id="nav-music-hoverTips" onclick="anzhiyu.musicToggle()" accesskey="m">播放音乐</a><div id="console-music-bg"></div><meting-js id="8152976493" server="netease" type="playlist" mutex="true" preload="none" theme="var(--anzhiyu-main)" data-lrctype="0" order="random" volume="0.7"></meting-js></div><div id="rightMenu"><div class="rightMenu-group rightMenu-small"><div class="rightMenu-item" id="menu-backward"><i class="anzhiyufont anzhiyu-icon-arrow-left"></i></div><div class="rightMenu-item" id="menu-forward"><i class="anzhiyufont anzhiyu-icon-arrow-right"></i></div><div class="rightMenu-item" id="menu-refresh"><i class="anzhiyufont anzhiyu-icon-arrow-rotate-right" style="font-size: 1rem;"></i></div><div class="rightMenu-item" id="menu-top"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i></div></div><div class="rightMenu-group rightMenu-line rightMenuPlugin"><div class="rightMenu-item" id="menu-copytext"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制选中文本</span></div><div class="rightMenu-item" id="menu-pastetext"><i class="anzhiyufont anzhiyu-icon-paste"></i><span>粘贴文本</span></div><a class="rightMenu-item" id="menu-commenttext"><i class="anzhiyufont anzhiyu-icon-comment-medical"></i><span>引用到评论</span></a><div class="rightMenu-item" id="menu-newwindow"><i class="anzhiyufont anzhiyu-icon-window-restore"></i><span>新窗口打开</span></div><div class="rightMenu-item" id="menu-copylink"><i class="anzhiyufont anzhiyu-icon-link"></i><span>复制链接地址</span></div><div class="rightMenu-item" id="menu-copyimg"><i class="anzhiyufont anzhiyu-icon-images"></i><span>复制此图片</span></div><div class="rightMenu-item" id="menu-downloadimg"><i class="anzhiyufont anzhiyu-icon-download"></i><span>下载此图片</span></div><div class="rightMenu-item" id="menu-newwindowimg"><i class="anzhiyufont anzhiyu-icon-window-restore"></i><span>新窗口打开图片</span></div><div class="rightMenu-item" id="menu-search"><i class="anzhiyufont anzhiyu-icon-magnifying-glass"></i><span>站内搜索</span></div><div class="rightMenu-item" id="menu-searchBaidu"><i class="anzhiyufont anzhiyu-icon-magnifying-glass"></i><span>百度搜索</span></div><div class="rightMenu-item" id="menu-music-toggle"><i class="anzhiyufont anzhiyu-icon-play"></i><span>播放音乐</span></div><div class="rightMenu-item" id="menu-music-back"><i class="anzhiyufont anzhiyu-icon-backward"></i><span>切换到上一首</span></div><div class="rightMenu-item" id="menu-music-forward"><i class="anzhiyufont anzhiyu-icon-forward"></i><span>切换到下一首</span></div><div class="rightMenu-item" id="menu-music-playlist" onclick="window.open(&quot;https://y.qq.com/n/ryqq/playlist/8802438608&quot;, &quot;_blank&quot;);" style="display: none;"><i class="anzhiyufont anzhiyu-icon-radio"></i><span>查看所有歌曲</span></div><div class="rightMenu-item" id="menu-music-copyMusicName"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制歌名</span></div></div><div class="rightMenu-group rightMenu-line rightMenuOther"><a class="rightMenu-item menu-link" id="menu-randomPost"><i class="anzhiyufont anzhiyu-icon-shuffle"></i><span>随便逛逛</span></a><a class="rightMenu-item menu-link" href="/categories/"><i class="anzhiyufont anzhiyu-icon-cube"></i><span>博客分类</span></a><a class="rightMenu-item menu-link" href="/tags/"><i class="anzhiyufont anzhiyu-icon-tags"></i><span>文章标签</span></a></div><div class="rightMenu-group rightMenu-line rightMenuOther"><a class="rightMenu-item" id="menu-copy" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制地址</span></a><a class="rightMenu-item" id="menu-commentBarrage" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-message"></i><span class="menu-commentBarrage-text">关闭热评</span></a><a class="rightMenu-item" id="menu-darkmode" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i><span class="menu-darkmode-text">深色模式</span></a><a class="rightMenu-item" id="menu-translate" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-language"></i><span>轉為繁體</span></a></div></div><div id="rightmenu-mask"></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.cbd.int/@fancyapps/ui@5.0.28/dist/fancybox/fancybox.umd.js"></script><script src="https://cdn.cbd.int/instant.page@5.2.0/instantpage.js" type="module"></script><script src="https://cdn.cbd.int/vanilla-lazyload@17.8.5/dist/lazyload.iife.min.js"></script><script src="https://cdn.cbd.int/node-snackbar@0.1.16/dist/snackbar.min.js"></script><canvas id="universe"></canvas><script async src="https://npm.elemecdn.com/anzhiyu-theme-static@1.0.0/dark/dark.js"></script><script>// 消除控制台打印
+var HoldLog = console.log;
+console.log = function () {};
+let now1 = new Date();
+queueMicrotask(() => {
+  const Log = function () {
+    HoldLog.apply(console, arguments);
+  }; //在恢复前输出日志
+  const grt = new Date("03/03/2025 19:34:34"); //此处修改你的建站时间或者网站上线时间
+  now1.setTime(now1.getTime() + 250);
+  const days = (now1 - grt) / 1000 / 60 / 60 / 24;
+  const dnum = Math.floor(days);
+  const ascll = [
+    `欢迎使用安知鱼!`,
+    `生活明朗, 万物可爱`,
+    `
+        
+       █████╗ ███╗   ██╗███████╗██╗  ██╗██╗██╗   ██╗██╗   ██╗
+      ██╔══██╗████╗  ██║╚══███╔╝██║  ██║██║╚██╗ ██╔╝██║   ██║
+      ███████║██╔██╗ ██║  ███╔╝ ███████║██║ ╚████╔╝ ██║   ██║
+      ██╔══██║██║╚██╗██║ ███╔╝  ██╔══██║██║  ╚██╔╝  ██║   ██║
+      ██║  ██║██║ ╚████║███████╗██║  ██║██║   ██║   ╚██████╔╝
+      ╚═╝  ╚═╝╚═╝  ╚═══╝╚══════╝╚═╝  ╚═╝╚═╝   ╚═╝    ╚═════╝
+        
+        `,
+    "已上线",
+    dnum,
+    "天",
+    "©2025 By 安知鱼 V1.6.14",
+  ];
+  const ascll2 = [`NCC2-036`, `调用前置摄像头拍照成功，识别为【小笨蛋】.`, `Photo captured: `, `🤪`];
+
+  setTimeout(
+    Log.bind(
+      console,
+      `\n%c${ascll[0]} %c ${ascll[1]} %c ${ascll[2]} %c${ascll[3]}%c ${ascll[4]}%c ${ascll[5]}\n\n%c ${ascll[6]}\n`,
+      "color:#425AEF",
+      "",
+      "color:#425AEF",
+      "color:#425AEF",
+      "",
+      "color:#425AEF",
+      ""
+    )
+  );
+  setTimeout(
+    Log.bind(
+      console,
+      `%c ${ascll2[0]} %c ${ascll2[1]} %c \n${ascll2[2]} %c\n${ascll2[3]}\n`,
+      "color:white; background-color:#4fd953",
+      "",
+      "",
+      'background:url("https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/tinggge.gif") no-repeat;font-size:450%'
+    )
+  );
+
+  setTimeout(Log.bind(console, "%c WELCOME %c 你好，小笨蛋.", "color:white; background-color:#4f90d9", ""));
+
+  setTimeout(
+    console.warn.bind(
+      console,
+      "%c ⚡ Powered by 安知鱼 %c 你正在访问 Weiquan Huang 的博客.",
+      "color:white; background-color:#f0ad4e",
+      ""
+    )
+  );
+
+  setTimeout(Log.bind(console, "%c W23-12 %c 你已打开控制台.", "color:white; background-color:#4f90d9", ""));
+
+  setTimeout(
+    console.warn.bind(console, "%c S013-782 %c 你现在正处于监控中.", "color:white; background-color:#d9534f", "")
+  );
+});</script><script async src="/anzhiyu/random.js"></script><script async="async">(function () {
+  var grt = new Date("03/03/2025 19:34:34"); //设置网站上线时间
+  var now = new Date();
+  var dnum;
+  var hnum;
+  var mnum;
+  var snum;
+  var nowHour;
+
+  // 计算并更新天数、小时数、分钟数和秒数
+  function updateTime() {
+    now = new Date(); // 更新 now 的值
+    nowHour = now.getHours(); // 更新 nowHour 的值
+    var days = (now - grt) / 1000 / 60 / 60 / 24;
+    dnum = Math.floor(days);
+    var hours = (now - grt) / 1000 / 60 / 60 - 24 * dnum;
+    hnum = Math.floor(hours);
+    if (String(hnum).length == 1) {
+      hnum = "0" + hnum;
+    }
+    var minutes = (now - grt) / 1000 / 60 - 24 * 60 * dnum - 60 * hnum;
+    mnum = Math.floor(minutes);
+    if (String(mnum).length == 1) {
+      mnum = "0" + mnum;
+    }
+    var seconds = (now - grt) / 1000 - 24 * 60 * 60 * dnum - 60 * 60 * hnum - 60 * mnum;
+    snum = Math.round(seconds);
+    if (String(snum).length == 1) {
+      snum = "0" + snum;
+    }
+  }
+
+  // 更新网页中显示的网站运行时间
+  function updateHtml() {
+    const footer = document.getElementById("footer");
+    if (!footer) return
+    let currentTimeHtml = "";
+    if (nowHour < 18 && nowHour >= 9) {
+      // 如果是上班时间，默认就是"安知鱼-上班摸鱼中.svg"图片，不需要更改
+      currentTimeHtml = `本站居然运行了 ${dnum} 天<span id='runtime'> ${hnum} 小时 ${mnum} 分 ${snum} 秒 </span><i class='anzhiyufont anzhiyu-icon-heartbeat' style='color:red'></i>`;
+    } else {
+      // 如果是下班时间，插入"安知鱼-下班啦.svg"图片
+      let img = document.querySelector("#workboard .workSituationImg");
+      if (img != null) {
+        img.src = "https://npm.elemecdn.com/anzhiyu-blog@2.0.4/img/badge/安知鱼-下班啦.svg";
+        img.title = "下班了就该开开心心的玩耍，嘿嘿~";
+        img.alt = "下班了就该开开心心的玩耍，嘿嘿~";
+      }
+
+      currentTimeHtml = `本站居然运行了 ${dnum} 天<span id='runtime'> ${hnum} 小时 ${mnum} 分 ${snum} 秒 </span><i class='anzhiyufont anzhiyu-icon-heartbeat' style='color:red'></i>`;
+    }
+
+    if (document.getElementById("runtimeTextTip")) {
+      document.getElementById("runtimeTextTip").innerHTML = currentTimeHtml;
+    }
+  }
+
+  setInterval(() => {
+    updateTime();
+    updateHtml();
+  }, 1000);
+})();</script><div class="js-pjax"><input type="hidden" name="page-type" id="page-type" value="post"></div><script>var visitorMail = "";
+</script><script async data-pjax src="https://cdn.cbd.int/anzhiyu-theme-static@1.0.0/waterfall/waterfall.js"></script><script src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/qrcodejs/1.0.0/qrcode.min.js"></script><link rel="stylesheet" href="https://cdn.cbd.int/anzhiyu-theme-static@1.1.9/icon/ali_iconfont_css.css"><link rel="stylesheet" href="https://cdn.cbd.int/anzhiyu-theme-static@1.0.0/aplayer/APlayer.min.css" media="print" onload="this.media='all'"><script src="https://cdn.cbd.int/anzhiyu-blog-static@1.0.1/js/APlayer.min.js"></script><script src="https://cdn.cbd.int/hexo-anzhiyu-music@1.0.1/assets/js/Meting2.min.js"></script><script src="https://cdn.cbd.int/pjax@0.2.8/pjax.min.js"></script><script>let pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+  // removeEventListener scroll 
+  anzhiyu.removeGlobalFnEvent('pjax')
+  anzhiyu.removeGlobalFnEvent('themeChange')
+
+  document.getElementById('rightside').classList.remove('rightside-show')
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+})
+
+document.addEventListener('pjax:error', e => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script charset="UTF-8" src="https://cdn.cbd.int/anzhiyu-theme-static@1.1.5/accesskey/accesskey.js"></script></div><div id="popup-window"><div class="popup-window-title">通知</div><div class="popup-window-divider"></div><div class="popup-window-content"><div class="popup-tip">你好呀</div><div class="popup-link"><i class="anzhiyufont anzhiyu-icon-arrow-circle-right"></i></div></div></div></body></html>

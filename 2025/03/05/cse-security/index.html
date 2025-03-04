@@ -1,0 +1,486 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"><title>计算机系统工程之：计算机系统安全 | Hexo</title><meta name="keywords" content="计算机系统工程"><meta name="author" content="Weiquan Huang,hwqqz678@sjtu.edu.cn"><meta name="copyright" content="Weiquan Huang"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#f7f9fe"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-touch-fullscreen" content="yes"><meta name="apple-mobile-web-app-title" content="计算机系统工程之：计算机系统安全"><meta name="application-name" content="计算机系统工程之：计算机系统安全"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="#f7f9fe"><meta property="og:type" content="article"><meta property="og:title" content="计算机系统工程之：计算机系统安全"><meta property="og:url" content="https://userkangkang.github.io/project/2025/03/05/cse-security/index.html"><meta property="og:site_name" content="Hexo"><meta property="og:description" content="Intro to System Security Security is a negative goal. 安全是完成“不能让某件事情被做”的任务，想做一件事情有很多种方法，所以安全要考虑的东西很多，本身也很难 Security may be conflict with other goals. 安"><meta property="og:locale" content="zh-CN"><meta property="og:image" content="https://avatars.githubusercontent.com/u/114564389?v=4"><meta property="article:author" content="Weiquan Huang"><meta property="article:tag"><meta name="twitter:card" content="summary"><meta name="twitter:image" content="https://avatars.githubusercontent.com/u/114564389?v=4"><meta name="description" content="Intro to System Security Security is a negative goal. 安全是完成“不能让某件事情被做”的任务，想做一件事情有很多种方法，所以安全要考虑的东西很多，本身也很难 Security may be conflict with other goals. 安"><link rel="shortcut icon" href="/favicon.ico"><link rel="canonical" href="https://userkangkang.github.io/project/2025/03/05/cse-security/"><link rel="preconnect" href="//cdn.cbd.int"/><meta name="google-site-verification" content="xxx"/><meta name="baidu-site-verification" content="code-xxx"/><meta name="msvalidate.01" content="xxx"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.cbd.int/node-snackbar@0.1.16/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.cbd.int/@fancyapps/ui@5.0.28/dist/fancybox/fancybox.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  linkPageTop: undefined,
+  peoplecanvas: {"enable":true,"img":"https://upload-bbs.miyoushe.com/upload/2024/07/27/125766904/ba62475f396df9de3316a08ed9e65d86_5680958632268053399..png"},
+  postHeadAiDescription: {"enable":true,"gptName":"AnZhiYu","mode":"local","switchBtn":false,"btnLink":"https://afdian.net/item/886a79d4db6711eda42a52540025c377","randomNum":3,"basicWordCount":1000,"key":"xxxx","Referer":"https://xx.xx/"},
+  diytitle: {"enable":true,"leaveTitle":"w(ﾟДﾟ)w 不要走！再看看嘛！","backTitle":"♪(^∇^*)欢迎肥来！"},
+  LA51: undefined,
+  greetingBox: undefined,
+  twikooEnvId: '',
+  commentBarrageConfig:undefined,
+  music_page_default: "nav_music",
+  root: '/',
+  preloader: {"source":3},
+  friends_vue_info: undefined,
+  navMusic: true,
+  mainTone: {"mode":"api","api":"https://img2color-go.vercel.app/api?img=","cover_change":true},
+  authorStatus: {"skills":null},
+  algolia: undefined,
+  localSearch: undefined,
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"简","rightMenuMsgToTraditionalChinese":"转为繁体","rightMenuMsgToSimplifiedChinese":"转为简体"},
+  noticeOutdate: {"limitDay":365,"position":"top","messagePrev":"It has been","messageNext":"days since the last update, the content of the article may be outdated."},
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":330},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    simplehomepage: true,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"copy":true,"copyrightEbable":false,"limitCount":50,"languages":{"author":"作者: Weiquan Huang","link":"链接: ","source":"来源: Hexo","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。","copySuccess":"复制成功，复制和转载请标注本文地址"}},
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#425AEF","bgDark":"#1f1f1f","position":"top-center"},
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.cbd.int/flickr-justified-gallery@2.1.2/dist/fjGallery.min.js',
+      css: 'https://cdn.cbd.int/flickr-justified-gallery@2.1.2/dist/fjGallery.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isAnchor: false,
+  shortcutKey: undefined,
+  autoDarkmode: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  configTitle: 'Hexo',
+  title: '计算机系统工程之：计算机系统安全',
+  postAI: '',
+  pageFillDescription: 'Intro to System Security, ROP and CFI, Password, Return-Oriented Programming, stack buffer overflow, CFI(Control-Flow Integrity), Blind ROP, Data Flow Protection, Taint Tracking, Defending Malicious Input, Secure Channel, Privacy, OT(Oblivious Transfer), Secret Sharing, Homomorphic Encryption, TEE安全是完成不能让某件事情被做的任务想做一件事情有很多种方法所以安全要考虑的东西很多本身也很难安全的诉求和其他的诉求可能是冲突的安全的目标限制数据的读取限制数据的改写确保系统运行符合正常情况而非执行异常攻击者可能会控制你的部分电脑或控制电脑内部的部分软件获得一些隐私信息了解你程序的考虑物理攻击社会工程学攻击维持安全的成本使用如下的检查密码算法有何问题由于是逐位检查因此可以在密码存放的方式做手脚比如可以将密码的第一位和剩下的位数放在不同的页中且让剩下的位数被换页到磁盘那么就可以根据时间来判断第一位是不是对的从而如法炮制试出每一位的正确字符如何降低密码验证方式被攻击的概率存放哈希后的密码等但是哈希后的密码仍然可以通过对猜测值也进行哈希并与获取到的哈希进行比对从而获得比对成功的账号的密码而且随着时间的推移一些哈希算法已经被破解加盐对每个用户存一个随机的加盐值以及存哈希后的加盐值密码这样即使被获取攻击者也只能针对一个特定用户来进行密码的破解因为两个用户即使密码一样他们的加盐值也不一样登录凭证凭此凭证可以在一定时间内登录成功会在登录有效期内更新凭证而登出后超时后取消凭证的有效期但是会造成二义性比如用户名和时间的拼接可以解释为和网络钓鱼用假冒的域名来欺骗用户输入密码比如与如何不让密码在网络中裸奔服务端给客户端发送一个随机数客户端将密码和随机数一起放入哈希函数中再将哈希后的值传给服务端服务端也算一遍问题服务端也需要存放密码明文因为哈希的对象包含随机值存密码明文才能算存明文本身就有问题用户输入账户名之后就会返回一个图像根据图像的正确性可以检查是否为钓鱼网站同时可以在服务端检查某一个客户的账号会不会出现多次用户名的请求出现在不同的上并对异常情况做响应为不同的账号创建不同的密码一次性密码比如某个密码可以使用次那么第一次使用可以先在本地次然后再在服务端进行后进行检验随后用于检验的调用层数这样即使攻击者获取到了的密码也是无用的因为这个密码已经失效了而且很难可以为不同的设备的同一个应用的账号设置不同的密码同时可以取消单个设备的密码将用户验证和用户请求绑定每次存放请求和密码的哈希用于检验请求的可靠性避免尚未息屏的时候被他人操作即每次转账的时候还需要重新输入密码指纹验证实际上是将指纹和私钥绑定私钥和服务器里的公钥绑定验证指纹获取私钥私钥和公钥在客户端进行一系列操作后发回给服务端再验证合法性最小权限原则最小信任原则只有自己写的代码才是可信任的写编译器的人会给自己留强破解密码而且任何的组件都需要编译器进行编译因此只要有了第一个编译器那么就搞不掉这个强破解密码图灵奖演讲题外话第一个编译器是怎么来的查阅得到是通过人写出简单机器码编译器然后编译出简单代码之后在通过该简单编译器进行自举开发出许多更加强大的编译器后续自举出来的编译器就是用相对高级的语言编写的了改写以让其跳转到在栈上其他位置编写的攻击代码以期望其后执行攻击代码可以通过限制可执行区域阻止比如不允许执行属于栈的地址位置的指令改写以让其跳转到其他代码区域的部分指令通过碎片化的跳转达到完成一整套攻击逻辑的流程可以通过随机化栈偏移量同时设置栈的一系列跳转为相对跳转在处设置金丝雀值检测篡改来阻止不过出来的子进程是和父进程有一样的地址空间规划的就没有达到随机化栈偏移量的作用编译成汇编指令的时候可以得到函数之间互相调用的关系在逻辑上可以生成控制流图通常的指令跳转都是直接的即跳转到但是也有间接的比如跳转到所存的地址控制流图主要防止攻击者通过篡改间接跳转的寄存器从而更改跳转位置具体实现上就采用了给之间人为地添加了约束跳转到可能是调用函数指针形参实参不固定的情况通过提前添加比对信息跳转方比对被跳转处的预设的数据是否符合预期从而验证跳转的正确性当然这存在一定问题比如在一个跳转语句中可能跳转到那么处的验证数据就必须是一样的因为这个检查的是同一个数据那么如果能跳转到那么即使在控制流图中没有与的跳转关系他被攻击后跳转到也依然被认为是合法的解决方法是增强增加条件使得不同的能够到达不同的指令从而使关联的粒度更细这里还存在的问题是假如被跳转方是有的而跳转方由于自身版本比较旧没有相关指令对应于上图的和那么跳转到就会因为执行了非法指令而无法继续执行因此需要有一个兼容的指令他会忽略不是合法指令的接下来的字节指令指令可执行区域的发展表示指令对齐从而只有对齐的位置才被视为合法跳转地址而的跳转控制流图依赖又大大加强了这一点背景由于使用来生成用于服务客户端的子进程因此这些子进程的地址空间都是固定的即栈随机化这一条失效攻击者可以通过不断地尝试去获取到使用挂载的服务的代码以此来攻击服务端攻击者首先通过发送请求期望让请求的字符串过长从而触发一旦溢出了那么一般来说高位的地址被更改都会直接触发导致所以可以通过不断地尝试来获取处理请求的返回地址甚至接下来可以通过更改低位的返回地址不断尝试出一些能够导致服务端检测到连接关闭无任何反映正常返回的地址这些地址可以用来检测其他的功能如何鉴别哪一个地址是可以在要检测的返回地址的更高层栈的返回地址插入已知的返回地址如果最终响应依赖于更高层插入的则可以说明当前测试的这个地址属于可以正常返回现在我们要达成将服务器的机器码返回给客户端就需要借用系统调用参数传的是要返回的客户端的是机器码的大致起始位置是要传的字符串长度大小所以这里的任务变成了如何将参数传给如何拿到的地址如何拿实参已知通过前面的测试可以得知机器码地址起点大概是在附近已知由于攻击者现在能做的是通过改写栈进行跳转因此可以想出一个策略即改写栈将参数传到栈附近位置同时操控返回地址返回到能够进行的指令如此就可以神不知鬼不觉地将参数传给传参寄存器了比如这里就需要操控栈使得返回到一个这样就可以通过来进行的操作如何找到通过尝试返回地址填入后再填入个以及一个如果最后出现的结果取决于最后一个那么就可以判定前个已经被吸收了就意味着找到了然后就可以通过偏移量计算获取能够将栈中存的参数传给的返回地址但是无法通过这种方式被传递可以求助于这个因为他会根据传入的两个字符串参数的长度来自动地设置的值因此现在问题就剩下如何找到和了两者都是的函数他们在表内的位置是相近的那么如何找到呢大部分的项都不会因为传进来的参数的原因因为它们很多都是系统调用都会对参数进行检查如果有错误会返回而已并不会造成进程所以攻击者可以通过下面这个方法找到如果攻击者发现好多条连续的个字节对齐的地址都不会造成进程而且这些地址加得到的地址也不会造成进程那么很有可能这就是某个对应的项了找到了后可以通过尝试将设置为空指针并且观测函数的响应来判断这个函数是不是因为其对于不同的参数的响应关系如下找函数也是进行尝试只要客户端的返回了一大堆二进制字符流那么就说明碰对了函数获得了服务端的源码之后就可以找到函数通过一系列操作让他执行并且通过重定向输入输出来实现通过客户端操控服务端的的效果攻击者可以通过钓鱼网站安装键盘来检测用户的输入从而获取隐私数据甚至还可以通过获取内存屏幕监控冷启动手机罗盘针对于用户按键的抖动规律来拿到数据数据可能会在被删掉之前在公共区域暴露一段时间这段时间被称为理论上可跟踪但是实际上一段内存可能会被随机换页到内存或者程序出现错误之后触发将内存写入从而让跟踪这段数据的生命周期变得困难因此需要一种动态的程序员设置特定的函数能够使得接收返回值的变量被打上在程序运行中遵循类型的传递规律最后在特定的指令或者函数检查并且拒绝执行含有变量的相关代码会在很多地方被应用具体来说就是在数据传递的每个阶段按照规则来选择是否为变量施加标签黑客如何通过可执行文件的操控内存进行自定义的读写找一个不常用没人维护的库比如中的格式的视频媒体文件观察源文件并且找到可以进行非常规操作的修改比如有的文件写的不好就会出现比较不合适的强制类型转换以及一些比较低级的判定是用户传的文件头完全可以利用规则让变成负数后面还提到模块主要讲述了加上这个模块会降低传输效率但是在较大文件情况下影响的倍数相对较少且更安全两种基本加密模式通过来进行数据传输的加密和解密计算的目的主要是为了验证数据是否被修改在接收端验证常见问题中间截获者会通过截获并重发的方式试图假冒发送者从而欺骗接收方做出不应该做出的响应加上了序列号可以防止类的重复转发但是问题是截获者可以将信息转发给发送者因为目前两者发送的信息是对称的而且响应方发送相同的与截获方发送发送方的也符合信息检验的要求通信双方均持有密钥同时自己仅使用自身密钥进行解密如下图攻击者很难通过得知真正的密钥和这在数论中是被认为极难算出的于是就可以通过这种方式识别对面是不是合法的发送方了吗问题在于传递密钥的时候怎么知道对面真的是目标方而不是别有用心者如下图该机制也可以正常运行在交换密钥的时候双方并不知道中间隔了一个人私钥和公钥公钥是公开在网上的私钥是内部保存的传输数据之前先用私钥签名再发送出去解析数据的时候通过对面的公钥解析是否是期望的发送方发来的消息那么攻击者由于拿不到私钥因此就无法让自己发送的东西被公钥解析出来问题如何拿到公钥自己存每个机构的公钥不确保时效性让特定非盈利机构保存所有机构的公钥用户在初始安装的浏览器中有这些权威机构的公钥不过这样子会让这些权威机构的服务器承担很大的负载因为似乎信息来源只有他们访问网站的时候网站服务提供方先给用户发一个公钥以及权威机构的签名用户可以去向权威机构验证公钥是否合法建立在一个前提需求方不想让发送方知道自己想要什么发送方也不希望让需求方得知额外的信息发送方公开自己持有的所有信息的公钥需求方根据自己的需要选择想要哪个公钥对应的数据来进行对随机数的加密而后发送方对于进行解密生成异或码只有想要的数据才能被需求方翻译成真正的信息给每个分别分配一部分的密钥使得当剩余的还存活的时候仍能从剩余的中获取密钥原本只打算给每个人分配精准的的密钥但是这会带来一旦有一个人缺席那么这个密钥就无法被拼凑出的问题用户希望提交信息交给云服务商进行处理但是不想发明文因此它采用了发送解码函数以及明文的方式而服务端使用类似的方式设备厂商能够完成在内存中存明文只在中存放密文的功能',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2025-03-05 00:31:30',
+  postMainColor: '',
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#18171d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#f7f9fe')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+          const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+          const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+          const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+          if (t === undefined) {
+            if (isLightMode) activateLightMode()
+            else if (isDarkMode) activateDarkMode()
+            else if (isNotSpecified || hasNoSupport) {
+              const now = new Date()
+              const hour = now.getHours()
+              const isNight = hour <= 6 || hour >= 18
+              isNight ? activateDarkMode() : activateLightMode()
+            }
+            window.matchMedia('(prefers-color-scheme: dark)').addListener(e => {
+              if (saveToLocal.get('theme') === undefined) {
+                e.matches ? activateDarkMode() : activateLightMode()
+              }
+            })
+          } else if (t === 'light') activateLightMode()
+          else activateDarkMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><meta name="generator" content="Hexo 7.3.0"></head><body data-type="anzhiyu"><div id="web_bg"></div><div id="an_music_bg"></div><div id="loading-box" onclick="document.getElementById(&quot;loading-box&quot;).classList.add(&quot;loaded&quot;)"><div class="loading-bg"><img class="loading-img nolazyload" alt="加载头像" src="https://npm.elemecdn.com/anzhiyu-blog-static@1.0.4/img/avatar.jpg"/><div class="loading-image-dot"></div></div></div><script>const preloader = {
+  endLoading: () => {
+    document.getElementById('loading-box').classList.add("loaded");
+  },
+  initLoading: () => {
+    document.getElementById('loading-box').classList.remove("loaded")
+  }
+}
+window.addEventListener('load',()=> { preloader.endLoading() })
+setTimeout(function(){preloader.endLoading();},10000)
+
+if (true) {
+  document.addEventListener('pjax:send', () => { preloader.initLoading() })
+  document.addEventListener('pjax:complete', () => { preloader.endLoading() })
+}</script><link rel="stylesheet" href="https://cdn.cbd.int/anzhiyu-theme-static@1.1.10/progress_bar/progress_bar.css"/><script async="async" src="https://cdn.cbd.int/pace-js@1.2.4/pace.min.js" data-pace-options="{ &quot;restartOnRequestAfter&quot;:false,&quot;eventLag&quot;:false}"></script><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><div id="nav-group"><span id="blog_name"><div class="back-home-button"><i class="anzhiyufont anzhiyu-icon-grip-vertical"></i><div class="back-menu-list-groups"><div class="back-menu-list-group"><div class="back-menu-list-title">网页</div><div class="back-menu-list"><a class="back-menu-item" target="_blank" rel="noopener" href="https://github.com/userKangkang" title="Github"><img class="back-menu-item-icon" src="/img/github-mark.svg" alt="Github"/><span class="back-menu-item-text">Github</span></a></div></div></div></div><a id="site-name" href="/" accesskey="h"><div class="title">Hexo</div><i class="anzhiyufont anzhiyu-icon-house-chimney"></i></a></span><div class="mask-name-container"><div id="name-container"><a id="page-name" href="javascript:anzhiyu.scrollToDest(0, 500)">PAGE_NAME</a></div></div><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 文章</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/archives/"><i class="anzhiyufont anzhiyu-icon-box-archive faa-tada" style="font-size: 0.9em;"></i><span> 隧道</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/categories/"><i class="anzhiyufont anzhiyu-icon-shapes faa-tada" style="font-size: 0.9em;"></i><span> 分类</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/tags/"><i class="anzhiyufont anzhiyu-icon-tags faa-tada" style="font-size: 0.9em;"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 友链</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/link/"><i class="anzhiyufont anzhiyu-icon-link faa-tada" style="font-size: 0.9em;"></i><span> 友人帐</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/fcircle/"><i class="anzhiyufont anzhiyu-icon-artstation faa-tada" style="font-size: 0.9em;"></i><span> 朋友圈</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/comments/"><i class="anzhiyufont anzhiyu-icon-envelope faa-tada" style="font-size: 0.9em;"></i><span> 留言板</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 我的</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/music/"><i class="anzhiyufont anzhiyu-icon-music faa-tada" style="font-size: 0.9em;"></i><span> 音乐馆</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/bangumis/"><i class="anzhiyufont anzhiyu-icon-bilibili faa-tada" style="font-size: 0.9em;"></i><span> 追番页</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/album/"><i class="anzhiyufont anzhiyu-icon-images faa-tada" style="font-size: 0.9em;"></i><span> 相册集</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/air-conditioner/"><i class="anzhiyufont anzhiyu-icon-fan faa-tada" style="font-size: 0.9em;"></i><span> 小空调</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 关于</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/about/"><i class="anzhiyufont anzhiyu-icon-paper-plane faa-tada" style="font-size: 0.9em;"></i><span> 关于本人</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/essay/"><i class="anzhiyufont anzhiyu-icon-lightbulb faa-tada" style="font-size: 0.9em;"></i><span> 闲言碎语</span></a></li><li><a class="site-page child faa-parent animated-hover" href="javascript:toRandomPost()"><i class="anzhiyufont anzhiyu-icon-shoe-prints1 faa-tada" style="font-size: 0.9em;"></i><span> 随便逛逛</span></a></li></ul></div></div></div><div id="nav-right"><div class="nav-button" id="randomPost_button"><a class="site-page" onclick="toRandomPost()" title="随机前往一个文章" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-dice"></i></a></div><input id="center-console" type="checkbox"/><label class="widget" for="center-console" title="中控台" onclick="anzhiyu.switchConsole();"><i class="left"></i><i class="widget center"></i><i class="widget right"></i></label><div id="console"><div class="console-card-group-reward"><ul class="reward-all console-card"><li class="reward-item"><a href="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-weichat.png" target="_blank"><img class="post-qr-code-img" alt="微信" src="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-weichat.png"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-alipay.png" target="_blank"><img class="post-qr-code-img" alt="支付宝" src="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-alipay.png"/></a><div class="post-qr-code-desc">支付宝</div></li></ul></div><div class="console-card-group"><div class="console-card-group-left"><div class="console-card" id="card-newest-comments"><div class="card-content"><div class="author-content-item-tips">互动</div><span class="author-content-item-title"> 最新评论</span></div><div class="aside-list"><span>正在加载中...</span></div></div></div><div class="console-card-group-right"><div class="console-card tags"><div class="card-content"><div class="author-content-item-tips">兴趣点</div><span class="author-content-item-title">寻找你感兴趣的领域</span><div class="card-tags"><div class="item-headline"></div><div class="card-tag-cloud"><a href="/tags/%E5%85%A5%E9%97%A8/" style="font-size: 1.05rem;">入门<sup>1</sup></a><a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E5%B7%A5%E7%A8%8B/" style="font-size: 1.05rem;">计算机系统工程<sup>9</sup></a></div></div><hr/></div></div><div class="console-card history"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-box-archiv"></i><span>文章</span></div><div class="card-archives"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-archive"></i><span>归档</span></div><ul class="card-archive-list"><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2025/03/"><span class="card-archive-list-date">三月 2025</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">10</span><span>篇</span></div></a></li></ul></div><hr/></div></div></div><div class="button-group"><div class="console-btn-item"><a class="darkmode_switchbutton" title="显示模式切换" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-moon"></i></a></div><div class="console-btn-item" id="consoleHideAside" onclick="anzhiyu.hideAsideBtn()" title="边栏显示控制"><a class="asideSwitch"><i class="anzhiyufont anzhiyu-icon-arrows-left-right"></i></a></div><div class="console-btn-item" id="consoleMusic" onclick="anzhiyu.musicToggle()" title="音乐开关"><a class="music-switch"><i class="anzhiyufont anzhiyu-icon-music"></i></a></div></div><div class="console-mask" onclick="anzhiyu.hideConsole()" href="javascript:void(0);"></div></div><div class="nav-button" id="nav-totop"><a class="totopbtn" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i><span id="percent" onclick="anzhiyu.scrollToDest(0,500)">0</span></a></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);" title="切换"><i class="anzhiyufont anzhiyu-icon-bars"></i></a></div></div></div></nav><div id="post-info"><div id="post-firstinfo"><div class="meta-firstline"><a class="post-meta-original">原创</a><span class="post-meta-categories"><span class="post-meta-separator"></span><i class="anzhiyufont anzhiyu-icon-inbox post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F/" itemprop="url">计算机系统</a><i class="anzhiyufont anzhiyu-icon-angle-right post-meta-separator"></i><i class="anzhiyufont anzhiyu-icon-inbox post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F/%E5%AE%89%E5%85%A8/" itemprop="url">安全</a></span><span class="article-meta tags"><a class="article-meta__tags" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E5%B7%A5%E7%A8%8B/" tabindex="-1" itemprop="url"> <span> <i class="anzhiyufont anzhiyu-icon-hashtag"></i>计算机系统工程</span></a></span></div></div><h1 class="post-title" itemprop="name headline">计算机系统工程之：计算机系统安全<a class="post-edit-link" href="undefined_posts/cse-security.md" title="在 GitHub 上编辑 - 计算机系统工程之：计算机系统安全" target="_blank"><i class="anzhiyufont anzhiyu-icon-pencil"></i></a></h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="anzhiyufont anzhiyu-icon-calendar-days post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" itemprop="dateCreated datePublished" datetime="2025-03-04T16:23:16.386Z" title="发表于 2025-03-05 00:23:16">2025-03-05</time><span class="post-meta-separator"></span><i class="anzhiyufont anzhiyu-icon-history post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" itemprop="dateCreated datePublished" datetime="2025-03-04T16:31:30.488Z" title="更新于 2025-03-05 00:31:30">2025-03-05</time></span></div><div class="meta-secondline"><span class="post-meta-separator">       </span><span class="post-meta-position" title="作者IP属地为上海"><i class="anzhiyufont anzhiyu-icon-location-dot"></i>上海</span></div></div></div><section class="main-hero-waves-area waves-area"><svg class="waves-svg" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto"><defs><path id="gentle-wave" d="M -160 44 c 30 0 58 -18 88 -18 s 58 18 88 18 s 58 -18 88 -18 s 58 18 88 18 v 44 h -352 Z"></path></defs><g class="parallax"><use href="#gentle-wave" x="48" y="0"></use><use href="#gentle-wave" x="48" y="3"></use><use href="#gentle-wave" x="48" y="5"></use><use href="#gentle-wave" x="48" y="7"></use></g></svg></section><div id="post-top-cover"><img class="nolazyload" id="post-top-bg" src=""></div></header><main id="blog-container"><div class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container" itemscope itemtype="https://userkangkang.github.io/project/2025/03/05/cse-security/"><header><a class="post-meta-categories" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F/" itemprop="url">计算机系统</a><a class="post-meta-categories" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F/%E5%AE%89%E5%85%A8/" itemprop="url">安全</a><a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E5%B7%A5%E7%A8%8B/" tabindex="-1" itemprop="url">计算机系统工程</a><h1 id="CrawlerTitle" itemprop="name headline">计算机系统工程之：计算机系统安全</h1><span itemprop="author" itemscope itemtype="http://schema.org/Person">Weiquan Huang</span><time itemprop="dateCreated datePublished" datetime="2025-03-04T16:23:16.386Z" title="发表于 2025-03-05 00:23:16">2025-03-05</time><time itemprop="dateCreated datePublished" datetime="2025-03-04T16:31:30.488Z" title="更新于 2025-03-05 00:31:30">2025-03-05</time></header><h3 id="Intro-to-System-Security"><a href="#Intro-to-System-Security" class="headerlink" title="Intro to System Security"></a>Intro to System Security</h3><ul>
+<li>Security is a negative goal. 安全是完成“不能让某件事情被做”的任务，想做一件事情有很多种方法，所以安全要考虑的东西很多，本身也很难</li>
+<li>Security may be conflict with other goals. 安全的诉求和其他的诉求可能是冲突的</li>
+</ul>
+<p>安全的目标：</p>
+<ul>
+<li>Confidentiality 限制数据的读取</li>
+<li>Integrity 限制数据的改写</li>
+<li>Availability 确保系统运行符合正常情况，而非执行异常</li>
+</ul>
+<p>Thread Model: Assumption</p>
+<ul>
+<li>攻击者可能会控制你的部分电脑、或控制电脑内部的部分软件、获得一些隐私信息、了解你程序的bug</li>
+<li>考虑物理攻击、社会工程学攻击、维持安全的成本</li>
+</ul>
+<h4 id="ROP-and-CFI"><a href="#ROP-and-CFI" class="headerlink" title="ROP and CFI"></a>ROP and CFI</h4><h4 id="Password"><a href="#Password" class="headerlink" title="Password"></a>Password</h4><p>使用如下的检查密码算法有何问题？由于是逐位检查，因此可以在密码存放的方式做手脚，比如可以将密码的第一位和剩下的位数放在不同的页中，且让剩下的位数被换页到磁盘，那么就可以根据时间来判断第一位是不是对的，从而如法炮制试出每一位的正确字符<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/cse/security1.png"><br>如何降低密码验证方式被攻击的概率？</p>
+<ul>
+<li>存放哈希后的密码 SHA-0 MD-5 等，但是哈希后的密码仍然可以通过对猜测值也进行哈希，并与获取到的哈希进行比对，从而获得比对成功的账号的密码，而且随着时间的推移一些哈希算法已经被破解</li>
+<li>加盐（Salting）：对每个用户存一个随机的加盐值，以及存哈希后的（加盐值+密码），这样即使被获取，攻击者也只能针对一个特定用户来进行密码的破解，因为两个用户即使密码一样，他们的加盐值也不一样<img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/cse/security2.png"></li>
+<li>Cookies: Strawman 登录凭证，凭此凭证可以在一定时间内登录成功，会在登录有效期内更新凭证，而登出后&#x2F;超时后取消凭证的有效期；但是会造成二义性，比如用户名和时间的拼接，M22-May-2022可以解释为M 22-May-2022和M2 2-May-2022<img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/cse/security3.png"></li>
+<li>网络钓鱼（Phishing）：用假冒的域名来欺骗用户输入密码，比如apple.com与αpple.com<br>如何不让密码在网络中裸奔？</li>
+</ul>
+<ol>
+<li>challenge-response：服务端给客户端发送一个随机数，客户端将密码和随机数一起放入哈希函数中，再将哈希后的值传给服务端，服务端也算一遍（问题：服务端也需要存放密码明文，因为哈希的对象包含随机值，存密码明文才能算，存明文本身就有问题）</li>
+<li>turn offline into online attack：用户输入账户名之后就会返回一个图像，根据图像的正确性可以检查是否为钓鱼网站；同时可以在服务端检查某一个客户的账号会不会出现多次“用户名”的请求出现在不同的IP上，并对异常情况做响应</li>
+<li>specific password：为不同的账号创建不同的密码</li>
+<li>one-time passwords：一次性密码，比如某个密码可以使用100次，那么第一次使用可以先在本地$hash^{99}$次，然后再在服务端进行hash后进行检验；随后用于检验的hash调用层数-1，这样即使攻击者获取到了$hash^{97}$的密码，也是无用的，因为这个密码已经失效了，而且很难$hash^{-1}$</li>
+<li>可以为不同的设备的同一个应用的账号设置不同的密码，同时可以取消单个设备的密码</li>
+<li>bind auth and request：将用户验证和用户请求绑定，每次存放请求和密码的哈希用于检验请求的可靠性（避免APP尚未息屏的时候被他人操作，即每次转账的时候还需要重新输入密码）</li>
+<li>replace the password：指纹验证实际上是将指纹和私钥绑定，私钥和服务器里的公钥绑定，验证指纹获取私钥，私钥和公钥在客户端进行一系列操作后发回给服务端，再验证合法性</li>
+</ol>
+<p>Principle of Security</p>
+<ul>
+<li>最小权限原则</li>
+<li>最小信任原则：“只有自己写的代码才是可信任的”，写编译器的人会给自己留强破解密码，而且任何的组件都需要编译器进行编译，因此只要有了第一个编译器那么就搞不掉这个强破解密码（图灵奖演讲）<br>题外话：第一个编译器是怎么来的？deepseek查阅得到是通过人写出简单机器码编译器，然后编译出简单代码之后，在通过该简单编译器进行“自举”开发出许多更加强大的编译器，后续自举出来的编译器就是用相对高级的语言编写的了</li>
+</ul>
+<h3 id="Return-Oriented-Programming"><a href="#Return-Oriented-Programming" class="headerlink" title="Return-Oriented Programming"></a>Return-Oriented Programming</h3><h4 id="stack-buffer-overflow"><a href="#stack-buffer-overflow" class="headerlink" title="stack buffer overflow"></a>stack buffer overflow</h4><ul>
+<li>改写return addr以让其跳转到在栈上其他位置编写的攻击代码以期望其<code>ret</code>后执行攻击代码；可以通过限制可执行区域阻止，比如不允许执行属于栈的地址位置的指令</li>
+<li>改写return addr以让其跳转到其他代码区域的部分指令，通过碎片化的跳转达到完成一整套攻击逻辑的流程（ICS lab3 final 5’）；可以通过随机化栈偏移量（同时设置栈的一系列跳转为相对跳转）、在return addr处设置金丝雀值检测篡改return addr来阻止；不过fork出来的子进程是和父进程有一样的地址空间规划的，就没有达到随机化栈偏移量的作用</li>
+</ul>
+<h4 id="CFI-Control-Flow-Integrity"><a href="#CFI-Control-Flow-Integrity" class="headerlink" title="CFI(Control-Flow Integrity)"></a>CFI(Control-Flow Integrity)</h4><p>编译成汇编指令的时候可以得到函数之间互相调用的关系，在逻辑上可以生成控制流图；通常的指令跳转都是<strong>直接</strong>的，即跳转到<code>0x555555555234</code>，但是也有<strong>间接</strong>的，比如跳转到<code>rax</code>所存的地址；控制流图主要防止攻击者通过篡改间接跳转的寄存器从而更改跳转位置，具体实现上就采用了CFI给callee&#x2F;caller之间人为地添加了约束（跳转到<code>rax</code>可能是调用函数指针形参，实参不固定的情况）<img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/cse/security4.png"><br>通过<em>Patch</em>提前添加比对信息，跳转方比对被跳转处的预设的数据是否符合预期，从而验证跳转的正确性；当然这存在一定问题：比如A在一个跳转语句中可能跳转到C&#x2F;D，那么C&#x2F;D处的验证数据就必须是一样的，因为这个A检查的是同一个数据，那么如果B能跳转到C，那么即使B在控制流图中没有与D的跳转关系，他被攻击后跳转到D也依然被认为是合法的；解决方法是增强CFI，增加条件使得不同的<code>rax</code>能够到达不同的<code>jmp</code>指令，从而使关联的粒度更细<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/cse/security5.png"><br>这里还存在的问题是，假如被跳转方是有<em>Patch</em>的，而跳转方由于自身版本比较旧没有<em>Patch</em>相关指令，对应于上图的<em>Original jmp</em>和<em>Patched mov</em>，那么跳转到<code>0x12345678</code>就会因为执行了非法指令而无法继续执行，因此需要有一个兼容的指令<code>prefetchnta</code>，他会忽略不是合法指令的接下来的4字节指令<img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/cse/security6.png"><br>指令可执行区域的发展，RISC&#x2F;NX表示指令对齐，从而只有32对齐的位置才被视为合法跳转地址，而X86&#x2F;CFI的跳转控制流图依赖又大大加强了这一点<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/cse/security7.png"></p>
+<h3 id="Blind-ROP"><a href="#Blind-ROP" class="headerlink" title="Blind ROP"></a>Blind ROP</h3><p>背景：由于Nginx使用<code>fork</code>来生成用于服务客户端的子进程，因此这些子进程的地址空间都是固定的，即“栈随机化”这一条失效；攻击者可以通过不断地尝试去获取到使用Nginx挂载的服务的代码，以此来攻击服务端</p>
+<p>攻击者首先通过发送GET请求，期望让请求的字符串过长从而触发buffer overflow<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/cse/security9.png"><br>一旦溢出了，那么一般来说高位的地址被更改都会直接触发SegFault导致TCP connection closed，所以可以通过不断地尝试来获取server处理HTTP请求的返回地址，甚至canaries<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/cse/security10.png"><br>接下来可以通过更改低位的返回地址，不断尝试出一些能够导致服务端crash（检测到连接关闭）、hang（无任何反映）、正常返回（useful gadget）的地址，这些地址可以用来检测其他的功能<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/cse/security11.png"><br>如何鉴别哪一个地址是useful gadget？可以在要检测的返回地址的更高层栈的返回地址插入已知的crash&#x2F;hang返回地址，如果最终响应依赖于更高层插入的crash&#x2F;hang，则可以说明当前测试的这个地址属于useful gadget，可以正常返回<img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/cse/security12.png"><br>现在我们要达成将服务器的机器码返回给客户端，就需要借用<code>write</code>系统调用，<code>sock</code>参数传的是要返回的客户端的socket number，<code>buf</code>是机器码的大致起始位置，<code>len</code>是要传的字符串长度大小<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/cse/security13.png"><br>所以这里的任务变成了如何将参数传给<code>rdi rsi rdx</code>，如何拿到<code>write</code>的地址，如何拿实参；已知通过前面的测试可以得知机器码地址起点大概是在<code>0x401000</code>附近，已知<code>sock</code></p>
+<p>由于攻击者现在能做的是通过改写栈进行跳转，因此可以想出一个策略，即改写栈将参数传到栈<code>rsp</code>附近位置，同时操控返回地址，返回到能够进行<code>pop rdi</code>的指令，如此就可以神不知鬼不觉地将参数传给传参寄存器了，比如这里就需要操控栈，使得返回到一个BROP gadget：这样就可以通过<code>pop r14: 41 5e</code>来进行<code>pop rsi: 5e</code>的操作<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/cse/security14.png"><br>如何找到BROP gadget？通过尝试，返回地址填入后再填入6个crash gadget，以及一个hang&#x2F;crash gadget，如果最后出现的结果取决于最后一个gadget，那么就可以判定前6个已经被pop吸收了，就意味着找到了，然后就可以通过偏移量计算获取能够将栈中存的参数传给<code>rsi rdi</code>的返回地址<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/cse/security15.png"><br>但是<code>rdx</code>无法通过这种方式被传递！可以求助于<code>strcmp</code>这个syscall，因为他会根据传入的两个字符串参数的长度来自动地设置<code>rdx</code>的值；因此现在问题就剩下如何找到<code>write</code>和<code>strcmp</code>了，两者都是<code>libc</code>的函数，他们在PTL表内的位置是相近的；那么如何找到PTL呢？<br>大部分的PLT项都不会因为传进来的参数的原因crash，因为它们很多都是系统调用，都会对参数进行检查，如果有错误会返回EFAULT而已，并不会造成进程crash。所以攻击者可以通过下面这个方法找到PLT：如果攻击者发现好多条连续的16个字节对齐的地址都不会造成进程crash，而且这些地址加6得到的地址也不会造成进程crash，那么很有可能这就是某个PLT对应的项了。<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/cse/security16.png"><br>找到了PLT后，可以通过尝试将arg1, arg2设置为空指针并且观测函数的响应来判断这个函数是不是<code>strcmp</code>，因为其对于不同的参数的响应关系如下<img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/cse/security17.png"><br>找<code>write</code>函数也是进行尝试，只要客户端的<code>socket</code>返回了一大堆二进制字符流，那么就说明碰对了<code>write</code>函数；获得了服务端的源码之后就可以找到<code>execve</code>函数，通过一系列操作让他执行<code>execve(&quot;/bin/sh&quot;, 0, 0)</code>，并且通过重定向输入输出来实现通过客户端操控服务端的shell的效果</p>
+<h3 id="Data-Flow-Protection"><a href="#Data-Flow-Protection" class="headerlink" title="Data Flow Protection"></a>Data Flow Protection</h3><p>攻击者可以通过钓鱼网站、安装键盘Logger来检测用户的输入，从而获取隐私数据；甚至还可以通过获取内存、屏幕监控、冷启动、手机罗盘针对于用户按键的抖动规律来拿到数据</p>
+<h4 id="Taint-Tracking"><a href="#Taint-Tracking" class="headerlink" title="Taint Tracking"></a>Taint Tracking</h4><p>数据可能会在被删掉之前在公共区域暴露一段时间，这段时间被称为data lifetime，理论上可跟踪，但是实际上一段内存可能会被OS随机换页到内存、或者程序出现错误之后触发core dump将内存写入SSD，从而让跟踪这段数据的生命周期变得困难；因此需要一种动态的Taint Analysis<br>程序员设置特定的函数<code>get_xx</code>能够使得接收返回值的变量被打上<em>True Taint</em>，在程序运行中遵循<em>or</em>类型的<em>Taint</em>传递规律，最后在特定的指令或者函数检查（<code>send_xxx</code>）并且拒绝执行含有<em>True Taint</em>变量的相关代码<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/cse/security18.png"><br>Taint Analysis会在很多地方被应用，具体来说就是在数据传递的每个阶段按照规则来选择是否为变量施加True Taint标签<img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/cse/security20.png"></p>
+<h4 id="Defending-Malicious-Input"><a href="#Defending-Malicious-Input" class="headerlink" title="Defending Malicious Input"></a>Defending Malicious Input</h4><p>黑客如何通过可执行文件的bug操控内存，进行自定义的读写？</p>
+<ul>
+<li>找一个不常用，没人维护的库</li>
+<li>比如ffmpeg中的4xm格式的视频媒体文件</li>
+<li>观察源文件并且找到可以进行非常规操作的修改，比如有的文件写的不好就会出现比较不合适的强制类型转换，以及一些比较低级的判定<code>index &lt; 0</code><br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/cse/security21.png"><br><code>header</code>是用户传的文件头，完全可以利用规则让<code>current_track</code>变成负数<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/cse/security22.png"><br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/cse/security23.png"></li>
+</ul>
+<p>后面还提到TaintCheck模块，主要讲述了加上这个模块会降低传输效率，但是在较大文件情况下影响的倍数相对较少，且更安全</p>
+<h3 id="Secure-Channel"><a href="#Secure-Channel" class="headerlink" title="Secure Channel"></a>Secure Channel</h3><p>两种基本加密模式</p>
+<ul>
+<li><code>encrypt(key, message)-&gt;ciphertext</code> <code>decrypt(key, ciphertext)-&gt;message</code>通过<code>key</code>来进行数据传输的加密和解密</li>
+<li><code>MAC(key, message)=token</code> 计算<code>token</code>的目的主要是为了验证数据是否被修改，在接收端验证</li>
+</ul>
+<p>常见问题：</p>
+<ul>
+<li>中间截获者会通过截获并重发的方式试图假冒发送者，从而欺骗接收方做出不应该做出的响应<img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/cse/security24.png"></li>
+<li>加上了序列号可以防止类<code>proxy</code>的重复转发，但是问题是截获者可以将信息转发给发送者，因为目前两者发送的信息是对称的，而且响应方发送相同的seq number与截获方发送发送方的seq number也符合信息检验的要求<img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/cse/security25.png"></li>
+<li>通信双方均持有密钥，同时自己仅使用自身密钥进行解密，如下图，攻击者很难通过得知真正的密钥<code>a</code>和<code>b</code>，这在数论中是被认为极难算出的，于是就可以通过这种方式识别对面是不是合法的发送方了（吗？）<img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/cse/security26.png">问题在于传递密钥的时候怎么知道对面真的是目标方，而不是别有用心者？如下图，该机制也可以正常运行，在交换密钥的时候双方并不知道中间隔了一个人！<img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/cse/security27.png"></li>
+<li>私钥和公钥，公钥是公开在网上的，私钥是内部保存的，传输数据之前先用私钥签名再发送出去，解析数据的时候通过对面的公钥解析是否是期望的发送方发来的消息，那么攻击者由于拿不到私钥，因此就无法让自己发送的东西被公钥解析出来<img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/cse/security29.png"></li>
+<li>问题：如何拿到公钥？<ul>
+<li>自己存每个机构的公钥：不确保时效性</li>
+<li>让特定非盈利机构保存所有机构的公钥，用户在初始安装的浏览器中有这些权威机构的公钥，不过这样子会让这些权威机构的服务器承担很大的负载，因为似乎信息来源只有他们</li>
+<li>访问网站的时候，网站服务提供方先给用户发一个公钥，以及权威机构的签名，用户可以去向权威机构验证公钥是否合法<img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/cse/security30.png"></li>
+</ul>
+</li>
+</ul>
+<h4 id="Privacy"><a href="#Privacy" class="headerlink" title="Privacy"></a>Privacy</h4><h4 id="OT-Oblivious-Transfer"><a href="#OT-Oblivious-Transfer" class="headerlink" title="OT(Oblivious Transfer)"></a>OT(Oblivious Transfer)</h4><p>建立在一个前提：需求方不想让发送方知道自己想要什么，发送方也不希望让需求方得知额外的信息；发送方公开自己持有的所有信息的公钥，需求方根据自己的需要选择想要哪个公钥对应的数据来进行对随机数<em>r</em>的加密，而后发送方对于<em>c</em>进行解密，生成异或码；只有想要的数据才能被需求方翻译成真正的信息<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/cse/security31.png"></p>
+<h4 id="Secret-Sharing"><a href="#Secret-Sharing" class="headerlink" title="Secret Sharing"></a>Secret Sharing</h4><p>给每个part分别分配一部分的密钥，使得当剩余0.6的part还存活的时候仍能从剩余的part中获取密钥；原本只打算给每个人分配精准的$\frac{1}{n}$的密钥，但是这会带来“一旦有一个人缺席，那么这个密钥就无法被拼凑出”的问题<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/cse/security32.png"><br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/cse/security33.png"></p>
+<h4 id="Homomorphic-Encryption"><a href="#Homomorphic-Encryption" class="headerlink" title="Homomorphic Encryption"></a>Homomorphic Encryption</h4><p>用户希望提交信息交给云服务商进行处理，但是不想发明文；因此它采用了发送解码函数以及CT明文的方式，而服务端使用类似的方式<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/cse/security34.png"></p>
+<h4 id="TEE"><a href="#TEE" class="headerlink" title="TEE"></a>TEE</h4><p>设备厂商能够完成在内存中存明文，只在CPU cache中存放密文的功能</p>
+</article><div class="post-copyright"><div class="copyright-cc-box"><i class="anzhiyufont anzhiyu-icon-copyright"></i></div><div class="post-copyright__author_box"><a class="post-copyright__author_img" href="/" title="头像"><img class="post-copyright__author_img_back" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://avatars.githubusercontent.com/u/114564389?v=4" title="头像" alt="头像"><img class="post-copyright__author_img_front" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://avatars.githubusercontent.com/u/114564389?v=4" title="头像" alt="头像"></a><div class="post-copyright__author_name">Weiquan Huang</div><div class="post-copyright__author_desc">userKangkang</div></div><div class="post-copyright__post__info"><a class="post-copyright__original" title="该文章为原创文章，注意版权协议" href="https://userkangkang.github.io/project/2025/03/05/cse-security/">原创</a><a class="post-copyright-title"><span onclick="rm.copyPageUrl('https://userkangkang.github.io/project/2025/03/05/cse-security/')">计算机系统工程之：计算机系统安全</span></a></div><div class="post-tools" id="post-tools"><div class="post-tools-left"><div class="rewardLeftButton"></div><div class="shareRight"><div class="share-link mobile"><div class="share-qrcode"><div class="share-button" title="使用手机访问这篇文章"><i class="anzhiyufont anzhiyu-icon-qrcode"></i></div><div class="share-main"><div class="share-main-all"><div id="qrcode" title="https://userkangkang.github.io/project/2025/03/05/cse-security/"></div><div class="reward-dec">使用手机访问这篇文章</div></div></div></div></div><div class="share-link weibo"><a class="share-button" target="_blank" href="https://service.weibo.com/share/share.php?title=计算机系统工程之：计算机系统安全&amp;url=https://userkangkang.github.io/project/2025/03/05/cse-security/&amp;pic=" rel="external nofollow noreferrer noopener"><i class="anzhiyufont anzhiyu-icon-weibo"></i></a></div><script>function copyCurrentPageUrl() {
+  var currentPageUrl = window.location.href;
+  var input = document.createElement("input");
+  input.setAttribute("value", currentPageUrl);
+  document.body.appendChild(input);
+  input.select();
+  input.setSelectionRange(0, 99999);
+  document.execCommand("copy");
+  document.body.removeChild(input);
+}</script><div class="share-link copyurl"><div class="share-button" id="post-share-url" title="复制链接" onclick="copyCurrentPageUrl()"><i class="anzhiyufont anzhiyu-icon-link"></i></div></div></div></div></div><div class="post-copyright__notice"><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://userKangkang.github.io/project" target="_blank">Hexo</a>！</span></div></div><div class="post-tools-right"><div class="tag_share"><div class="post-meta__box"><div class="post-meta__box__tag-list"><a class="post-meta__box__tags" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E5%B7%A5%E7%A8%8B/"><span class="tags-punctuation"> <i class="anzhiyufont anzhiyu-icon-tag"></i></span>计算机系统工程<span class="tagsPageCount">9</span></a></div></div></div><div class="post_share"><div class="social-share" data-image="https://avatars.githubusercontent.com/u/114564389?v=4" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.cbd.int/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"/><script src="https://cdn.cbd.int/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer="defer"></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-full"><a href="/2025/03/05/cse-aicomputing/"><img class="prev-cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">计算机系统工程之：AI计算与训练优化</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="anzhiyufont anzhiyu-icon-thumbs-up fa-fw" style="font-size: 1.5rem; margin-right: 4px"></i><span>喜欢这篇文章的人也看了</span></div><div class="relatedPosts-list"><div><a href="/2025/03/03/cse-filesystem/" title="计算机系统工程之：INode文件系统"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/" alt="cover"><div class="content is-center"><div class="date"><i class="anzhiyufont anzhiyu-icon-calendar-days fa-fw"></i> 2025-03-03</div><div class="title">计算机系统工程之：INode文件系统</div></div></a></div><div><a href="/2025/03/04/cse-rpc/" title="计算机系统工程之：RPC"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/" alt="cover"><div class="content is-center"><div class="date"><i class="anzhiyufont anzhiyu-icon-calendar-days fa-fw"></i> 2025-03-04</div><div class="title">计算机系统工程之：RPC</div></div></a></div><div><a href="/2025/03/04/cse-dfs/" title="计算机系统工程之：分布式文件系统"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/" alt="cover"><div class="content is-center"><div class="date"><i class="anzhiyufont anzhiyu-icon-calendar-days fa-fw"></i> 2025-03-04</div><div class="title">计算机系统工程之：分布式文件系统</div></div></a></div><div><a href="/2025/03/04/cse-kv/" title="计算机系统工程之：键值存储系统"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/" alt="cover"><div class="content is-center"><div class="date"><i class="anzhiyufont anzhiyu-icon-calendar-days fa-fw"></i> 2025-03-04</div><div class="title">计算机系统工程之：键值存储系统</div></div></a></div><div><a href="/2025/03/04/cse-tx/" title="计算机系统工程之：事务与分布式事务"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/" alt="cover"><div class="content is-center"><div class="date"><i class="anzhiyufont anzhiyu-icon-calendar-days fa-fw"></i> 2025-03-04</div><div class="title">计算机系统工程之：事务与分布式事务</div></div></a></div><div><a href="/2025/03/04/cse-paxos/" title="计算机系统工程之：Paxos"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/" alt="cover"><div class="content is-center"><div class="date"><i class="anzhiyufont anzhiyu-icon-calendar-days fa-fw"></i> 2025-03-04</div><div class="title">计算机系统工程之：Paxos</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-content"><div class="author-info__sayhi" id="author-info__sayhi" onclick="anzhiyu.changeSayHelloText()"></div><div class="author-info-avatar"><img class="avatar-img" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://avatars.githubusercontent.com/u/114564389?v=4" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/><div class="author-status"><img class="g-status" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://bu.dusays.com/2023/08/24/64e6ce9c507bb.png" alt="status"/></div></div><div class="author-info__description">个人博客，计划在这里记录上海交通大学软件学院本科部分课程，由于本专业主攻计算机系统，因此可能这方面居多</div><div class="author-info__bottom-group"><a class="author-info__bottom-group-left" href="/"><h1 class="author-info__name">Weiquan Huang</h1><div class="author-info__desc">userKangkang</div></a><div class="card-info-social-icons is-center"><a class="social-icon faa-parent animated-hover" href="https://github.com/userKangkang" target="_blank" title="Github"><i class="anzhiyufont anzhiyu-icon-github"></i></a></div></div></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-bars"></i><span>文章目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#Intro-to-System-Security"><span class="toc-number">1.</span> <span class="toc-text">Intro to System Security</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#ROP-and-CFI"><span class="toc-number">1.1.</span> <span class="toc-text">ROP and CFI</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Password"><span class="toc-number">1.2.</span> <span class="toc-text">Password</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Return-Oriented-Programming"><span class="toc-number">2.</span> <span class="toc-text">Return-Oriented Programming</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#stack-buffer-overflow"><span class="toc-number">2.1.</span> <span class="toc-text">stack buffer overflow</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#CFI-Control-Flow-Integrity"><span class="toc-number">2.2.</span> <span class="toc-text">CFI(Control-Flow Integrity)</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Blind-ROP"><span class="toc-number">3.</span> <span class="toc-text">Blind ROP</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Data-Flow-Protection"><span class="toc-number">4.</span> <span class="toc-text">Data Flow Protection</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Taint-Tracking"><span class="toc-number">4.1.</span> <span class="toc-text">Taint Tracking</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Defending-Malicious-Input"><span class="toc-number">4.2.</span> <span class="toc-text">Defending Malicious Input</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Secure-Channel"><span class="toc-number">5.</span> <span class="toc-text">Secure Channel</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Privacy"><span class="toc-number">5.1.</span> <span class="toc-text">Privacy</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#OT-Oblivious-Transfer"><span class="toc-number">5.2.</span> <span class="toc-text">OT(Oblivious Transfer)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Secret-Sharing"><span class="toc-number">5.3.</span> <span class="toc-text">Secret Sharing</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Homomorphic-Encryption"><span class="toc-number">5.4.</span> <span class="toc-text">Homomorphic Encryption</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#TEE"><span class="toc-number">5.5.</span> <span class="toc-text">TEE</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-history"></i><span>最近发布</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/03/05/cse-security/" title="计算机系统工程之：计算机系统安全">计算机系统工程之：计算机系统安全</a><time datetime="2025-03-04T16:23:16.386Z" title="发表于 2025-03-05 00:23:16">2025-03-05</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/03/05/cse-aicomputing/" title="计算机系统工程之：AI计算与训练优化">计算机系统工程之：AI计算与训练优化</a><time datetime="2025-03-04T16:14:44.965Z" title="发表于 2025-03-05 00:14:44">2025-03-05</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/03/05/cse-network/" title="计算机系统工程之：网络">计算机系统工程之：网络</a><time datetime="2025-03-04T16:05:44.126Z" title="发表于 2025-03-05 00:05:44">2025-03-05</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/03/04/cse-paxos/" title="计算机系统工程之：Paxos">计算机系统工程之：Paxos</a><time datetime="2025-03-04T14:39:12.779Z" title="发表于 2025-03-04 22:39:12">2025-03-04</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/03/04/cse-tx/" title="计算机系统工程之：事务与分布式事务">计算机系统工程之：事务与分布式事务</a><time datetime="2025-03-04T14:21:23.000Z" title="发表于 2025-03-04 22:21:23">2025-03-04</time></div></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div id="workboard"><img class="workSituationImg boardsign" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://npm.elemecdn.com/anzhiyu-blog@2.0.4/img/badge/安知鱼-上班摸鱼中.svg" alt="距离月入25k也就还差一个大佬带我~" title="距离月入25k也就还差一个大佬带我~"/><div id="runtimeTextTip"></div></div></div><div id="footer-bar"><div class="footer-bar-links"><div class="footer-bar-left"><div id="footer-bar-tips"><div class="copyright">&copy;2025 By <a class="footer-bar-link" href="/" title="Weiquan Huang" target="_blank">Weiquan Huang</a></div></div><div id="footer-type-tips"></div></div><div class="footer-bar-right"><a class="footer-bar-link" target="_blank" rel="noopener" href="https://github.com/anzhiyu-c/hexo-theme-anzhiyu" title="主题">主题</a></div></div></div></footer></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="sidebar-site-data site-data is-center"><a href="/archives/" title="archive"><div class="headline">文章</div><div class="length-num">10</div></a><a href="/tags/" title="tag"><div class="headline">标签</div><div class="length-num">2</div></a><a href="/categories/" title="category"><div class="headline">分类</div><div class="length-num">5</div></a></div><span class="sidebar-menu-item-title">功能</span><div class="sidebar-menu-item"><a class="darkmode_switchbutton menu-child" href="javascript:void(0);" title="显示模式"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i><span>显示模式</span></a></div><div class="back-menu-list-groups"><div class="back-menu-list-group"><div class="back-menu-list-title">网页</div><div class="back-menu-list"><a class="back-menu-item" target="_blank" rel="noopener" href="https://github.com/userKangkang" title="Github"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/img/github-mark.svg" alt="Github"/><span class="back-menu-item-text">Github</span></a></div></div></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 文章</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/archives/"><i class="anzhiyufont anzhiyu-icon-box-archive faa-tada" style="font-size: 0.9em;"></i><span> 隧道</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/categories/"><i class="anzhiyufont anzhiyu-icon-shapes faa-tada" style="font-size: 0.9em;"></i><span> 分类</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/tags/"><i class="anzhiyufont anzhiyu-icon-tags faa-tada" style="font-size: 0.9em;"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 友链</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/link/"><i class="anzhiyufont anzhiyu-icon-link faa-tada" style="font-size: 0.9em;"></i><span> 友人帐</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/fcircle/"><i class="anzhiyufont anzhiyu-icon-artstation faa-tada" style="font-size: 0.9em;"></i><span> 朋友圈</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/comments/"><i class="anzhiyufont anzhiyu-icon-envelope faa-tada" style="font-size: 0.9em;"></i><span> 留言板</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 我的</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/music/"><i class="anzhiyufont anzhiyu-icon-music faa-tada" style="font-size: 0.9em;"></i><span> 音乐馆</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/bangumis/"><i class="anzhiyufont anzhiyu-icon-bilibili faa-tada" style="font-size: 0.9em;"></i><span> 追番页</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/album/"><i class="anzhiyufont anzhiyu-icon-images faa-tada" style="font-size: 0.9em;"></i><span> 相册集</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/air-conditioner/"><i class="anzhiyufont anzhiyu-icon-fan faa-tada" style="font-size: 0.9em;"></i><span> 小空调</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 关于</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/about/"><i class="anzhiyufont anzhiyu-icon-paper-plane faa-tada" style="font-size: 0.9em;"></i><span> 关于本人</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/essay/"><i class="anzhiyufont anzhiyu-icon-lightbulb faa-tada" style="font-size: 0.9em;"></i><span> 闲言碎语</span></a></li><li><a class="site-page child faa-parent animated-hover" href="javascript:toRandomPost()"><i class="anzhiyufont anzhiyu-icon-shoe-prints1 faa-tada" style="font-size: 0.9em;"></i><span> 随便逛逛</span></a></li></ul></div></div><span class="sidebar-menu-item-title">标签</span><div class="card-tags"><div class="item-headline"></div><div class="card-tag-cloud"><a href="/tags/%E5%85%A5%E9%97%A8/" style="font-size: 0.88rem;">入门<sup>1</sup></a><a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E5%B7%A5%E7%A8%8B/" style="font-size: 0.88rem;">计算机系统工程<sup>9</sup></a></div></div><hr/></div></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="anzhiyufont anzhiyu-icon-book-open"></i></button><button id="translateLink" type="button" title="简繁转换">繁</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="anzhiyufont anzhiyu-icon-arrows-left-right"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="anzhiyufont anzhiyu-icon-gear"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="anzhiyufont anzhiyu-icon-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i></button></div></div><div id="nav-music"><a id="nav-music-hoverTips" onclick="anzhiyu.musicToggle()" accesskey="m">播放音乐</a><div id="console-music-bg"></div><meting-js id="8152976493" server="netease" type="playlist" mutex="true" preload="none" theme="var(--anzhiyu-main)" data-lrctype="0" order="random" volume="0.7"></meting-js></div><div id="rightMenu"><div class="rightMenu-group rightMenu-small"><div class="rightMenu-item" id="menu-backward"><i class="anzhiyufont anzhiyu-icon-arrow-left"></i></div><div class="rightMenu-item" id="menu-forward"><i class="anzhiyufont anzhiyu-icon-arrow-right"></i></div><div class="rightMenu-item" id="menu-refresh"><i class="anzhiyufont anzhiyu-icon-arrow-rotate-right" style="font-size: 1rem;"></i></div><div class="rightMenu-item" id="menu-top"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i></div></div><div class="rightMenu-group rightMenu-line rightMenuPlugin"><div class="rightMenu-item" id="menu-copytext"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制选中文本</span></div><div class="rightMenu-item" id="menu-pastetext"><i class="anzhiyufont anzhiyu-icon-paste"></i><span>粘贴文本</span></div><a class="rightMenu-item" id="menu-commenttext"><i class="anzhiyufont anzhiyu-icon-comment-medical"></i><span>引用到评论</span></a><div class="rightMenu-item" id="menu-newwindow"><i class="anzhiyufont anzhiyu-icon-window-restore"></i><span>新窗口打开</span></div><div class="rightMenu-item" id="menu-copylink"><i class="anzhiyufont anzhiyu-icon-link"></i><span>复制链接地址</span></div><div class="rightMenu-item" id="menu-copyimg"><i class="anzhiyufont anzhiyu-icon-images"></i><span>复制此图片</span></div><div class="rightMenu-item" id="menu-downloadimg"><i class="anzhiyufont anzhiyu-icon-download"></i><span>下载此图片</span></div><div class="rightMenu-item" id="menu-newwindowimg"><i class="anzhiyufont anzhiyu-icon-window-restore"></i><span>新窗口打开图片</span></div><div class="rightMenu-item" id="menu-search"><i class="anzhiyufont anzhiyu-icon-magnifying-glass"></i><span>站内搜索</span></div><div class="rightMenu-item" id="menu-searchBaidu"><i class="anzhiyufont anzhiyu-icon-magnifying-glass"></i><span>百度搜索</span></div><div class="rightMenu-item" id="menu-music-toggle"><i class="anzhiyufont anzhiyu-icon-play"></i><span>播放音乐</span></div><div class="rightMenu-item" id="menu-music-back"><i class="anzhiyufont anzhiyu-icon-backward"></i><span>切换到上一首</span></div><div class="rightMenu-item" id="menu-music-forward"><i class="anzhiyufont anzhiyu-icon-forward"></i><span>切换到下一首</span></div><div class="rightMenu-item" id="menu-music-playlist" onclick="window.open(&quot;https://y.qq.com/n/ryqq/playlist/8802438608&quot;, &quot;_blank&quot;);" style="display: none;"><i class="anzhiyufont anzhiyu-icon-radio"></i><span>查看所有歌曲</span></div><div class="rightMenu-item" id="menu-music-copyMusicName"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制歌名</span></div></div><div class="rightMenu-group rightMenu-line rightMenuOther"><a class="rightMenu-item menu-link" id="menu-randomPost"><i class="anzhiyufont anzhiyu-icon-shuffle"></i><span>随便逛逛</span></a><a class="rightMenu-item menu-link" href="/categories/"><i class="anzhiyufont anzhiyu-icon-cube"></i><span>博客分类</span></a><a class="rightMenu-item menu-link" href="/tags/"><i class="anzhiyufont anzhiyu-icon-tags"></i><span>文章标签</span></a></div><div class="rightMenu-group rightMenu-line rightMenuOther"><a class="rightMenu-item" id="menu-copy" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制地址</span></a><a class="rightMenu-item" id="menu-commentBarrage" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-message"></i><span class="menu-commentBarrage-text">关闭热评</span></a><a class="rightMenu-item" id="menu-darkmode" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i><span class="menu-darkmode-text">深色模式</span></a><a class="rightMenu-item" id="menu-translate" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-language"></i><span>轉為繁體</span></a></div></div><div id="rightmenu-mask"></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.cbd.int/@fancyapps/ui@5.0.28/dist/fancybox/fancybox.umd.js"></script><script src="https://cdn.cbd.int/instant.page@5.2.0/instantpage.js" type="module"></script><script src="https://cdn.cbd.int/vanilla-lazyload@17.8.5/dist/lazyload.iife.min.js"></script><script src="https://cdn.cbd.int/node-snackbar@0.1.16/dist/snackbar.min.js"></script><canvas id="universe"></canvas><script async src="https://npm.elemecdn.com/anzhiyu-theme-static@1.0.0/dark/dark.js"></script><script>// 消除控制台打印
+var HoldLog = console.log;
+console.log = function () {};
+let now1 = new Date();
+queueMicrotask(() => {
+  const Log = function () {
+    HoldLog.apply(console, arguments);
+  }; //在恢复前输出日志
+  const grt = new Date("03/03/2025 19:34:34"); //此处修改你的建站时间或者网站上线时间
+  now1.setTime(now1.getTime() + 250);
+  const days = (now1 - grt) / 1000 / 60 / 60 / 24;
+  const dnum = Math.floor(days);
+  const ascll = [
+    `欢迎使用安知鱼!`,
+    `生活明朗, 万物可爱`,
+    `
+        
+       █████╗ ███╗   ██╗███████╗██╗  ██╗██╗██╗   ██╗██╗   ██╗
+      ██╔══██╗████╗  ██║╚══███╔╝██║  ██║██║╚██╗ ██╔╝██║   ██║
+      ███████║██╔██╗ ██║  ███╔╝ ███████║██║ ╚████╔╝ ██║   ██║
+      ██╔══██║██║╚██╗██║ ███╔╝  ██╔══██║██║  ╚██╔╝  ██║   ██║
+      ██║  ██║██║ ╚████║███████╗██║  ██║██║   ██║   ╚██████╔╝
+      ╚═╝  ╚═╝╚═╝  ╚═══╝╚══════╝╚═╝  ╚═╝╚═╝   ╚═╝    ╚═════╝
+        
+        `,
+    "已上线",
+    dnum,
+    "天",
+    "©2025 By 安知鱼 V1.6.14",
+  ];
+  const ascll2 = [`NCC2-036`, `调用前置摄像头拍照成功，识别为【小笨蛋】.`, `Photo captured: `, `🤪`];
+
+  setTimeout(
+    Log.bind(
+      console,
+      `\n%c${ascll[0]} %c ${ascll[1]} %c ${ascll[2]} %c${ascll[3]}%c ${ascll[4]}%c ${ascll[5]}\n\n%c ${ascll[6]}\n`,
+      "color:#425AEF",
+      "",
+      "color:#425AEF",
+      "color:#425AEF",
+      "",
+      "color:#425AEF",
+      ""
+    )
+  );
+  setTimeout(
+    Log.bind(
+      console,
+      `%c ${ascll2[0]} %c ${ascll2[1]} %c \n${ascll2[2]} %c\n${ascll2[3]}\n`,
+      "color:white; background-color:#4fd953",
+      "",
+      "",
+      'background:url("https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/tinggge.gif") no-repeat;font-size:450%'
+    )
+  );
+
+  setTimeout(Log.bind(console, "%c WELCOME %c 你好，小笨蛋.", "color:white; background-color:#4f90d9", ""));
+
+  setTimeout(
+    console.warn.bind(
+      console,
+      "%c ⚡ Powered by 安知鱼 %c 你正在访问 Weiquan Huang 的博客.",
+      "color:white; background-color:#f0ad4e",
+      ""
+    )
+  );
+
+  setTimeout(Log.bind(console, "%c W23-12 %c 你已打开控制台.", "color:white; background-color:#4f90d9", ""));
+
+  setTimeout(
+    console.warn.bind(console, "%c S013-782 %c 你现在正处于监控中.", "color:white; background-color:#d9534f", "")
+  );
+});</script><script async src="/anzhiyu/random.js"></script><script async="async">(function () {
+  var grt = new Date("03/03/2025 19:34:34"); //设置网站上线时间
+  var now = new Date();
+  var dnum;
+  var hnum;
+  var mnum;
+  var snum;
+  var nowHour;
+
+  // 计算并更新天数、小时数、分钟数和秒数
+  function updateTime() {
+    now = new Date(); // 更新 now 的值
+    nowHour = now.getHours(); // 更新 nowHour 的值
+    var days = (now - grt) / 1000 / 60 / 60 / 24;
+    dnum = Math.floor(days);
+    var hours = (now - grt) / 1000 / 60 / 60 - 24 * dnum;
+    hnum = Math.floor(hours);
+    if (String(hnum).length == 1) {
+      hnum = "0" + hnum;
+    }
+    var minutes = (now - grt) / 1000 / 60 - 24 * 60 * dnum - 60 * hnum;
+    mnum = Math.floor(minutes);
+    if (String(mnum).length == 1) {
+      mnum = "0" + mnum;
+    }
+    var seconds = (now - grt) / 1000 - 24 * 60 * 60 * dnum - 60 * 60 * hnum - 60 * mnum;
+    snum = Math.round(seconds);
+    if (String(snum).length == 1) {
+      snum = "0" + snum;
+    }
+  }
+
+  // 更新网页中显示的网站运行时间
+  function updateHtml() {
+    const footer = document.getElementById("footer");
+    if (!footer) return
+    let currentTimeHtml = "";
+    if (nowHour < 18 && nowHour >= 9) {
+      // 如果是上班时间，默认就是"安知鱼-上班摸鱼中.svg"图片，不需要更改
+      currentTimeHtml = `本站居然运行了 ${dnum} 天<span id='runtime'> ${hnum} 小时 ${mnum} 分 ${snum} 秒 </span><i class='anzhiyufont anzhiyu-icon-heartbeat' style='color:red'></i>`;
+    } else {
+      // 如果是下班时间，插入"安知鱼-下班啦.svg"图片
+      let img = document.querySelector("#workboard .workSituationImg");
+      if (img != null) {
+        img.src = "https://npm.elemecdn.com/anzhiyu-blog@2.0.4/img/badge/安知鱼-下班啦.svg";
+        img.title = "下班了就该开开心心的玩耍，嘿嘿~";
+        img.alt = "下班了就该开开心心的玩耍，嘿嘿~";
+      }
+
+      currentTimeHtml = `本站居然运行了 ${dnum} 天<span id='runtime'> ${hnum} 小时 ${mnum} 分 ${snum} 秒 </span><i class='anzhiyufont anzhiyu-icon-heartbeat' style='color:red'></i>`;
+    }
+
+    if (document.getElementById("runtimeTextTip")) {
+      document.getElementById("runtimeTextTip").innerHTML = currentTimeHtml;
+    }
+  }
+
+  setInterval(() => {
+    updateTime();
+    updateHtml();
+  }, 1000);
+})();</script><div class="js-pjax"><input type="hidden" name="page-type" id="page-type" value="post"></div><script>var visitorMail = "";
+</script><script async data-pjax src="https://cdn.cbd.int/anzhiyu-theme-static@1.0.0/waterfall/waterfall.js"></script><script src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/qrcodejs/1.0.0/qrcode.min.js"></script><link rel="stylesheet" href="https://cdn.cbd.int/anzhiyu-theme-static@1.1.9/icon/ali_iconfont_css.css"><link rel="stylesheet" href="https://cdn.cbd.int/anzhiyu-theme-static@1.0.0/aplayer/APlayer.min.css" media="print" onload="this.media='all'"><script src="https://cdn.cbd.int/anzhiyu-blog-static@1.0.1/js/APlayer.min.js"></script><script src="https://cdn.cbd.int/hexo-anzhiyu-music@1.0.1/assets/js/Meting2.min.js"></script><script src="https://cdn.cbd.int/pjax@0.2.8/pjax.min.js"></script><script>let pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+  // removeEventListener scroll 
+  anzhiyu.removeGlobalFnEvent('pjax')
+  anzhiyu.removeGlobalFnEvent('themeChange')
+
+  document.getElementById('rightside').classList.remove('rightside-show')
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+})
+
+document.addEventListener('pjax:error', e => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script charset="UTF-8" src="https://cdn.cbd.int/anzhiyu-theme-static@1.1.5/accesskey/accesskey.js"></script></div><div id="popup-window"><div class="popup-window-title">通知</div><div class="popup-window-divider"></div><div class="popup-window-content"><div class="popup-tip">你好呀</div><div class="popup-link"><i class="anzhiyufont anzhiyu-icon-arrow-circle-right"></i></div></div></div></body></html>
