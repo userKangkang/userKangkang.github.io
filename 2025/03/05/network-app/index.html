@@ -1,0 +1,619 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"><title>科大计网之：应用层 | Hexo</title><meta name="keywords" content="计算机网络,中国科学技术大学"><meta name="author" content="Weiquan Huang,hwqqz678@sjtu.edu.cn"><meta name="copyright" content="Weiquan Huang"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#f7f9fe"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-touch-fullscreen" content="yes"><meta name="apple-mobile-web-app-title" content="科大计网之：应用层"><meta name="application-name" content="科大计网之：应用层"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="#f7f9fe"><meta property="og:type" content="article"><meta property="og:title" content="科大计网之：应用层"><meta property="og:url" content="https://userkangkang.github.io/project/2025/03/05/network-app/index.html"><meta property="og:site_name" content="Hexo"><meta property="og:description" content="chp2-1 应用层协议原理网络应用体系架构：  CS模式（客户端服务器）：这玩意我们部署过，挺熟悉这种架构的了；服务器一直运行，固定IP和端口号；客户端与服务器通信；缺点是可扩展性比较差，表现为宕机后会造成故障、服务集中于服务集群导致网络流量资源问题等 对等体（p2p）：每个端系统自成服务&amp;amp;#x2"><meta property="og:locale" content="zh-CN"><meta property="og:image" content="https://avatars.githubusercontent.com/u/114564389?v=4"><meta property="article:author" content="Weiquan Huang"><meta property="article:tag"><meta name="twitter:card" content="summary"><meta name="twitter:image" content="https://avatars.githubusercontent.com/u/114564389?v=4"><meta name="description" content="chp2-1 应用层协议原理网络应用体系架构：  CS模式（客户端服务器）：这玩意我们部署过，挺熟悉这种架构的了；服务器一直运行，固定IP和端口号；客户端与服务器通信；缺点是可扩展性比较差，表现为宕机后会造成故障、服务集中于服务集群导致网络流量资源问题等 对等体（p2p）：每个端系统自成服务&amp;amp;#x2"><link rel="shortcut icon" href="/favicon.ico"><link rel="canonical" href="https://userkangkang.github.io/project/2025/03/05/network-app/"><link rel="preconnect" href="//cdn.cbd.int"/><meta name="google-site-verification" content="xxx"/><meta name="baidu-site-verification" content="code-xxx"/><meta name="msvalidate.01" content="xxx"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.cbd.int/node-snackbar@0.1.16/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.cbd.int/@fancyapps/ui@5.0.28/dist/fancybox/fancybox.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  linkPageTop: undefined,
+  peoplecanvas: {"enable":true,"img":"https://upload-bbs.miyoushe.com/upload/2024/07/27/125766904/ba62475f396df9de3316a08ed9e65d86_5680958632268053399..png"},
+  postHeadAiDescription: {"enable":true,"gptName":"AnZhiYu","mode":"local","switchBtn":false,"btnLink":"https://afdian.net/item/886a79d4db6711eda42a52540025c377","randomNum":3,"basicWordCount":1000,"key":"xxxx","Referer":"https://xx.xx/"},
+  diytitle: {"enable":true,"leaveTitle":"w(ﾟДﾟ)w 不要走！再看看嘛！","backTitle":"♪(^∇^*)欢迎肥来！"},
+  LA51: undefined,
+  greetingBox: undefined,
+  twikooEnvId: '',
+  commentBarrageConfig:undefined,
+  music_page_default: "nav_music",
+  root: '/',
+  preloader: {"source":3},
+  friends_vue_info: undefined,
+  navMusic: true,
+  mainTone: {"mode":"api","api":"https://img2color-go.vercel.app/api?img=","cover_change":true},
+  authorStatus: {"skills":null},
+  algolia: undefined,
+  localSearch: undefined,
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"简","rightMenuMsgToTraditionalChinese":"转为繁体","rightMenuMsgToSimplifiedChinese":"转为简体"},
+  noticeOutdate: {"limitDay":365,"position":"top","messagePrev":"It has been","messageNext":"days since the last update, the content of the article may be outdated."},
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":330},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    simplehomepage: true,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"copy":true,"copyrightEbable":false,"limitCount":50,"languages":{"author":"作者: Weiquan Huang","link":"链接: ","source":"来源: Hexo","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。","copySuccess":"复制成功，复制和转载请标注本文地址"}},
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#425AEF","bgDark":"#1f1f1f","position":"top-center"},
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.cbd.int/flickr-justified-gallery@2.1.2/dist/fjGallery.min.js',
+      css: 'https://cdn.cbd.int/flickr-justified-gallery@2.1.2/dist/fjGallery.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isAnchor: false,
+  shortcutKey: undefined,
+  autoDarkmode: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  configTitle: 'Hexo',
+  title: '科大计网之：应用层',
+  postAI: '',
+  pageFillDescription: 'chp2-1 应用层协议原理, socket, 应用层协议, chp2-2 Web和HTTP, chp2-3 FTP, chp2-4 EMail, chp2-5 DNS(Domain Name System), 命名问题, 名字服务器与DNS服务器, chp2-6 P2P, BitTorrent, chp2-7 CDN, 视频, DASH（多媒体流化服务Dynamic Adaptive Streaming over HTTP）, chp2-8 TCP socket编程, 2-9 UDP socket编程应用层协议原理网络应用体系架构模式客户端服务器这玩意我们部署过挺熟悉这种架构的了服务器一直运行固定和端口号客户端与服务器通信缺点是可扩展性比较差表现为宕机后会造成故障服务集中于服务集群导致网络流量资源问题等对等体每个端系统自成服务客户端服务提供不再仅限于集中的服务器流量和负载问题有改善不过难以管理中央服务器用于存储什么服务在什么的服务端上的表信息搜索客户端向中央服务器查找后导向目标服务端进行服务的请求传输文件一个服务是运行在一个主机的一个进程同主机内进程通信通过进程间通信机制操作系统定义通信不同主机通过交换报文来通信通过的通信服务和协议进行规范一个进程用标示是一个端节点分别有不同的范围空间携带信息要传输的报文传给谁和谁传的应用层通过来标识通信的双方和单方这样每次在传输报文的时候就不用携带那么多信息了是一种标号标示通信的双方或单方类似于打开文件返回的句柄对标号的操作就是对通信接口的操作通信前建立连接连接持续一段时间唯一地指定了一个会话使用这个标示和远端应用进程通信具有本地意义的标示相当于传输的时候提供和即可无需建立连接仅表示本应用实体的标示传输报文的时候需额外提供对方起到了将应用层数据转向传输层的作用封装了传输层的细节发送给就可以发送给对应通道数据应用层协议如何使用传输层提供的服务实现应用需要定义应用层之间的协议规定报文格式解释时序等应用需要传输层提供什么样的服务之争的优点就是稳定可靠流量控制拥塞控制内容稳定发送的优点就是效率高无速度控制确保速度等偏爱视频流媒体平台偏爱不提供安全服务可以在上层再垫一个提供私密鉴别等服务和页由一些对象组成对象可以是文件图片小程序音视频等一个页含有框架和多个对其他对象的引用通过对每个对象进行引用获取资源在网页中首先浏览器会请求框架随后再将一些图片对象再次发请求获取格式为请求的过程服务端有一个守候用来等待客户端的连接建立请求建立连接会新建连接会话客户端发起建立连接的请求服务端响应并创建连接各自维护一个基于这个连接进行协议报文请求响应的发送若是则关闭连接若是则默认不关闭连接可以基于这个连接继续发送请求发送请求的模式分为流水线模式和非流水线模式响应时间模型两个连接建立时间往返传播时间响应体传输时间这就显示了不关闭连接的好处在于请求平均耗时会小于请求的方法类型只获取的头可用于爬虫搜索引擎建立索引等用户服务器状态只要客户端的文件和服务器端的数据库中对应的都有存储那么访问网站就会有用户信息的发送和维护涉及隐私问题缓存代理服务器不访问原始服务器而是通过代理服务器满足客户的请求原理和的一样命中缓存条件方法为了规避缓存和源服务器内容不一致的情况每次缓存返回对象时会先去向原服务器发送一个带有的请求用来判定是否需要更新若需要则更新后再响应请求文件传输协议是比较早的用于传输文件共享文件的协议其工作流程大致如下客户端向服务器发送建立控制连接的请求请求建立后客户端可以通过该连接进行查询上传下载以及认证登录的命令如果发生了文件的上传下载那么服务器就会向客户端发送一个建立数据传输连接的请求建立连接后文件的传输通过这个连接进行需要维护用户的信息以及用户目前处于什么目录因此其是有状态的协议由用户代理邮件阅读器即软件邮件服务器简单邮件传输协议为为邮件服务器管理用户的邮箱和发送给其他邮件服务器的发送队列用户将邮件发送给邮件服务器邮件服务器将其传入队列中等待发出对方邮件服务器将其传入对应用户的邮箱中对应用户通过类型请求获取邮件服务器之间的发送邮件无中转服务器的特性持久连接持续响应客户端发送的请求指令知道客户端主动关闭要求报文为码这意味着其他类型的语言或者文件需要通过编码来传输具体的需要通过多媒体邮件扩展声明来进行不同数据类型的传输也是持久响应客户端请求的无状态有下载并删除保留两种模式认为第二种模式适合于在不同客户机上获取邮件可以管理远程邮箱的文件夹必要性用户需要可用性更强的域名来获取资源而路由器只认因此需要有一个翻译的服务器系统命名问题分层基于域的命名机制同时还具有以下特性主机别名到规范名字的转换比如运行程序的服务器不止一台相当于别名而他们服务器的规范名字是用于特定服务器的邮件服务器别名到邮件服务器的正规名字的转换比如就好比邮箱地址前面的是用户名后面的是主机域名负载均衡域名结构有许多顶级域比如通用顶级域或者国家顶级域等每个域下面可以划分为若干子域同时域名这种东西不只是有主机有一个域也可以有域名一个域的主机可以不在一个网络一个网络的主机不一定在一个域域不是物理的名字服务器与服务器名字服务器每个域都有一个名字服务器维护它所管辖的区域的权威信息可以被放在域外这些权威信息由各个权威服务器提供权威服务器组织机构的服务器提供组织机构服务器可访问的主机和之间的映射顶级域服务器作为顶级域名通用国家的权威服务器可以认为权威服务器也是一种名字服务器区域名字服务器维护资源记录域名生存时间长期或者限时计网范围下为根据而定见下表主机域名别名域的域名邮件服务器域名规范名域的权威服务器的域名邮件服务器名字解释一下是就近的名字服务器不是本地的意思现在的问题是怎么解析的目标名字在内可能是因为这个名字本身就在这个域内部或者这个名字曾经访问过有个缓存在里面递归查询从本地上溯到根服务器上然后从根服务器往下查找这个的问题是根服务器负担比较重因为根服务器要发送向下的查询请求还要向起点转发查询结果迭代查询向根查询之后根返回一个你应该向谁查的地址最后由权威名字服务器给出解析结果这样就是起点不断向不同的来请求根服务器的负担就没有那么大一个协议的报文需要涵盖这样是方便于服务器执行转发查询请求的时候可以流水操作因为有标识每个请求的归属方如何新增一个域向上级域的名字服务器添加指向新增子域的域名和域名服务器的地址即一条一条总体来说比较健壮不容易被攻击在文件分发的需求中使用架构和架构的区别架构的流量速度下限为其中前者是多上传任务的时候服务器的带宽占用情况和传输速度由此可见该架构可拓展性一般架构的流量速度下限为第一个是服务器第一次向节点发送的速度第二个是单个节点的下载速度第三个是系统对所有文件请求的总的上传能力的速度比模式更适合文件传输系统的构建的结构分为非结构化和结构化结构化指的是每个节点是有一定数据结构环树的以下是非结构化类型的介绍中央服务器维护资源目录节点作为客户端和服务端在中央服务器的导引下进行音频的上传和下载服务当节点的客户端上线的时候会告知中央服务器其所有资源的信息标记其已经上线了下线的时候也会告知中央服务器问题中央服务器单点故障性能瓶颈可能的侵权问题结局被唱片公司告了判决拔网线终止提供服务全分布式架构无中央服务器通过图数据结构构建网络关系获取资源的方式是先向邻居节点查询如无结果则由邻居节点出发继续向外传播查找请求最后一层层将获取到的资源所在对象转发到源节点对等方上线并加入的流程为客户端在下载的时候会给一个比较可靠的个节点帮助其寻找网络的节点上线的时候基于可靠节点先建立一个连接然后通过这个可靠节点向其他节点发送报文其他节点收到报文后响应报文上线节点选择一些过来的节点作为邻居节点为了避免重复请求节点的情况发生通常可以采用标记已请求节点等方式结局效果不好速度慢没人用是集中化目录和完全分布式的结合体通过组长和组间的关系分别采用集中化目录和完全分布式的架构来实现架构每个文件具有一个描述符描述文件信息码唯一标识客户端可以基于描述符进行查找所需的资源再通过选择码来定位并请求特定的资源向拥有文件的对等方发送一个带码的请求这也是一种非结构化架构文件被分为一个个的块分别存在不同的网络中的节点中每个节点维护一个对于该文件的里面用布尔位来标记自己拥有文件的哪些块新节点加入一开始没有块的时候随机向网络中节点请求若干个块并且向跟踪服务器注册获得节点的列表拿到基本盘之后去请求比较稀缺的块这有利于整个系统的可用性稀缺的块拥有者少下线概率较高以及有利于自身成为香饽饽一个节点可以上传和下载文件的块对于一个服务方他会在周期内将传输资源优先给周期内为其提供良好上传服务的节点在周期内随机选取节点进行优先传送这主要是为了鼓励用户不仅要下载还要上传的机制一旦拥有了整个文件他可以选择立即离开或者继续利他地为其他节点提供上传文件的服务结构化介绍相对简单举了一个环状例子一个环状网络每一段弧有一个组长请求按照环结构请求各个组长随后再向具体的有服务节点进行传输请求视频文件过大不适合传统的文件传输方式因为要确保一个实时的播放视频定义固定速度的图像序列一张图片是一帧一帧由若干像素组成编码压缩方式时间冗余临近帧相同位置相同像素坐标可进行压缩编码比如只记录前后帧的差异空间冗余相同帧临近位置相同像素坐标可进行压缩编码比如记录某个颜色在几个相邻像素中重复多媒体流化服务服务器端的视频是分块不同的分辨率各有备份的存储的通过告示文件来提供不同块的客户端先从总服务器端获取告示文件再通过其中的获取视频块所在位置获取视频块流媒体加速服务由供应商提供缓存服务器不在网络核心目的是和客户端距离更近分担流量用来布局于众多的节点上内容提供商租用供应商的服务将视频块分别缓存在其名下的众多缓存服务器中用户先从处获取然后导引到的就近的服务器开始下载视频块视频块支持一边下载一边观看上图展示了通过服务提供服务的视频提供商用户端的请求流程内容提供商视频一经上线就要添加到缓存服务器中从页面连接获取到该视频的从服务器查找该所在主机找到方的权威服务器提供一个指向服务商的请求重定向到服务商的权威服务器根据算法分配一个就近的缓存服务器之后就从这个服务器获取视频块即可编程再学一遍感觉理解更加深刻一点之前还是网络基础太差了编程是通过先建立连接并且获取到连接所对应的值再对对应的连接进行操作即可进行应用层面的数据传输服务端客户端过程服务器创建欢迎与本地端口捆绑使用函数定义请求等待队列的长度使用函数进行一个阻塞式的等待连接请求行为客户端创建连接隐式与本地端口捆绑因为不是很重要指定服务器的和之后通过函数来发送连接请求服务端接收到来自用户端的请求之后由此基础上新建一个对应于该连接的连接用来标识该连接并以此为基础通信客户端此时也成功标识到了该连接两者可以通过系统调用将视作文件来进行读写客户端服务器关闭连接服务器程序继续等待新的连接数据结构数据结构现在看就看的很懂了编程不需要建立连接在编程上的体现是建立套接字后客户端不需要函数而是直接中传数据报和服务端即可服务端只需要等待客户端发出来的东西并且保存其位置随后将响应发给他就好',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2025-03-05 23:59:30',
+  postMainColor: '',
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#18171d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#f7f9fe')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+          const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+          const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+          const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+          if (t === undefined) {
+            if (isLightMode) activateLightMode()
+            else if (isDarkMode) activateDarkMode()
+            else if (isNotSpecified || hasNoSupport) {
+              const now = new Date()
+              const hour = now.getHours()
+              const isNight = hour <= 6 || hour >= 18
+              isNight ? activateDarkMode() : activateLightMode()
+            }
+            window.matchMedia('(prefers-color-scheme: dark)').addListener(e => {
+              if (saveToLocal.get('theme') === undefined) {
+                e.matches ? activateDarkMode() : activateLightMode()
+              }
+            })
+          } else if (t === 'light') activateLightMode()
+          else activateDarkMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><meta name="generator" content="Hexo 7.3.0"></head><body data-type="anzhiyu"><div id="web_bg"></div><div id="an_music_bg"></div><div id="loading-box" onclick="document.getElementById(&quot;loading-box&quot;).classList.add(&quot;loaded&quot;)"><div class="loading-bg"><img class="loading-img nolazyload" alt="加载头像" src="https://npm.elemecdn.com/anzhiyu-blog-static@1.0.4/img/avatar.jpg"/><div class="loading-image-dot"></div></div></div><script>const preloader = {
+  endLoading: () => {
+    document.getElementById('loading-box').classList.add("loaded");
+  },
+  initLoading: () => {
+    document.getElementById('loading-box').classList.remove("loaded")
+  }
+}
+window.addEventListener('load',()=> { preloader.endLoading() })
+setTimeout(function(){preloader.endLoading();},10000)
+
+if (true) {
+  document.addEventListener('pjax:send', () => { preloader.initLoading() })
+  document.addEventListener('pjax:complete', () => { preloader.endLoading() })
+}</script><link rel="stylesheet" href="https://cdn.cbd.int/anzhiyu-theme-static@1.1.10/progress_bar/progress_bar.css"/><script async="async" src="https://cdn.cbd.int/pace-js@1.2.4/pace.min.js" data-pace-options="{ &quot;restartOnRequestAfter&quot;:false,&quot;eventLag&quot;:false}"></script><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><div id="nav-group"><span id="blog_name"><div class="back-home-button"><i class="anzhiyufont anzhiyu-icon-grip-vertical"></i><div class="back-menu-list-groups"><div class="back-menu-list-group"><div class="back-menu-list-title">网页</div><div class="back-menu-list"><a class="back-menu-item" target="_blank" rel="noopener" href="https://github.com/userKangkang" title="Github"><img class="back-menu-item-icon" src="/img/github-mark.svg" alt="Github"/><span class="back-menu-item-text">Github</span></a></div></div></div></div><a id="site-name" href="/" accesskey="h"><div class="title">Hexo</div><i class="anzhiyufont anzhiyu-icon-house-chimney"></i></a></span><div class="mask-name-container"><div id="name-container"><a id="page-name" href="javascript:anzhiyu.scrollToDest(0, 500)">PAGE_NAME</a></div></div><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 文章</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/archives/"><i class="anzhiyufont anzhiyu-icon-box-archive faa-tada" style="font-size: 0.9em;"></i><span> 隧道</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/categories/"><i class="anzhiyufont anzhiyu-icon-shapes faa-tada" style="font-size: 0.9em;"></i><span> 分类</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/tags/"><i class="anzhiyufont anzhiyu-icon-tags faa-tada" style="font-size: 0.9em;"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 友链</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/link/"><i class="anzhiyufont anzhiyu-icon-link faa-tada" style="font-size: 0.9em;"></i><span> 友人帐</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/fcircle/"><i class="anzhiyufont anzhiyu-icon-artstation faa-tada" style="font-size: 0.9em;"></i><span> 朋友圈</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/comments/"><i class="anzhiyufont anzhiyu-icon-envelope faa-tada" style="font-size: 0.9em;"></i><span> 留言板</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 我的</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/music/"><i class="anzhiyufont anzhiyu-icon-music faa-tada" style="font-size: 0.9em;"></i><span> 音乐馆</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/bangumis/"><i class="anzhiyufont anzhiyu-icon-bilibili faa-tada" style="font-size: 0.9em;"></i><span> 追番页</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/album/"><i class="anzhiyufont anzhiyu-icon-images faa-tada" style="font-size: 0.9em;"></i><span> 相册集</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/air-conditioner/"><i class="anzhiyufont anzhiyu-icon-fan faa-tada" style="font-size: 0.9em;"></i><span> 小空调</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 关于</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/about/"><i class="anzhiyufont anzhiyu-icon-paper-plane faa-tada" style="font-size: 0.9em;"></i><span> 关于本人</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/essay/"><i class="anzhiyufont anzhiyu-icon-lightbulb faa-tada" style="font-size: 0.9em;"></i><span> 闲言碎语</span></a></li><li><a class="site-page child faa-parent animated-hover" href="javascript:toRandomPost()"><i class="anzhiyufont anzhiyu-icon-shoe-prints1 faa-tada" style="font-size: 0.9em;"></i><span> 随便逛逛</span></a></li></ul></div></div></div><div id="nav-right"><div class="nav-button" id="randomPost_button"><a class="site-page" onclick="toRandomPost()" title="随机前往一个文章" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-dice"></i></a></div><input id="center-console" type="checkbox"/><label class="widget" for="center-console" title="中控台" onclick="anzhiyu.switchConsole();"><i class="left"></i><i class="widget center"></i><i class="widget right"></i></label><div id="console"><div class="console-card-group-reward"><ul class="reward-all console-card"><li class="reward-item"><a href="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-weichat.png" target="_blank"><img class="post-qr-code-img" alt="微信" src="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-weichat.png"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-alipay.png" target="_blank"><img class="post-qr-code-img" alt="支付宝" src="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-alipay.png"/></a><div class="post-qr-code-desc">支付宝</div></li></ul></div><div class="console-card-group"><div class="console-card-group-left"><div class="console-card" id="card-newest-comments"><div class="card-content"><div class="author-content-item-tips">互动</div><span class="author-content-item-title"> 最新评论</span></div><div class="aside-list"><span>正在加载中...</span></div></div></div><div class="console-card-group-right"><div class="console-card tags"><div class="card-content"><div class="author-content-item-tips">兴趣点</div><span class="author-content-item-title">寻找你感兴趣的领域</span><div class="card-tags"><div class="item-headline"></div><div class="card-tag-cloud"><a href="/tags/%E4%B8%AD%E5%9B%BD%E7%A7%91%E5%AD%A6%E6%8A%80%E6%9C%AF%E5%A4%A7%E5%AD%A6/" style="font-size: 1.05rem;">中国科学技术大学<sup>3</sup></a><a href="/tags/%E5%85%A5%E9%97%A8/" style="font-size: 1.05rem;">入门<sup>1</sup></a><a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E5%B7%A5%E7%A8%8B/" style="font-size: 1.05rem;">计算机系统工程<sup>9</sup></a><a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" style="font-size: 1.05rem;">计算机网络<sup>3</sup></a></div></div><hr/></div></div><div class="console-card history"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-box-archiv"></i><span>文章</span></div><div class="card-archives"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-archive"></i><span>归档</span></div><ul class="card-archive-list"><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2025/03/"><span class="card-archive-list-date">三月 2025</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">13</span><span>篇</span></div></a></li></ul></div><hr/></div></div></div><div class="button-group"><div class="console-btn-item"><a class="darkmode_switchbutton" title="显示模式切换" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-moon"></i></a></div><div class="console-btn-item" id="consoleHideAside" onclick="anzhiyu.hideAsideBtn()" title="边栏显示控制"><a class="asideSwitch"><i class="anzhiyufont anzhiyu-icon-arrows-left-right"></i></a></div><div class="console-btn-item" id="consoleMusic" onclick="anzhiyu.musicToggle()" title="音乐开关"><a class="music-switch"><i class="anzhiyufont anzhiyu-icon-music"></i></a></div></div><div class="console-mask" onclick="anzhiyu.hideConsole()" href="javascript:void(0);"></div></div><div class="nav-button" id="nav-totop"><a class="totopbtn" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i><span id="percent" onclick="anzhiyu.scrollToDest(0,500)">0</span></a></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);" title="切换"><i class="anzhiyufont anzhiyu-icon-bars"></i></a></div></div></div></nav><div id="post-info"><div id="post-firstinfo"><div class="meta-firstline"><a class="post-meta-original">原创</a><span class="post-meta-categories"><span class="post-meta-separator"></span><i class="anzhiyufont anzhiyu-icon-inbox post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" itemprop="url">计算机网络</a></span><span class="article-meta tags"><a class="article-meta__tags" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" tabindex="-1" itemprop="url"> <span> <i class="anzhiyufont anzhiyu-icon-hashtag"></i>计算机网络</span></a><a class="article-meta__tags" href="/tags/%E4%B8%AD%E5%9B%BD%E7%A7%91%E5%AD%A6%E6%8A%80%E6%9C%AF%E5%A4%A7%E5%AD%A6/" tabindex="-1" itemprop="url"> <span> <i class="anzhiyufont anzhiyu-icon-hashtag"></i>中国科学技术大学</span></a></span></div></div><h1 class="post-title" itemprop="name headline">科大计网之：应用层<a class="post-edit-link" href="undefined_posts/network-app.md" title="在 GitHub 上编辑 - 科大计网之：应用层" target="_blank"><i class="anzhiyufont anzhiyu-icon-pencil"></i></a></h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="anzhiyufont anzhiyu-icon-calendar-days post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" itemprop="dateCreated datePublished" datetime="2025-03-05T15:50:41.947Z" title="发表于 2025-03-05 23:50:41">2025-03-05</time><span class="post-meta-separator"></span><i class="anzhiyufont anzhiyu-icon-history post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" itemprop="dateCreated datePublished" datetime="2025-03-05T15:59:30.941Z" title="更新于 2025-03-05 23:59:30">2025-03-05</time></span></div><div class="meta-secondline"><span class="post-meta-separator">       </span><span class="post-meta-position" title="作者IP属地为上海"><i class="anzhiyufont anzhiyu-icon-location-dot"></i>上海</span></div></div></div><section class="main-hero-waves-area waves-area"><svg class="waves-svg" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto"><defs><path id="gentle-wave" d="M -160 44 c 30 0 58 -18 88 -18 s 58 18 88 18 s 58 -18 88 -18 s 58 18 88 18 v 44 h -352 Z"></path></defs><g class="parallax"><use href="#gentle-wave" x="48" y="0"></use><use href="#gentle-wave" x="48" y="3"></use><use href="#gentle-wave" x="48" y="5"></use><use href="#gentle-wave" x="48" y="7"></use></g></svg></section><div id="post-top-cover"><img class="nolazyload" id="post-top-bg" src=""></div></header><main id="blog-container"><div class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container" itemscope itemtype="https://userkangkang.github.io/project/2025/03/05/network-app/"><header><a class="post-meta-categories" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" itemprop="url">计算机网络</a><a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" tabindex="-1" itemprop="url">计算机网络</a><a href="/tags/%E4%B8%AD%E5%9B%BD%E7%A7%91%E5%AD%A6%E6%8A%80%E6%9C%AF%E5%A4%A7%E5%AD%A6/" tabindex="-1" itemprop="url">中国科学技术大学</a><h1 id="CrawlerTitle" itemprop="name headline">科大计网之：应用层</h1><span itemprop="author" itemscope itemtype="http://schema.org/Person">Weiquan Huang</span><time itemprop="dateCreated datePublished" datetime="2025-03-05T15:50:41.947Z" title="发表于 2025-03-05 23:50:41">2025-03-05</time><time itemprop="dateCreated datePublished" datetime="2025-03-05T15:59:30.941Z" title="更新于 2025-03-05 23:59:30">2025-03-05</time></header><h3 id="chp2-1-应用层协议原理"><a href="#chp2-1-应用层协议原理" class="headerlink" title="chp2-1 应用层协议原理"></a>chp2-1 应用层协议原理</h3><p>网络应用体系架构：</p>
+<ul>
+<li>CS模式（客户端服务器）：这玩意我们部署过，挺熟悉这种架构的了；服务器一直运行，固定IP和端口号；客户端与服务器通信；缺点是可扩展性比较差，表现为宕机后会造成故障、服务集中于服务集群导致网络流量资源问题等</li>
+<li>对等体（p2p）：每个端系统自成服务&#x2F;客户端，服务提供不再仅限于集中的服务器，流量和负载问题有改善；不过难以管理</li>
+<li>Napster（cs &amp; p2p）：中央服务器用于存储什么服务在什么IP的服务端上的表信息（搜索），客户端向中央服务器查找后导向目标服务端进行服务的请求（传输文件）</li>
+</ul>
+<p>一个服务是运行在一个主机的一个 <strong>进程</strong> ，同主机内进程通信通过 <strong>进程间通信机制（操作系统定义）</strong> 通信，不同主机通过 <strong>交换报文Message</strong> 来通信（通过OS的通信服务和协议进行规范）</p>
+<ol>
+<li>一个进程用IP+port标示，是一个端节点（TCP&#x2F;UDP分别有不同的port范围空间）</li>
+<li>携带信息：要传输的报文SDU+传给谁和谁传的，应用层通过socket来标识通信的双方和单方，这样每次在socket传输报文的时候就不用携带那么多信息了</li>
+</ol>
+<h4 id="socket"><a href="#socket" class="headerlink" title="socket"></a>socket</h4><p>socket是一种标号，标示通信的双方（tcp）或单方（udp），类似于os打开文件返回的句柄，对标号的操作就是对通信接口的操作</p>
+<ul>
+<li>TCP socket：<ul>
+<li>通信前建立连接，连接持续一段时间</li>
+<li>唯一地指定了一个会话，使用这个标示和远端应用进程通信</li>
+<li>具有本地意义的标示</li>
+<li>相当于传输的时候提供SDU和TCP socket即可<br>  <img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/Pasted%20image%2020240822232613.png"></li>
+</ul>
+</li>
+<li>UDP socket：<ul>
+<li>无需建立连接</li>
+<li>仅表示本应用实体的标示</li>
+<li>传输报文的时候需额外提供对方IP port</li>
+</ul>
+</li>
+</ul>
+<p>socket起到了将应用层数据转向传输层的作用，封装了传输层的细节，发送给socket就可以发送给对应通道数据</p>
+<h4 id="应用层协议"><a href="#应用层协议" class="headerlink" title="应用层协议"></a>应用层协议</h4><p>如何使用传输层提供的服务实现应用？需要定义应用层之间的协议，规定报文格式、解释、时序等<a target="_blank" rel="noopener" href="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/Pasted%20image%202024082223637.png"></a></p>
+<p>应用需要传输层提供什么样的服务？TCP&#x2F;UDP之争</p>
+<ul>
+<li>TCP的优点就是稳定可靠：流量控制、拥塞控制、内容稳定发送</li>
+<li>UDP的优点就是效率高、无速度控制确保速度</li>
+<li>email web等偏爱TCP，视频流媒体平台偏爱UDP</li>
+<li>TCP、UDP不提供安全服务，可以在TCP上层再垫一个SSL，提供私密、鉴别等服务<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/Pasted%20image%2020240822233819.png"></li>
+</ul>
+<h3 id="chp2-2-Web和HTTP"><a href="#chp2-2-Web和HTTP" class="headerlink" title="chp2-2 Web和HTTP"></a>chp2-2 Web和HTTP</h3><p>web页由一些对象组成，对象可以是html文件、图片、Java小程序、音视频等，一个web页含有HTML框架和多个对其他对象的引用，通过url对每个对象进行引用（获取资源）；在网页中，首先浏览器会请求html框架，随后再将一些图片对象再次发请求获取；URL格式为：Protocol:&#x2F;&#x2F;user:psw@hostname:port&#x2F;path&#x2F;to&#x2F;resource</p>
+<p>HTTP请求的过程：</p>
+<ul>
+<li>服务端有一个“守候socket”，用来等待客户端的tcp连接建立请求，建立tcp连接会新建连接会话socket</li>
+<li>客户端发起建立tcp连接的请求，服务端响应并创建连接，各自维护一个socket</li>
+<li>基于这个tcp连接进行http协议报文（请求、响应）的发送<ul>
+<li>若是http&#x2F;1.0，则关闭tcp连接</li>
+<li>若是http&#x2F;1.1，则默认不关闭连接，可以基于这个连接继续发送http请求，发送请求的模式分为流水线模式和非流水线模式（pipeline）</li>
+</ul>
+</li>
+<li>响应时间模型：两个tcp连接建立时间（往返传播时间）+响应体传输时间<img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/Pasted%20image%2020240823164134.png">这就显示了不关闭连接的好处在于请求平均耗时会小于2RTT</li>
+</ul>
+<p>HTTP请求的方法类型：</p>
+<ul>
+<li>GET、POST</li>
+<li>HEAD 只获取HTML的头，可用于爬虫、搜索引擎建立索引等</li>
+</ul>
+<p>用户-服务器状态：Cookie</p>
+<ul>
+<li>只要客户端的cookie文件和服务器端的数据库中对应的cookie都有存储，那么访问网站就会有用户信息的发送和维护</li>
+<li>涉及隐私问题<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/Pasted%20image%2020240823164427.png"></li>
+</ul>
+<p>Web缓存（代理服务器）：不访问原始服务器，而是通过代理服务器满足客户的请求，原理和csapp的cache一样，命中缓存<img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/main/img/network/663f399ac40804f4e05c08820657b36.jpg"></p>
+<p>条件GET方法：为了规避缓存和源服务器内容不一致的情况，每次缓存返回对象时，会先去向原服务器发送一个带有<code>If-modified-since:&lt;Date&gt;</code>的GET请求，用来判定是否需要更新，若需要则更新后再响应请求</p>
+<h3 id="chp2-3-FTP"><a href="#chp2-3-FTP" class="headerlink" title="chp2-3 FTP"></a>chp2-3 FTP</h3><p>文件传输协议是比较早的用于传输文件共享文件的协议，其工作流程大致如下：</p>
+<ul>
+<li>FTP客户端向FTP服务器发送建立TCP控制连接的请求，请求建立后客户端可以通过该连接进行查询LIST、上传RETR、下载STOR以及认证登录的USER、PASS命令</li>
+<li>如果发生了文件的上传下载，那么FTP <strong>服务器</strong> 就会向客户端发送一个建立TCP数据传输连接的请求，建立连接后文件的传输通过这个连接进行</li>
+<li>FTP需要维护用户的信息，以及用户目前处于什么目录，因此其是有状态的协议</li>
+</ul>
+<h3 id="chp2-4-EMail"><a href="#chp2-4-EMail" class="headerlink" title="chp2-4 EMail"></a>chp2-4 EMail</h3><p>由用户代理（邮件阅读器，即软件outlook）、邮件服务器、简单邮件传输协议（push为SMTP，pull为POP3、IMAP、HTTP）</p>
+<p>邮件服务器管理用户的邮箱和发送给其他邮件服务器的发送队列，用户将邮件发送给邮件服务器，邮件服务器将其传入队列中等待发出，对方邮件服务器将其传入对应用户的邮箱中，对应用户通过pull类型请求获取邮件（服务器之间的发送邮件无中转服务器）<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/Pasted%20image%2020240823183025.png"></p>
+<p>SMTP的特性：</p>
+<ul>
+<li>持久连接，持续响应客户端发送的请求指令，知道客户端主动关闭</li>
+<li>要求报文为ascii码，这意味着其他类型的语言或者文件需要通过编码来传输，具体的需要通过MIME多媒体邮件扩展声明来进行不同数据类型的传输</li>
+</ul>
+<p>POP3也是持久响应客户端请求的，无状态，有下载并删除&#x2F;保留两种模式，认为第二种模式适合于在不同客户机上获取邮件<br>IMAP可以管理远程邮箱的文件夹</p>
+<h3 id="chp2-5-DNS-Domain-Name-System"><a href="#chp2-5-DNS-Domain-Name-System" class="headerlink" title="chp2-5 DNS(Domain Name System)"></a>chp2-5 DNS(Domain Name System)</h3><p>必要性：用户需要可用性更强的域名来获取资源，而路由器只认ip，因此需要有一个<br>domain-&gt;ip翻译的服务器系统</p>
+<h4 id="命名问题"><a href="#命名问题" class="headerlink" title="命名问题"></a>命名问题</h4><p>分层基于域的命名机制，同时还具有以下特性：</p>
+<ul>
+<li>主机别名到规范名字的转换，比如运行Google程序的服务器不止一台，<code>www.ibm.com</code>相当于别名，而他们服务器的规范名字<code>servereast.backup2.ibm.com</code>是用于特定服务器的</li>
+<li>邮件服务器别名到邮件服务器的正规名字的转换，比如<code>sjtu.edu.cn-&gt;mail.sjtu.edu.cn</code>，就好比邮箱地址<code>hwqqz678@sjtu.edu.cn</code>前面的是用户名，后面的是主机域名</li>
+<li>负载均衡</li>
+</ul>
+<p>DNS域名结构有许多“顶级域”，比如通用顶级域<code>.com</code> <code>.edu</code> ，或者国家顶级域<code>.cn</code> <code>.us</code>等，每个域下面可以划分为若干子域<img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/Pasted%20image%2020240824164959.png"><br>同时，域名这种东西不只是有主机有，一个域也可以有域名；一个域的主机可以不在一个网络，一个网络的主机不一定在一个域（域不是物理的）</p>
+<h4 id="名字服务器与DNS服务器"><a href="#名字服务器与DNS服务器" class="headerlink" title="名字服务器与DNS服务器"></a>名字服务器与DNS服务器</h4><ul>
+<li>名字服务器：每个域（zone）都有一个名字服务器，维护它所管辖的区域的权威信息，可以被放在域外，这些权威信息由各个权威DNS服务器提供</li>
+<li>权威DNS服务器：组织机构的DNS服务器，提供组织机构服务器可访问的主机和ip之间的映射；顶级域（TLD）服务器作为顶级域名（通用&#x2F;国家）的权威DNS服务器；可以认为权威DNS服务器也是一种名字服务器</li>
+</ul>
+<p>区域名字服务器维护资源记录</p>
+<table>
+<thead>
+<tr>
+<th>Domain_name</th>
+<th>TTL</th>
+<th>Class</th>
+<th>Value</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>域名</td>
+<td>生存时间（长期或者限时）</td>
+<td>计网范围下为IN</td>
+<td>根据Type而定</td>
+<td>见下表</td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>A</th>
+<th>CNAME</th>
+<th>NS</th>
+<th>MX</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Name</td>
+<td>主机域名</td>
+<td>别名</td>
+<td>域的域名</td>
+<td>邮件服务器域名</td>
+</tr>
+<tr>
+<td>Value</td>
+<td>IP</td>
+<td>规范名</td>
+<td>域的权威服务器的域名</td>
+<td>邮件服务器名字</td>
+</tr>
+</tbody></table>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/Pasted%20image%2020240824170758.png"><br>解释一下local name server是就近的名字服务器，不是本地的意思</p>
+<p>现在的问题是name server怎么解析的？</p>
+<ul>
+<li>目标名字在local name server内，可能是因为这个名字本身就在这个域内部，或者这个名字曾经访问过有个缓存在里面</li>
+<li>递归查询：从本地DNS上溯到根服务器上，然后从根服务器往下查找；这个的问题是根服务器负担比较重，因为根服务器要发送向下的查询请求，还要向起点转发查询结果</li>
+<li>迭代查询：向根查询之后根返回一个“你应该向谁查”的NS地址，最后由权威名字服务器给出解析结果，这样就是起点不断向不同的NS来请求，根服务器的负担就没有那么大</li>
+</ul>
+<p>一个DNS协议的报文需要涵盖ID，这样是方便于DNS服务器执行转发查询请求的时候可以流水操作，因为有ID标识每个请求的归属方<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/Pasted%20image%2020240824171831.png"></p>
+<p><strong>如何新增一个域？</strong> 向上级域的名字服务器添加：指向新增子域的域名 和 域名服务器的地址，即一条NS一条A</p>
+<p>总体来说DNS比较健壮，不容易被攻击</p>
+<h3 id="chp2-6-P2P"><a href="#chp2-6-P2P" class="headerlink" title="chp2-6 P2P"></a>chp2-6 P2P</h3><p>在文件分发的需求中，使用C&#x2F;S架构和P2P架构的区别：</p>
+<ul>
+<li>C&#x2F;S架构的流量速度下限为$max{\frac{NF}{u_s},\frac{F}{d_i}}$，其中前者是多上传任务的时候服务器的带宽占用情况和传输速度；由此可见该架构可拓展性一般</li>
+<li>P2P架构的流量速度下限为$max{\frac{F}{u_s},\frac{F}{d_{min}},\frac{NF}{u_s+\Sigma{u_i}}}$，第一个是服务器第一次向peer节点发送的速度，第二个是单个peer节点的下载速度，第三个是P2P系统对所有文件请求的总的上传能力的速度；比C&#x2F;S模式更适合文件传输系统的构建</li>
+</ul>
+<p>P2P的结构分为非结构化P2P和结构化（DHT）P2P，结构化指的是每个节点是有一定数据结构（环、树）的，以下是 <strong>非结构化类型</strong> 的介绍：</p>
+<ul>
+<li>Napster：中央服务器维护资源目录，peer节点作为客户端和服务端，在中央服务器的导引下进行音频的上传和下载服务<ul>
+<li>当节点的Napster客户端上线的时候，会告知中央服务器其IP、所有资源的信息，标记其已经上线了；下线的时候也会告知中央服务器</li>
+<li>问题：中央服务器单点故障、性能瓶颈，可能的侵权问题</li>
+<li>结局：被唱片公司告了，判决拔网线终止提供服务</li>
+</ul>
+</li>
+<li>Gnutella：全分布式架构无中央服务器，通过图数据结构构建网络关系，获取资源的方式是先向邻居节点查询，如无结果则由邻居节点出发继续向外传播查找请求，最后一层层将获取到的资源所在对象转发到源节点<img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/Pasted%20image%2020240825171817.png"><ul>
+<li>对等方上线并加入的流程为<ol>
+<li>Gnutella客户端在下载的时候会给一个比较可靠的10个节点，帮助其寻找网络的节点</li>
+<li>上线的时候基于可靠节点先建立一个连接，然后通过这个可靠节点向其他节点发送ping报文</li>
+<li>其他节点收到ping报文后响应pong报文，上线节点选择一些pong过来的节点作为邻居节点</li>
+</ol>
+</li>
+<li>为了避免重复请求节点的情况发生，通常可以采用标记已请求节点等方式</li>
+<li>结局：效果不好，速度慢，没人用</li>
+</ul>
+</li>
+<li>KaZaA：是集中化目录和完全分布式的结合体，通过组长和组间的关系，分别采用集中化目录和完全分布式的架构来实现P2P架构<img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/Pasted%20image%2020240825172531.png"><ul>
+<li>每个文件具有一个描述符（描述文件信息）、hash码（唯一标识），客户端可以基于描述符进行查找所需的资源，再通过选择hash码来定位并请求特定的资源（向拥有文件的对等方发送一个带hash码的HTTP请求</li>
+</ul>
+</li>
+</ul>
+<h4 id="BitTorrent"><a href="#BitTorrent" class="headerlink" title="BitTorrent"></a>BitTorrent</h4><p>这也是一种非结构化P2P架构，文件被分为一个个256KB的块，分别存在不同的网络中的peer节点中，每个节点维护一个对于该文件的bitmap，里面用布尔位来标记自己拥有文件的哪些块</p>
+<ul>
+<li>新节点加入torrent：一开始没有块的时候随机向网络中节点请求若干个块，并且向跟踪服务器注册，获得peer节点的列表；拿到基本盘之后去请求比较稀缺的块，这有利于整个系统的可用性（稀缺的块拥有者少，下线概率较高），以及有利于自身成为香饽饽</li>
+<li>一个peer节点可以上传和下载文件的块，对于一个服务方，他会在2&#x2F;3周期内将传输资源优先给“周期内为其提供良好上传服务”的节点，在1&#x2F;3周期内随机选取节点进行优先传送，这主要是为了鼓励用户不仅要下载还要上传的机制</li>
+<li>一旦peer拥有了整个文件，他可以选择立即离开或者继续利他地为其他节点提供上传文件的服务</li>
+</ul>
+<p>结构化P2P介绍相对简单，举了一个环状例子，一个环状网络每一段弧有一个组长，请求按照环结构请求各个组长，随后再向具体的有服务节点进行传输请求</p>
+<h3 id="chp2-7-CDN"><a href="#chp2-7-CDN" class="headerlink" title="chp2-7 CDN"></a>chp2-7 CDN</h3><p>视频文件过大，不适合传统的文件传输方式，因为要确保一个实时的播放</p>
+<h4 id="视频"><a href="#视频" class="headerlink" title="视频"></a>视频</h4><ul>
+<li>定义：固定速度的图像序列，一张图片是一帧（frame），一帧由若干像素组成</li>
+<li>编码压缩方式：时间冗余（临近帧相同位置相同像素坐标可进行压缩编码，比如只记录前后帧的差异）、空间冗余（相同帧临近位置相同像素坐标可进行压缩编码，比如记录某个颜色在几个相邻像素中重复）</li>
+</ul>
+<h4 id="DASH（多媒体流化服务，Dynamic-Adaptive-Streaming-over-HTTP）"><a href="#DASH（多媒体流化服务，Dynamic-Adaptive-Streaming-over-HTTP）" class="headerlink" title="DASH（多媒体流化服务，Dynamic, Adaptive Streaming over HTTP）"></a>DASH（多媒体流化服务，Dynamic, Adaptive Streaming over HTTP）</h4><ul>
+<li>服务器端的视频是分块、不同的分辨率各有备份的存储的，通过manifest file（告示文件）来提供不同块的URL</li>
+<li>客户端先从总服务器端获取告示文件，再通过其中的URL获取视频块所在位置，获取视频块</li>
+<li>CDN（Content Distribution Networks，流媒体加速服务），由CDN供应商提供CDN缓存服务器（不在网络核心，目的是和客户端距离更近，分担流量），用来布局于众多的节点上，内容提供商（ICP）租用CDN供应商的服务将视频块分别缓存在其名下的众多CDN缓存服务器中；用户先从ICP处获取manifest file，然后导引到CDN的就近的服务器，开始下载视频块；视频块支持一边下载一边观看<img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/Pasted%20image%2020240825223318.png">上图展示了通过CDN服务提供服务的ICP视频提供商，用户端的请求流程<ol>
+<li>内容提供商视频一经上线就要添加到cdn缓存服务器中</li>
+<li>从页面连接获取到该视频的URL 6Y7B23V</li>
+<li>从local dns服务器查找该URL所在主机，找到ICP方的权威dns服务器</li>
+<li>提供一个指向cdn服务商的URL，请求重定向到cdn服务商的权威dns服务器</li>
+<li>根据算法分配一个就近的cdn缓存服务器，之后就从这个服务器获取视频块即可</li>
+</ol>
+</li>
+</ul>
+<h3 id="chp2-8-TCP-socket编程"><a href="#chp2-8-TCP-socket编程" class="headerlink" title="chp2-8 TCP socket编程"></a>chp2-8 TCP socket编程</h3><p>再学一遍感觉理解更加深刻一点，之前还是网络基础太差了</p>
+<p>TCP socket编程是通过先建立TCP连接，并且获取到连接所对应的socket值，再对socket对应的TCP连接进行<code>read/write</code>操作，即可进行应用层面的数据传输</p>
+<p>服务端&#x2F;客户端过程：</p>
+<ol>
+<li>服务器创建欢迎socket，与本地端口捆绑，使用<code>listen</code>函数定义请求等待队列的长度，使用<code>accept</code>函数进行一个阻塞式的等待连接请求行为</li>
+<li>客户端创建连接socket，隐式与本地端口捆绑（因为不是很重要），指定服务器的IP和port之后通过<code>connect</code>函数来发送连接请求</li>
+<li>服务端接收到来自用户端的请求之后，由此基础上新建一个对应于该TCP连接的连接socket，用来标识该TCP连接并以此为基础通信；客户端socket此时也成功标识到了该TCP连接；两者可以通过<code>read/write</code>系统调用，将socket视作文件fd来进行读写</li>
+<li>客户端&#x2F;服务器关闭连接，服务器程序继续等待新的连接</li>
+</ol>
+<p>数据结构<code>sockaddr_in</code>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">struct sockaddr_in &#123;</span><br><span class="line">  short sin_family; // AF_INET in tcp/ip connection</span><br><span class="line">  u_short sin_port; // port.</span><br><span class="line">  struct in_addr sin_addr; // IP address, u_long.</span><br><span class="line">  char sin_zero[8]; // align, constant in tcp/ip</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>数据结构<code>hostent</code>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">struct hostent &#123;</span><br><span class="line">  char *h_name; // domain name</span><br><span class="line">  char **h_aliases; // list of aliases of this domain name</span><br><span class="line">  int h_addrtype;</span><br><span class="line">  int h_length;</span><br><span class="line">  char **h_addr_list;</span><br><span class="line">  #define h_addr h_addr_list[0]; // list of IP addresses of this domain name</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>现在看就看的很懂了^_^<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/Pasted%20image%2020240826162948.png"></p>
+<h3 id="2-9-UDP-socket编程"><a href="#2-9-UDP-socket编程" class="headerlink" title="2-9 UDP socket编程"></a>2-9 UDP socket编程</h3><p>udp不需要建立连接，在编程上的体现是建立套接字后：客户端不需要<code>connect</code>函数而是直接<code>sendto</code>中传数据报datagram和服务端IP+port即可；服务端只需要<code>recvfrom</code>等待客户端发出来的东西并且保存其位置，随后将响应发给他就好<img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/Pasted%20image%2020240826164850.png"></p>
+</article><div class="post-copyright"><div class="copyright-cc-box"><i class="anzhiyufont anzhiyu-icon-copyright"></i></div><div class="post-copyright__author_box"><a class="post-copyright__author_img" href="/" title="头像"><img class="post-copyright__author_img_back" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://avatars.githubusercontent.com/u/114564389?v=4" title="头像" alt="头像"><img class="post-copyright__author_img_front" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://avatars.githubusercontent.com/u/114564389?v=4" title="头像" alt="头像"></a><div class="post-copyright__author_name">Weiquan Huang</div><div class="post-copyright__author_desc">userKangkang</div></div><div class="post-copyright__post__info"><a class="post-copyright__original" title="该文章为原创文章，注意版权协议" href="https://userkangkang.github.io/project/2025/03/05/network-app/">原创</a><a class="post-copyright-title"><span onclick="rm.copyPageUrl('https://userkangkang.github.io/project/2025/03/05/network-app/')">科大计网之：应用层</span></a></div><div class="post-tools" id="post-tools"><div class="post-tools-left"><div class="rewardLeftButton"></div><div class="shareRight"><div class="share-link mobile"><div class="share-qrcode"><div class="share-button" title="使用手机访问这篇文章"><i class="anzhiyufont anzhiyu-icon-qrcode"></i></div><div class="share-main"><div class="share-main-all"><div id="qrcode" title="https://userkangkang.github.io/project/2025/03/05/network-app/"></div><div class="reward-dec">使用手机访问这篇文章</div></div></div></div></div><div class="share-link weibo"><a class="share-button" target="_blank" href="https://service.weibo.com/share/share.php?title=科大计网之：应用层&amp;url=https://userkangkang.github.io/project/2025/03/05/network-app/&amp;pic=" rel="external nofollow noreferrer noopener"><i class="anzhiyufont anzhiyu-icon-weibo"></i></a></div><script>function copyCurrentPageUrl() {
+  var currentPageUrl = window.location.href;
+  var input = document.createElement("input");
+  input.setAttribute("value", currentPageUrl);
+  document.body.appendChild(input);
+  input.select();
+  input.setSelectionRange(0, 99999);
+  document.execCommand("copy");
+  document.body.removeChild(input);
+}</script><div class="share-link copyurl"><div class="share-button" id="post-share-url" title="复制链接" onclick="copyCurrentPageUrl()"><i class="anzhiyufont anzhiyu-icon-link"></i></div></div></div></div></div><div class="post-copyright__notice"><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://userKangkang.github.io/project" target="_blank">Hexo</a>！</span></div></div><div class="post-tools-right"><div class="tag_share"><div class="post-meta__box"><div class="post-meta__box__tag-list"><a class="post-meta__box__tags" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/"><span class="tags-punctuation"> <i class="anzhiyufont anzhiyu-icon-tag"></i></span>计算机网络<span class="tagsPageCount">3</span></a><a class="post-meta__box__tags" href="/tags/%E4%B8%AD%E5%9B%BD%E7%A7%91%E5%AD%A6%E6%8A%80%E6%9C%AF%E5%A4%A7%E5%AD%A6/"><span class="tags-punctuation"> <i class="anzhiyufont anzhiyu-icon-tag"></i></span>中国科学技术大学<span class="tagsPageCount">3</span></a></div></div></div><div class="post_share"><div class="social-share" data-image="https://avatars.githubusercontent.com/u/114564389?v=4" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.cbd.int/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"/><script src="https://cdn.cbd.int/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer="defer"></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2025/03/05/network-intro/"><img class="prev-cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">科大计网之：概论</div></div></a></div><div class="next-post pull-right"><a href="/2025/03/06/network-trans/"><img class="next-cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">科大计网之：传输层</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="anzhiyufont anzhiyu-icon-thumbs-up fa-fw" style="font-size: 1.5rem; margin-right: 4px"></i><span>喜欢这篇文章的人也看了</span></div><div class="relatedPosts-list"><div><a href="/2025/03/05/network-intro/" title="科大计网之：概论"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/" alt="cover"><div class="content is-center"><div class="date"><i class="anzhiyufont anzhiyu-icon-calendar-days fa-fw"></i> 2025-03-05</div><div class="title">科大计网之：概论</div></div></a></div><div><a href="/2025/03/06/network-trans/" title="科大计网之：传输层"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/" alt="cover"><div class="content is-center"><div class="date"><i class="anzhiyufont anzhiyu-icon-calendar-days fa-fw"></i> 2025-03-06</div><div class="title">科大计网之：传输层</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-content"><div class="author-info__sayhi" id="author-info__sayhi" onclick="anzhiyu.changeSayHelloText()"></div><div class="author-info-avatar"><img class="avatar-img" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://avatars.githubusercontent.com/u/114564389?v=4" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/><div class="author-status"><img class="g-status" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://bu.dusays.com/2023/08/24/64e6ce9c507bb.png" alt="status"/></div></div><div class="author-info__description">个人博客，计划在这里记录上海交通大学软件学院本科部分课程，由于本专业主攻计算机系统，因此可能这方面居多</div><div class="author-info__bottom-group"><a class="author-info__bottom-group-left" href="/"><h1 class="author-info__name">Weiquan Huang</h1><div class="author-info__desc">userKangkang</div></a><div class="card-info-social-icons is-center"><a class="social-icon faa-parent animated-hover" href="https://github.com/userKangkang" target="_blank" title="Github"><i class="anzhiyufont anzhiyu-icon-github"></i></a></div></div></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-bars"></i><span>文章目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#chp2-1-%E5%BA%94%E7%94%A8%E5%B1%82%E5%8D%8F%E8%AE%AE%E5%8E%9F%E7%90%86"><span class="toc-number">1.</span> <span class="toc-text">chp2-1 应用层协议原理</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#socket"><span class="toc-number">1.1.</span> <span class="toc-text">socket</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%BA%94%E7%94%A8%E5%B1%82%E5%8D%8F%E8%AE%AE"><span class="toc-number">1.2.</span> <span class="toc-text">应用层协议</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#chp2-2-Web%E5%92%8CHTTP"><span class="toc-number">2.</span> <span class="toc-text">chp2-2 Web和HTTP</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#chp2-3-FTP"><span class="toc-number">3.</span> <span class="toc-text">chp2-3 FTP</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#chp2-4-EMail"><span class="toc-number">4.</span> <span class="toc-text">chp2-4 EMail</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#chp2-5-DNS-Domain-Name-System"><span class="toc-number">5.</span> <span class="toc-text">chp2-5 DNS(Domain Name System)</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%91%BD%E5%90%8D%E9%97%AE%E9%A2%98"><span class="toc-number">5.1.</span> <span class="toc-text">命名问题</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%90%8D%E5%AD%97%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8EDNS%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="toc-number">5.2.</span> <span class="toc-text">名字服务器与DNS服务器</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#chp2-6-P2P"><span class="toc-number">6.</span> <span class="toc-text">chp2-6 P2P</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#BitTorrent"><span class="toc-number">6.1.</span> <span class="toc-text">BitTorrent</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#chp2-7-CDN"><span class="toc-number">7.</span> <span class="toc-text">chp2-7 CDN</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A7%86%E9%A2%91"><span class="toc-number">7.1.</span> <span class="toc-text">视频</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#DASH%EF%BC%88%E5%A4%9A%E5%AA%92%E4%BD%93%E6%B5%81%E5%8C%96%E6%9C%8D%E5%8A%A1%EF%BC%8CDynamic-Adaptive-Streaming-over-HTTP%EF%BC%89"><span class="toc-number">7.2.</span> <span class="toc-text">DASH（多媒体流化服务，Dynamic, Adaptive Streaming over HTTP）</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#chp2-8-TCP-socket%E7%BC%96%E7%A8%8B"><span class="toc-number">8.</span> <span class="toc-text">chp2-8 TCP socket编程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-9-UDP-socket%E7%BC%96%E7%A8%8B"><span class="toc-number">9.</span> <span class="toc-text">2-9 UDP socket编程</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-history"></i><span>最近发布</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/03/06/network-trans/" title="科大计网之：传输层">科大计网之：传输层</a><time datetime="2025-03-05T16:01:32.287Z" title="发表于 2025-03-06 00:01:32">2025-03-06</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/03/05/network-app/" title="科大计网之：应用层">科大计网之：应用层</a><time datetime="2025-03-05T15:50:41.947Z" title="发表于 2025-03-05 23:50:41">2025-03-05</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/03/05/network-intro/" title="科大计网之：概论">科大计网之：概论</a><time datetime="2025-03-05T15:30:22.943Z" title="发表于 2025-03-05 23:30:22">2025-03-05</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/03/05/cse-security/" title="计算机系统工程之：计算机系统安全">计算机系统工程之：计算机系统安全</a><time datetime="2025-03-04T16:23:16.386Z" title="发表于 2025-03-05 00:23:16">2025-03-05</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/03/05/cse-aicomputing/" title="计算机系统工程之：AI计算与训练优化">计算机系统工程之：AI计算与训练优化</a><time datetime="2025-03-04T16:14:44.965Z" title="发表于 2025-03-05 00:14:44">2025-03-05</time></div></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div id="workboard"><img class="workSituationImg boardsign" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://npm.elemecdn.com/anzhiyu-blog@2.0.4/img/badge/安知鱼-上班摸鱼中.svg" alt="距离月入25k也就还差一个大佬带我~" title="距离月入25k也就还差一个大佬带我~"/><div id="runtimeTextTip"></div></div></div><div id="footer-bar"><div class="footer-bar-links"><div class="footer-bar-left"><div id="footer-bar-tips"><div class="copyright">&copy;2025 By <a class="footer-bar-link" href="/" title="Weiquan Huang" target="_blank">Weiquan Huang</a></div></div><div id="footer-type-tips"></div></div><div class="footer-bar-right"><a class="footer-bar-link" target="_blank" rel="noopener" href="https://github.com/anzhiyu-c/hexo-theme-anzhiyu" title="主题">主题</a></div></div></div></footer></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="sidebar-site-data site-data is-center"><a href="/archives/" title="archive"><div class="headline">文章</div><div class="length-num">13</div></a><a href="/tags/" title="tag"><div class="headline">标签</div><div class="length-num">4</div></a><a href="/categories/" title="category"><div class="headline">分类</div><div class="length-num">6</div></a></div><span class="sidebar-menu-item-title">功能</span><div class="sidebar-menu-item"><a class="darkmode_switchbutton menu-child" href="javascript:void(0);" title="显示模式"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i><span>显示模式</span></a></div><div class="back-menu-list-groups"><div class="back-menu-list-group"><div class="back-menu-list-title">网页</div><div class="back-menu-list"><a class="back-menu-item" target="_blank" rel="noopener" href="https://github.com/userKangkang" title="Github"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/img/github-mark.svg" alt="Github"/><span class="back-menu-item-text">Github</span></a></div></div></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 文章</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/archives/"><i class="anzhiyufont anzhiyu-icon-box-archive faa-tada" style="font-size: 0.9em;"></i><span> 隧道</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/categories/"><i class="anzhiyufont anzhiyu-icon-shapes faa-tada" style="font-size: 0.9em;"></i><span> 分类</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/tags/"><i class="anzhiyufont anzhiyu-icon-tags faa-tada" style="font-size: 0.9em;"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 友链</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/link/"><i class="anzhiyufont anzhiyu-icon-link faa-tada" style="font-size: 0.9em;"></i><span> 友人帐</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/fcircle/"><i class="anzhiyufont anzhiyu-icon-artstation faa-tada" style="font-size: 0.9em;"></i><span> 朋友圈</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/comments/"><i class="anzhiyufont anzhiyu-icon-envelope faa-tada" style="font-size: 0.9em;"></i><span> 留言板</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 我的</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/music/"><i class="anzhiyufont anzhiyu-icon-music faa-tada" style="font-size: 0.9em;"></i><span> 音乐馆</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/bangumis/"><i class="anzhiyufont anzhiyu-icon-bilibili faa-tada" style="font-size: 0.9em;"></i><span> 追番页</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/album/"><i class="anzhiyufont anzhiyu-icon-images faa-tada" style="font-size: 0.9em;"></i><span> 相册集</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/air-conditioner/"><i class="anzhiyufont anzhiyu-icon-fan faa-tada" style="font-size: 0.9em;"></i><span> 小空调</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 关于</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/about/"><i class="anzhiyufont anzhiyu-icon-paper-plane faa-tada" style="font-size: 0.9em;"></i><span> 关于本人</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/essay/"><i class="anzhiyufont anzhiyu-icon-lightbulb faa-tada" style="font-size: 0.9em;"></i><span> 闲言碎语</span></a></li><li><a class="site-page child faa-parent animated-hover" href="javascript:toRandomPost()"><i class="anzhiyufont anzhiyu-icon-shoe-prints1 faa-tada" style="font-size: 0.9em;"></i><span> 随便逛逛</span></a></li></ul></div></div><span class="sidebar-menu-item-title">标签</span><div class="card-tags"><div class="item-headline"></div><div class="card-tag-cloud"><a href="/tags/%E4%B8%AD%E5%9B%BD%E7%A7%91%E5%AD%A6%E6%8A%80%E6%9C%AF%E5%A4%A7%E5%AD%A6/" style="font-size: 0.88rem;">中国科学技术大学<sup>3</sup></a><a href="/tags/%E5%85%A5%E9%97%A8/" style="font-size: 0.88rem;">入门<sup>1</sup></a><a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E5%B7%A5%E7%A8%8B/" style="font-size: 0.88rem;">计算机系统工程<sup>9</sup></a><a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" style="font-size: 0.88rem;">计算机网络<sup>3</sup></a></div></div><hr/></div></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="anzhiyufont anzhiyu-icon-book-open"></i></button><button id="translateLink" type="button" title="简繁转换">繁</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="anzhiyufont anzhiyu-icon-arrows-left-right"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="anzhiyufont anzhiyu-icon-gear"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="anzhiyufont anzhiyu-icon-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i></button></div></div><div id="nav-music"><a id="nav-music-hoverTips" onclick="anzhiyu.musicToggle()" accesskey="m">播放音乐</a><div id="console-music-bg"></div><meting-js id="8152976493" server="netease" type="playlist" mutex="true" preload="none" theme="var(--anzhiyu-main)" data-lrctype="0" order="random" volume="0.7"></meting-js></div><div id="rightMenu"><div class="rightMenu-group rightMenu-small"><div class="rightMenu-item" id="menu-backward"><i class="anzhiyufont anzhiyu-icon-arrow-left"></i></div><div class="rightMenu-item" id="menu-forward"><i class="anzhiyufont anzhiyu-icon-arrow-right"></i></div><div class="rightMenu-item" id="menu-refresh"><i class="anzhiyufont anzhiyu-icon-arrow-rotate-right" style="font-size: 1rem;"></i></div><div class="rightMenu-item" id="menu-top"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i></div></div><div class="rightMenu-group rightMenu-line rightMenuPlugin"><div class="rightMenu-item" id="menu-copytext"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制选中文本</span></div><div class="rightMenu-item" id="menu-pastetext"><i class="anzhiyufont anzhiyu-icon-paste"></i><span>粘贴文本</span></div><a class="rightMenu-item" id="menu-commenttext"><i class="anzhiyufont anzhiyu-icon-comment-medical"></i><span>引用到评论</span></a><div class="rightMenu-item" id="menu-newwindow"><i class="anzhiyufont anzhiyu-icon-window-restore"></i><span>新窗口打开</span></div><div class="rightMenu-item" id="menu-copylink"><i class="anzhiyufont anzhiyu-icon-link"></i><span>复制链接地址</span></div><div class="rightMenu-item" id="menu-copyimg"><i class="anzhiyufont anzhiyu-icon-images"></i><span>复制此图片</span></div><div class="rightMenu-item" id="menu-downloadimg"><i class="anzhiyufont anzhiyu-icon-download"></i><span>下载此图片</span></div><div class="rightMenu-item" id="menu-newwindowimg"><i class="anzhiyufont anzhiyu-icon-window-restore"></i><span>新窗口打开图片</span></div><div class="rightMenu-item" id="menu-search"><i class="anzhiyufont anzhiyu-icon-magnifying-glass"></i><span>站内搜索</span></div><div class="rightMenu-item" id="menu-searchBaidu"><i class="anzhiyufont anzhiyu-icon-magnifying-glass"></i><span>百度搜索</span></div><div class="rightMenu-item" id="menu-music-toggle"><i class="anzhiyufont anzhiyu-icon-play"></i><span>播放音乐</span></div><div class="rightMenu-item" id="menu-music-back"><i class="anzhiyufont anzhiyu-icon-backward"></i><span>切换到上一首</span></div><div class="rightMenu-item" id="menu-music-forward"><i class="anzhiyufont anzhiyu-icon-forward"></i><span>切换到下一首</span></div><div class="rightMenu-item" id="menu-music-playlist" onclick="window.open(&quot;https://y.qq.com/n/ryqq/playlist/8802438608&quot;, &quot;_blank&quot;);" style="display: none;"><i class="anzhiyufont anzhiyu-icon-radio"></i><span>查看所有歌曲</span></div><div class="rightMenu-item" id="menu-music-copyMusicName"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制歌名</span></div></div><div class="rightMenu-group rightMenu-line rightMenuOther"><a class="rightMenu-item menu-link" id="menu-randomPost"><i class="anzhiyufont anzhiyu-icon-shuffle"></i><span>随便逛逛</span></a><a class="rightMenu-item menu-link" href="/categories/"><i class="anzhiyufont anzhiyu-icon-cube"></i><span>博客分类</span></a><a class="rightMenu-item menu-link" href="/tags/"><i class="anzhiyufont anzhiyu-icon-tags"></i><span>文章标签</span></a></div><div class="rightMenu-group rightMenu-line rightMenuOther"><a class="rightMenu-item" id="menu-copy" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制地址</span></a><a class="rightMenu-item" id="menu-commentBarrage" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-message"></i><span class="menu-commentBarrage-text">关闭热评</span></a><a class="rightMenu-item" id="menu-darkmode" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i><span class="menu-darkmode-text">深色模式</span></a><a class="rightMenu-item" id="menu-translate" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-language"></i><span>轉為繁體</span></a></div></div><div id="rightmenu-mask"></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.cbd.int/@fancyapps/ui@5.0.28/dist/fancybox/fancybox.umd.js"></script><script src="https://cdn.cbd.int/instant.page@5.2.0/instantpage.js" type="module"></script><script src="https://cdn.cbd.int/vanilla-lazyload@17.8.5/dist/lazyload.iife.min.js"></script><script src="https://cdn.cbd.int/node-snackbar@0.1.16/dist/snackbar.min.js"></script><canvas id="universe"></canvas><script async src="https://npm.elemecdn.com/anzhiyu-theme-static@1.0.0/dark/dark.js"></script><script>// 消除控制台打印
+var HoldLog = console.log;
+console.log = function () {};
+let now1 = new Date();
+queueMicrotask(() => {
+  const Log = function () {
+    HoldLog.apply(console, arguments);
+  }; //在恢复前输出日志
+  const grt = new Date("03/03/2025 19:34:34"); //此处修改你的建站时间或者网站上线时间
+  now1.setTime(now1.getTime() + 250);
+  const days = (now1 - grt) / 1000 / 60 / 60 / 24;
+  const dnum = Math.floor(days);
+  const ascll = [
+    `欢迎使用安知鱼!`,
+    `生活明朗, 万物可爱`,
+    `
+        
+       █████╗ ███╗   ██╗███████╗██╗  ██╗██╗██╗   ██╗██╗   ██╗
+      ██╔══██╗████╗  ██║╚══███╔╝██║  ██║██║╚██╗ ██╔╝██║   ██║
+      ███████║██╔██╗ ██║  ███╔╝ ███████║██║ ╚████╔╝ ██║   ██║
+      ██╔══██║██║╚██╗██║ ███╔╝  ██╔══██║██║  ╚██╔╝  ██║   ██║
+      ██║  ██║██║ ╚████║███████╗██║  ██║██║   ██║   ╚██████╔╝
+      ╚═╝  ╚═╝╚═╝  ╚═══╝╚══════╝╚═╝  ╚═╝╚═╝   ╚═╝    ╚═════╝
+        
+        `,
+    "已上线",
+    dnum,
+    "天",
+    "©2025 By 安知鱼 V1.6.14",
+  ];
+  const ascll2 = [`NCC2-036`, `调用前置摄像头拍照成功，识别为【小笨蛋】.`, `Photo captured: `, `🤪`];
+
+  setTimeout(
+    Log.bind(
+      console,
+      `\n%c${ascll[0]} %c ${ascll[1]} %c ${ascll[2]} %c${ascll[3]}%c ${ascll[4]}%c ${ascll[5]}\n\n%c ${ascll[6]}\n`,
+      "color:#425AEF",
+      "",
+      "color:#425AEF",
+      "color:#425AEF",
+      "",
+      "color:#425AEF",
+      ""
+    )
+  );
+  setTimeout(
+    Log.bind(
+      console,
+      `%c ${ascll2[0]} %c ${ascll2[1]} %c \n${ascll2[2]} %c\n${ascll2[3]}\n`,
+      "color:white; background-color:#4fd953",
+      "",
+      "",
+      'background:url("https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/tinggge.gif") no-repeat;font-size:450%'
+    )
+  );
+
+  setTimeout(Log.bind(console, "%c WELCOME %c 你好，小笨蛋.", "color:white; background-color:#4f90d9", ""));
+
+  setTimeout(
+    console.warn.bind(
+      console,
+      "%c ⚡ Powered by 安知鱼 %c 你正在访问 Weiquan Huang 的博客.",
+      "color:white; background-color:#f0ad4e",
+      ""
+    )
+  );
+
+  setTimeout(Log.bind(console, "%c W23-12 %c 你已打开控制台.", "color:white; background-color:#4f90d9", ""));
+
+  setTimeout(
+    console.warn.bind(console, "%c S013-782 %c 你现在正处于监控中.", "color:white; background-color:#d9534f", "")
+  );
+});</script><script async src="/anzhiyu/random.js"></script><script async="async">(function () {
+  var grt = new Date("03/03/2025 19:34:34"); //设置网站上线时间
+  var now = new Date();
+  var dnum;
+  var hnum;
+  var mnum;
+  var snum;
+  var nowHour;
+
+  // 计算并更新天数、小时数、分钟数和秒数
+  function updateTime() {
+    now = new Date(); // 更新 now 的值
+    nowHour = now.getHours(); // 更新 nowHour 的值
+    var days = (now - grt) / 1000 / 60 / 60 / 24;
+    dnum = Math.floor(days);
+    var hours = (now - grt) / 1000 / 60 / 60 - 24 * dnum;
+    hnum = Math.floor(hours);
+    if (String(hnum).length == 1) {
+      hnum = "0" + hnum;
+    }
+    var minutes = (now - grt) / 1000 / 60 - 24 * 60 * dnum - 60 * hnum;
+    mnum = Math.floor(minutes);
+    if (String(mnum).length == 1) {
+      mnum = "0" + mnum;
+    }
+    var seconds = (now - grt) / 1000 - 24 * 60 * 60 * dnum - 60 * 60 * hnum - 60 * mnum;
+    snum = Math.round(seconds);
+    if (String(snum).length == 1) {
+      snum = "0" + snum;
+    }
+  }
+
+  // 更新网页中显示的网站运行时间
+  function updateHtml() {
+    const footer = document.getElementById("footer");
+    if (!footer) return
+    let currentTimeHtml = "";
+    if (nowHour < 18 && nowHour >= 9) {
+      // 如果是上班时间，默认就是"安知鱼-上班摸鱼中.svg"图片，不需要更改
+      currentTimeHtml = `本站居然运行了 ${dnum} 天<span id='runtime'> ${hnum} 小时 ${mnum} 分 ${snum} 秒 </span><i class='anzhiyufont anzhiyu-icon-heartbeat' style='color:red'></i>`;
+    } else {
+      // 如果是下班时间，插入"安知鱼-下班啦.svg"图片
+      let img = document.querySelector("#workboard .workSituationImg");
+      if (img != null) {
+        img.src = "https://npm.elemecdn.com/anzhiyu-blog@2.0.4/img/badge/安知鱼-下班啦.svg";
+        img.title = "下班了就该开开心心的玩耍，嘿嘿~";
+        img.alt = "下班了就该开开心心的玩耍，嘿嘿~";
+      }
+
+      currentTimeHtml = `本站居然运行了 ${dnum} 天<span id='runtime'> ${hnum} 小时 ${mnum} 分 ${snum} 秒 </span><i class='anzhiyufont anzhiyu-icon-heartbeat' style='color:red'></i>`;
+    }
+
+    if (document.getElementById("runtimeTextTip")) {
+      document.getElementById("runtimeTextTip").innerHTML = currentTimeHtml;
+    }
+  }
+
+  setInterval(() => {
+    updateTime();
+    updateHtml();
+  }, 1000);
+})();</script><div class="js-pjax"><input type="hidden" name="page-type" id="page-type" value="post"></div><script>var visitorMail = "";
+</script><script async data-pjax src="https://cdn.cbd.int/anzhiyu-theme-static@1.0.0/waterfall/waterfall.js"></script><script src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/qrcodejs/1.0.0/qrcode.min.js"></script><link rel="stylesheet" href="https://cdn.cbd.int/anzhiyu-theme-static@1.1.9/icon/ali_iconfont_css.css"><link rel="stylesheet" href="https://cdn.cbd.int/anzhiyu-theme-static@1.0.0/aplayer/APlayer.min.css" media="print" onload="this.media='all'"><script src="https://cdn.cbd.int/anzhiyu-blog-static@1.0.1/js/APlayer.min.js"></script><script src="https://cdn.cbd.int/hexo-anzhiyu-music@1.0.1/assets/js/Meting2.min.js"></script><script src="https://cdn.cbd.int/pjax@0.2.8/pjax.min.js"></script><script>let pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+  // removeEventListener scroll 
+  anzhiyu.removeGlobalFnEvent('pjax')
+  anzhiyu.removeGlobalFnEvent('themeChange')
+
+  document.getElementById('rightside').classList.remove('rightside-show')
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+})
+
+document.addEventListener('pjax:error', e => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script charset="UTF-8" src="https://cdn.cbd.int/anzhiyu-theme-static@1.1.5/accesskey/accesskey.js"></script></div><div id="popup-window"><div class="popup-window-title">通知</div><div class="popup-window-divider"></div><div class="popup-window-content"><div class="popup-tip">你好呀</div><div class="popup-link"><i class="anzhiyufont anzhiyu-icon-arrow-circle-right"></i></div></div></div></body></html>
