@@ -1,0 +1,589 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"><title>RDMA入门记录 | Hexo</title><meta name="keywords" content="RDMA,知乎,Coursera"><meta name="author" content="Weiquan Huang,hwqqz678@sjtu.edu.cn"><meta name="copyright" content="Weiquan Huang"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#f7f9fe"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-touch-fullscreen" content="yes"><meta name="apple-mobile-web-app-title" content="RDMA入门记录"><meta name="application-name" content="RDMA入门记录"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="#f7f9fe"><meta property="og:type" content="article"><meta property="og:title" content="RDMA入门记录"><meta property="og:url" content="https://userkangkang.github.io/project/2025/03/06/rdma/index.html"><meta property="og:site_name" content="Hexo"><meta property="og:description" content="chp1 Intro 通过RDMA传输的数据，会直接跳过操作系统（CPU），从软件层直接到硬件层并直接发送（需要有RDMA网卡） 传输数据不需要经过操作系统，但是如果是为了传输而创建资源的过程（比如queue、连接、device driver），则需要经过操作系统 RDMA会直接将数据传送给目标主机"><meta property="og:locale" content="zh-CN"><meta property="og:image" content="https://avatars.githubusercontent.com/u/114564389?v=4"><meta property="article:author" content="Weiquan Huang"><meta property="article:tag"><meta name="twitter:card" content="summary"><meta name="twitter:image" content="https://avatars.githubusercontent.com/u/114564389?v=4"><meta name="description" content="chp1 Intro 通过RDMA传输的数据，会直接跳过操作系统（CPU），从软件层直接到硬件层并直接发送（需要有RDMA网卡） 传输数据不需要经过操作系统，但是如果是为了传输而创建资源的过程（比如queue、连接、device driver），则需要经过操作系统 RDMA会直接将数据传送给目标主机"><link rel="shortcut icon" href="/favicon.ico"><link rel="canonical" href="https://userkangkang.github.io/project/2025/03/06/rdma/"><link rel="preconnect" href="//cdn.cbd.int"/><meta name="google-site-verification" content="xxx"/><meta name="baidu-site-verification" content="code-xxx"/><meta name="msvalidate.01" content="xxx"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.cbd.int/node-snackbar@0.1.16/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.cbd.int/@fancyapps/ui@5.0.28/dist/fancybox/fancybox.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  linkPageTop: undefined,
+  peoplecanvas: {"enable":true,"img":"https://upload-bbs.miyoushe.com/upload/2024/07/27/125766904/ba62475f396df9de3316a08ed9e65d86_5680958632268053399..png"},
+  postHeadAiDescription: {"enable":true,"gptName":"AnZhiYu","mode":"local","switchBtn":false,"btnLink":"https://afdian.net/item/886a79d4db6711eda42a52540025c377","randomNum":3,"basicWordCount":1000,"key":"xxxx","Referer":"https://xx.xx/"},
+  diytitle: {"enable":true,"leaveTitle":"w(ﾟДﾟ)w 不要走！再看看嘛！","backTitle":"♪(^∇^*)欢迎肥来！"},
+  LA51: undefined,
+  greetingBox: undefined,
+  twikooEnvId: '',
+  commentBarrageConfig:undefined,
+  music_page_default: "nav_music",
+  root: '/',
+  preloader: {"source":3},
+  friends_vue_info: undefined,
+  navMusic: true,
+  mainTone: {"mode":"api","api":"https://img2color-go.vercel.app/api?img=","cover_change":true},
+  authorStatus: {"skills":null},
+  algolia: undefined,
+  localSearch: undefined,
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"简","rightMenuMsgToTraditionalChinese":"转为繁体","rightMenuMsgToSimplifiedChinese":"转为简体"},
+  noticeOutdate: {"limitDay":365,"position":"top","messagePrev":"It has been","messageNext":"days since the last update, the content of the article may be outdated."},
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":330},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    simplehomepage: true,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"copy":true,"copyrightEbable":false,"limitCount":50,"languages":{"author":"作者: Weiquan Huang","link":"链接: ","source":"来源: Hexo","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。","copySuccess":"复制成功，复制和转载请标注本文地址"}},
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#425AEF","bgDark":"#1f1f1f","position":"top-center"},
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.cbd.int/flickr-justified-gallery@2.1.2/dist/fjGallery.min.js',
+      css: 'https://cdn.cbd.int/flickr-justified-gallery@2.1.2/dist/fjGallery.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isAnchor: false,
+  shortcutKey: undefined,
+  autoDarkmode: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  configTitle: 'Hexo',
+  title: 'RDMA入门记录',
+  postAI: '',
+  pageFillDescription: 'chp1 Intro, 补充, chp2 Basics, 补充, chp3 Operations, 补充, chp4 Fundational Code, chp5 Connection, chp6 RCpingpong, chp7 Memory Region, chp8 Protection Domain, chp9 Address Handle, chp10 QP, chp11 CQ, chp12 SRQ, chp13 Memory Window, chp14 Verb API, chp15 prp prepare study, UD RC DCT, chp16 programming tutorial, Example 1 RDMA sendx2Frecv, Example 2 RDMA write, Example 3 Opt Tech, Example 4 SRQ, Practical considerations, UD or RC?, polling imcoming messages when using RDMA write通过传输的数据会直接跳过操作系统从软件层直接到硬件层并直接发送需要有网卡传输数据不需要经过操作系统但是如果是为了传输而创建资源的过程比如连接则需要经过操作系统会直接将数据传送给目标主机的对应内存地址所以叫做普通的传输会先将数据复制到内存的某个内然后传到接收方的内后复制到真正的存储位置但是号称也就是说不会进行的复制而是直接从对应位置获取数据到物理层并且直接将数据发送到目标的内存位置的传输一方面具有的可靠性和连接性另一方面具有的速度和可拓展性补充跳过操作系统主要是跳过因为内核主要是通过来进行管理的而在网络通信中充当的是一个的角色比较浪费宝贵的计算资源因为的封装需要内核因此用户内存区域的数据会复制到内核内存区域同时封装了报头的数据需要复制到内核的网络缓冲区相当于做了很多次封装报头通过硬件封装主要作用是给腾出计算资源发起的单方面通信对方的是不感知到的但是仍然要具有能够访问对面内存空间的是一个用来分担传输数据的中转站用于寄存数据便于和网卡的数据交互的编程接口是具有三种对象是应用层发给硬件的指令是硬件描述完成的情况有这种其中前两个存在于软件层后两个存在于硬件层的数据传输流程见下图首先软件向硬件的发送期望硬件发送数据给对方从出去之后就会被执行将在某个位置的数据直接传给对应主机并向软件发送表示完成请求接收方会发送接收准备相关的通过这会使得数据传向指定的内存区域的内存管理除了具有讲述的内存管理的一系列机制外还有诸如权限控制本地远端访问内存锁定硬件直接访问内存的附加功能补充接收端的实际上是在接收端准备好注册了的内存资源之后就会去预先向接受队列中放入这样这些内存空间可以直接被远程的写入内存中内存被写入后接收方会接收到通知将标记为完成根据需要继续放置新的专有名词用于存放在内存上是软件向硬件发送的数据传送指令这种告知硬件的方式被称为指的是一对和都是的一种技术中通信的基本单元是每个进程可以有多个每个本地可以关联一个远端的我们用节点的给节点的发送数据来描述一次通信是一个节点的编号共享接收队列即几个共享同一个的时候这个就是由于相对于使用较少而且消耗内存资源因此可以通过这种方式来节省内存完成队列其承载的单元为作为硬件发送给软件的任务报告描述任务被正确执行与否以及错误原因整个流程注意硬件是需要在收到之后才会触发将内的发送给硬件进行处理的动作同时注意如果是非可靠性传输那么不会有同时发送端将数据传送到链路层之后直接生成这是在语境下的工作请求和工作完成通过下发驱动会发送给根据的说法接收方会先将自己接收队列的信息给发送方这样发送方可以根据这些信息选择性的去发送数据做到发送接收的目标地址一一对应一方面接收方需要先由软件发送一个让硬件准备好接收数据另一方面发送方会由软件发送一个让排队处理这个请求具体是将内存对应位置的数据打包发送到链路层并且生成一个他们是单方向行为比如是发送方单方面将数据写入到接收方的某个内存中内存位置由发送方指定接收方负责判断内存的有效权限以及是发送方发送一个读取请求而接收方负责从指定内存位置中返回数据给发送方这是一种远程的原子操作发送方向接收方发送一个操作某个数据的原子指令接收方做出相应的操作期间过程不会被打断比如两种加锁原子操作序列补充单端操作指的是以为例具体的流程如下严谨的说第步的只能保证数据报被远端网卡暂存而非发送了单端操作需要能够访问远端指定内存区域的获取一般是在过程获得因为生成总归是需要管理内存的来参与的事实上过程也需要的参与因为端分配接收的时候需要告知而才是真的不需要的参与也是传输大量文件所使用的操作是用来传递控制信息的才是读写数据的大头的可靠服务使用了机制数据校验和机制以及保序机制基本类似于计网中所学的机制的连接事实上连接就是一对互相具有对方的和同时具有自己的一些上下文用于存储自身信息基于连接其实也就是基于上记录的对方的和而已而基于数据报的传送一个不和别的建立连接意味着他的数据可以发送给不同的只需要这些数据自带报头即可代表可靠代表不可靠代表连接代表数据报因此有种的基本服务类型注册内存向发送具有发送指令的注意需要先分配空间再处理同时支持一次性传入多个这是通过的数据结构中蕴含了链表来实现的在处理函数中会将链表内的请求一并处理掉必须的查看的请求会带上源请求的一些信息同时会附带一些错误标识符号具体的解释可以看注释建立连接需要获取地址信息而地址信息又需要某种连接来交换这些地址一种方式是带外通信也就是借助不同的传输来交换地址比如另一种方式是通信管理器首先需要再连接建立之前交换编号类似于端口和数据报序列号等同时还需要就达成一致等而所谓的其实和的连接步骤差不多服务端客户端随后可以使用或者来进行发送操作的编程是一个用于性能测试的示例程序可以测试连接的性能是一个封装了操作所需的各个组件和状态信息的结构体包括可访问内存区域完成队列函数执行了初始化的上下文比如创建一个空间并且分配一个可以用于的空间函数创建了一个应用程序和设备共享的内存空间以设备作为参数传入用途是应用程序和硬件设备的直接通信函数用于创建一个这可以让和硬件通过一个完成通道来接受完成事件而不是轮询地去查找完成队列函数用于创建这可以确保内存区域的访问完全性确定什么设备可以访问什么内存函数用于注册内存传入访问权限宏来注册内存以及确定访问权限比如表示本地可写可读但是外部设备无权限函数用于创建可以设置队列的长度函数用于创建可以设置的时间完成后的完成队列容量单次操作的内存块数量上限等函数用于修改销毁的顺序和创建的顺序相反因为销毁需要先销毁无依赖关系的项比如先销毁再销毁是因为用到了数据如何传输将发送给传入作为参数以及传入要处理的数将的内容封装到自定义结构体后通过传给硬件的可以设置为以及等将发送给在定义结构体的时候设置了一些参数有一定意义表示可读可写表示会在成功发送后就之间创建函数执行过程中会先发送初始的同时不断监听获取到完成的请求后检测其为前者给计数即可后者需要根据和的数量比对判断是否要继续发送新的的连接建立利用来分享的地址然后会互相连接将本地和远程的信息封装到内传入中将的状态设置为是指最大传输单元如果传输的数据超过了这个大小会被分解是远端在远端的目的号码类似于再将设置为状态如何控制操作的可操作空间如何规避单端操作下发送端恶意采用关键内存的虚拟地址来破坏远端内存的概念被提出是一块特殊的内存被注册了的才能被网卡直接访问正常来说到的转换是通过和来实现的但是要求不走因此对于的转换需要在各自进程的内存中设置一块转换表控制硬件访问内存的权限通过和来验证访问权限验证本地的操作能否执行验证从远端传来的操作能否执行在真正的通信之前都会通过某些方式建立一条交换通信信息的链路并交换信息建链握手锁页机制由于机制可能会让注册的内存被换出这样映射关系就失去了意义因为这肯定会导致映射关系的改变该过程绕过因此这块内存会被在物理内存中完成通信才会让用户主动销毁这片保护域的作用主要在于将特定的和设定在一个域中只允许域内的访问域内的如图的无法访问的因为首先的数据会传送给的而如果其想要访问的物理内存空间是的空间那么判定和不在一个中就会拒绝访问协议中规定每个节点至少要有一个每个必须属于一个每个必须属于一个在节点内可见节点外不可见创建和之前必须创建然后传入这个的指针或者称为句柄是存放目标节点信息的对象在进行服务类型的通信之前用户需要先为每个可能的对端节点创建一个每个被创建的时候会返回一个索引给用户用户在下发的时候直接传入这个索引就可以附加上目标节点的信息了在协议中标识目标主机的是和地址创建的过程是内核态的也受到的管理为什么需要在硬件中的实体只是一段存储空间只知道起始地址和大小需要开辟一块的空间存储各个的信息方便查找对应的的信息状态等一个对上层的接口有两种代表通信过程发起方的操作包括就是发送请求的叫法为表示要处理完旧的才会处理新的当一个对应的没有生成的时候对应的内存区域的内容是不可信的区域是被占用的因为这意味着传输并没有完成在的通信中发送方需要接收到接受方的才能生成通信则只需要发送出去就可以生成操作则是成功写入后就会生成一个可以和多个关联而一对中的可以各自关联不同的对于同一个的会按照在的顺序先后生成对于之间不能保证生成并放入的的顺序的同样也需要来记录信息方便硬件查找协议的种错误类型立即错误完成错误异步错误立即错误立即停止操作返回错误给上级用户比如的时候传入非法操作码立即退出流程回收完成错误通过将错误信息返回给上层用户比如长时间没有接收到因为到达了硬件所以硬件会产生对应的异步错误通过中断事件的方式上报给上层用户软件一直没有取出过多的导致溢出没有从中得到信息就会调用事件处理函数完成错误可以是在本地检测到的或者在中检测到的也可以是在本地检测到的都会将错误信息添加到中理解软件何时以及如何接收到来自硬件的中断模式网卡收到数据包之后立即打断让先去处理网卡的数据包每个网卡都会注册一个事件处理函数来处理异步事件轮询模式网卡收到数据先存到缓冲区每隔一段时间去将缓冲区数据带走一波进行处理现在一般根据业务的需求量来动态的确定使用中断模式还是轮询模式主要就是为了解决由于不被经常使用导致的内存资源浪费的问题在常规的中为了预防比较坏的情况软件都会向中的发送足量的接受而这些不仅本身占据空间而且他们所蕴含的内存区域也被视作是不可被其他操作占用的而且这些空间也很难说会被用到很多和的区别就在于与之关联的都会通过这个来发送可以理解为的子集也是用于数据的获取和访问但是提供更为灵活的权限控制本身也是绑定在一个已经注册的上首先访问一块远端的内存需要远端内存支持来自远端的访问还需要访问者持有才能访问这段分为和的作用主要是提供不需要陷入内核态的属性修改由于是内核管理的因此其修改的时候是需要经过内核态的权限之间的关系将关联到上并且生成配置读写权限有绑定的不能取消注册方式或者前者的封装用于无效化分为和区别是本地将取消还是远端将自己所用的访问本端的取消的类型遇到再学之知乎控制层面经过了多次陷入内核态的函数调用后数据层面就不需要通过陷入内核态的调用了陷入内核态主要是上下文的切换权限等的更改比较耗时相对于的加速并没有对的加速来的明显因为经过了软件层那么握手的耗时确实比较长一些的优势主要是一组可以自由地向不同的发送读取请求而不是像一样绑定链接的比较小导致需要在接收端重组的频率比较高需要的目标定位头部还是比较大的不保序会丢包无保证机制创建类型的连接所需步骤本地获取设备打开设备创建基于设备的创建获取网卡设备的等信息注册基于需要手动管理允许因此不需要强制机制不清楚利用设备中的等信息创建基于创建基于和创建指定链接方式为连接以服务器端为例连接并且交换信息的时候使用通信获取远程设备的将自身和远端各自配对的发送给远端有个属性用来标识自身信息可用于标识连接信息并确认向哪个发送将自身的设置为状态解析服务端的操作服务端创建客户端数量个线程用于处理和客户端的连接服务端预先并发送一个带有提示对方信息的提示对方请开始请求随后每次接收到类型的完成则计数继续发并且发回一个来做最后统计到了一定数量达到状态开始计时达到结束状态结束计时告知对方结束并关闭连接已经可以确定在接收到一个请求时会触发的出队由来给数据分配空间将空间信息传给的和以告知双方应用进程以前的硬件不支持处理无法换页因此需要将给固定在物理内存上现在的硬件支持处理可以换页也就是因此不需要强制注意在操作上远程与是无感知的因此远程的软件不会参与的处理相比较于操作需要提供和用于远程虚拟地址定位和远程认证由于属于操作对侧无感知因此对侧需要监控即将要被写的虚拟内存区域来进行接收到信息的确认新优化方法在发送的时候设置会使得时间完成后生成否则默认不生成然而每次都生成其实意义不大也会增加开销而每次都不生成则会导致没有能够出队的因为只有产生了的才能够被出队而只要某个出队了那么在这之前的都会被出队所以要选择性完成比如次一个有的常规下返回只代表被发送到了设备的方式而维护了指向所欲取内存的地址执行命令的时候需要通过方式将数据传送到设备并发送将小规模的数据附带到中硬件支持的大小不确定因此需要软件自己试错并指定指定的为实际上优化效果一般可以给设置一个链表第一次通过传输后面通过传输和剩余的实际优化效果高并发不好低并发好不是越大越好在创建的时候指定就会让他的被指定到这个中关于节约内存的好处不再分析知乎文章有通过发来信息的来确定对侧是谁因为共用就没有单独的连接信息所以需要指定来获取对侧信息相对于的速度优势并没有相对于的明显其最主要的优势在于一个可以向多个发送信息然而具有不少的的限制使得需要切分大数据需要一定编程工作比较大占空间无序不可靠因此一般不用作为操作的对侧监控到哪一片区域被写了还是很重要的不能老是蹲点守候因此需要设置操作的为这样就可以生成并且被应用程序读取了',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2025-03-06 21:58:15',
+  postMainColor: '',
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#18171d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#f7f9fe')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+          const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+          const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+          const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+          if (t === undefined) {
+            if (isLightMode) activateLightMode()
+            else if (isDarkMode) activateDarkMode()
+            else if (isNotSpecified || hasNoSupport) {
+              const now = new Date()
+              const hour = now.getHours()
+              const isNight = hour <= 6 || hour >= 18
+              isNight ? activateDarkMode() : activateLightMode()
+            }
+            window.matchMedia('(prefers-color-scheme: dark)').addListener(e => {
+              if (saveToLocal.get('theme') === undefined) {
+                e.matches ? activateDarkMode() : activateLightMode()
+              }
+            })
+          } else if (t === 'light') activateLightMode()
+          else activateDarkMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><meta name="generator" content="Hexo 7.3.0"></head><body data-type="anzhiyu"><div id="web_bg"></div><div id="an_music_bg"></div><div id="loading-box" onclick="document.getElementById(&quot;loading-box&quot;).classList.add(&quot;loaded&quot;)"><div class="loading-bg"><img class="loading-img nolazyload" alt="加载头像" src="https://npm.elemecdn.com/anzhiyu-blog-static@1.0.4/img/avatar.jpg"/><div class="loading-image-dot"></div></div></div><script>const preloader = {
+  endLoading: () => {
+    document.getElementById('loading-box').classList.add("loaded");
+  },
+  initLoading: () => {
+    document.getElementById('loading-box').classList.remove("loaded")
+  }
+}
+window.addEventListener('load',()=> { preloader.endLoading() })
+setTimeout(function(){preloader.endLoading();},10000)
+
+if (true) {
+  document.addEventListener('pjax:send', () => { preloader.initLoading() })
+  document.addEventListener('pjax:complete', () => { preloader.endLoading() })
+}</script><link rel="stylesheet" href="https://cdn.cbd.int/anzhiyu-theme-static@1.1.10/progress_bar/progress_bar.css"/><script async="async" src="https://cdn.cbd.int/pace-js@1.2.4/pace.min.js" data-pace-options="{ &quot;restartOnRequestAfter&quot;:false,&quot;eventLag&quot;:false}"></script><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><div id="nav-group"><span id="blog_name"><div class="back-home-button"><i class="anzhiyufont anzhiyu-icon-grip-vertical"></i><div class="back-menu-list-groups"><div class="back-menu-list-group"><div class="back-menu-list-title">网页</div><div class="back-menu-list"><a class="back-menu-item" target="_blank" rel="noopener" href="https://github.com/userKangkang" title="Github"><img class="back-menu-item-icon" src="/img/github-mark.svg" alt="Github"/><span class="back-menu-item-text">Github</span></a></div></div></div></div><a id="site-name" href="/" accesskey="h"><div class="title">Hexo</div><i class="anzhiyufont anzhiyu-icon-house-chimney"></i></a></span><div class="mask-name-container"><div id="name-container"><a id="page-name" href="javascript:anzhiyu.scrollToDest(0, 500)">PAGE_NAME</a></div></div><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 文章</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/archives/"><i class="anzhiyufont anzhiyu-icon-box-archive faa-tada" style="font-size: 0.9em;"></i><span> 隧道</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/categories/"><i class="anzhiyufont anzhiyu-icon-shapes faa-tada" style="font-size: 0.9em;"></i><span> 分类</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/tags/"><i class="anzhiyufont anzhiyu-icon-tags faa-tada" style="font-size: 0.9em;"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 友链</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/link/"><i class="anzhiyufont anzhiyu-icon-link faa-tada" style="font-size: 0.9em;"></i><span> 友人帐</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/fcircle/"><i class="anzhiyufont anzhiyu-icon-artstation faa-tada" style="font-size: 0.9em;"></i><span> 朋友圈</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/comments/"><i class="anzhiyufont anzhiyu-icon-envelope faa-tada" style="font-size: 0.9em;"></i><span> 留言板</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 我的</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/music/"><i class="anzhiyufont anzhiyu-icon-music faa-tada" style="font-size: 0.9em;"></i><span> 音乐馆</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/bangumis/"><i class="anzhiyufont anzhiyu-icon-bilibili faa-tada" style="font-size: 0.9em;"></i><span> 追番页</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/album/"><i class="anzhiyufont anzhiyu-icon-images faa-tada" style="font-size: 0.9em;"></i><span> 相册集</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/air-conditioner/"><i class="anzhiyufont anzhiyu-icon-fan faa-tada" style="font-size: 0.9em;"></i><span> 小空调</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 关于</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/about/"><i class="anzhiyufont anzhiyu-icon-paper-plane faa-tada" style="font-size: 0.9em;"></i><span> 关于本人</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/essay/"><i class="anzhiyufont anzhiyu-icon-lightbulb faa-tada" style="font-size: 0.9em;"></i><span> 闲言碎语</span></a></li><li><a class="site-page child faa-parent animated-hover" href="javascript:toRandomPost()"><i class="anzhiyufont anzhiyu-icon-shoe-prints1 faa-tada" style="font-size: 0.9em;"></i><span> 随便逛逛</span></a></li></ul></div></div></div><div id="nav-right"><div class="nav-button" id="randomPost_button"><a class="site-page" onclick="toRandomPost()" title="随机前往一个文章" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-dice"></i></a></div><input id="center-console" type="checkbox"/><label class="widget" for="center-console" title="中控台" onclick="anzhiyu.switchConsole();"><i class="left"></i><i class="widget center"></i><i class="widget right"></i></label><div id="console"><div class="console-card-group-reward"><ul class="reward-all console-card"><li class="reward-item"><a href="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-weichat.png" target="_blank"><img class="post-qr-code-img" alt="微信" src="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-weichat.png"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-alipay.png" target="_blank"><img class="post-qr-code-img" alt="支付宝" src="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-alipay.png"/></a><div class="post-qr-code-desc">支付宝</div></li></ul></div><div class="console-card-group"><div class="console-card-group-left"><div class="console-card" id="card-newest-comments"><div class="card-content"><div class="author-content-item-tips">互动</div><span class="author-content-item-title"> 最新评论</span></div><div class="aside-list"><span>正在加载中...</span></div></div></div><div class="console-card-group-right"><div class="console-card tags"><div class="card-content"><div class="author-content-item-tips">兴趣点</div><span class="author-content-item-title">寻找你感兴趣的领域</span><div class="card-tags"><div class="item-headline"></div><div class="card-tag-cloud"><a href="/tags/Coursera/" style="font-size: 1.05rem;">Coursera<sup>1</sup></a><a href="/tags/RDMA/" style="font-size: 1.05rem;">RDMA<sup>1</sup></a><a href="/tags/%E4%B8%AD%E5%9B%BD%E7%A7%91%E5%AD%A6%E6%8A%80%E6%9C%AF%E5%A4%A7%E5%AD%A6/" style="font-size: 1.05rem;">中国科学技术大学<sup>5</sup></a><a href="/tags/%E5%85%A5%E9%97%A8/" style="font-size: 1.05rem;">入门<sup>1</sup></a><a href="/tags/%E7%9F%A5%E4%B9%8E/" style="font-size: 1.05rem;">知乎<sup>1</sup></a><a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E5%B7%A5%E7%A8%8B/" style="font-size: 1.05rem;">计算机系统工程<sup>9</sup></a><a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" style="font-size: 1.05rem;">计算机网络<sup>5</sup></a></div></div><hr/></div></div><div class="console-card history"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-box-archiv"></i><span>文章</span></div><div class="card-archives"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-archive"></i><span>归档</span></div><ul class="card-archive-list"><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2025/03/"><span class="card-archive-list-date">三月 2025</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">16</span><span>篇</span></div></a></li></ul></div><hr/></div></div></div><div class="button-group"><div class="console-btn-item"><a class="darkmode_switchbutton" title="显示模式切换" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-moon"></i></a></div><div class="console-btn-item" id="consoleHideAside" onclick="anzhiyu.hideAsideBtn()" title="边栏显示控制"><a class="asideSwitch"><i class="anzhiyufont anzhiyu-icon-arrows-left-right"></i></a></div><div class="console-btn-item" id="consoleMusic" onclick="anzhiyu.musicToggle()" title="音乐开关"><a class="music-switch"><i class="anzhiyufont anzhiyu-icon-music"></i></a></div></div><div class="console-mask" onclick="anzhiyu.hideConsole()" href="javascript:void(0);"></div></div><div class="nav-button" id="nav-totop"><a class="totopbtn" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i><span id="percent" onclick="anzhiyu.scrollToDest(0,500)">0</span></a></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);" title="切换"><i class="anzhiyufont anzhiyu-icon-bars"></i></a></div></div></div></nav><div id="post-info"><div id="post-firstinfo"><div class="meta-firstline"><a class="post-meta-original">原创</a><span class="post-meta-categories"><span class="post-meta-separator"></span><i class="anzhiyufont anzhiyu-icon-inbox post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" itemprop="url">计算机网络</a></span><span class="article-meta tags"><a class="article-meta__tags" href="/tags/RDMA/" tabindex="-1" itemprop="url"> <span> <i class="anzhiyufont anzhiyu-icon-hashtag"></i>RDMA</span></a><a class="article-meta__tags" href="/tags/%E7%9F%A5%E4%B9%8E/" tabindex="-1" itemprop="url"> <span> <i class="anzhiyufont anzhiyu-icon-hashtag"></i>知乎</span></a><a class="article-meta__tags" href="/tags/Coursera/" tabindex="-1" itemprop="url"> <span> <i class="anzhiyufont anzhiyu-icon-hashtag"></i>Coursera</span></a></span></div></div><h1 class="post-title" itemprop="name headline">RDMA入门记录<a class="post-edit-link" href="undefined_posts/rdma.md" title="在 GitHub 上编辑 - RDMA入门记录" target="_blank"><i class="anzhiyufont anzhiyu-icon-pencil"></i></a></h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="anzhiyufont anzhiyu-icon-calendar-days post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" itemprop="dateCreated datePublished" datetime="2025-03-06T12:32:52.435Z" title="发表于 2025-03-06 20:32:52">2025-03-06</time><span class="post-meta-separator"></span><i class="anzhiyufont anzhiyu-icon-history post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" itemprop="dateCreated datePublished" datetime="2025-03-06T13:58:15.653Z" title="更新于 2025-03-06 21:58:15">2025-03-06</time></span></div><div class="meta-secondline"><span class="post-meta-separator">       </span><span class="post-meta-position" title="作者IP属地为上海"><i class="anzhiyufont anzhiyu-icon-location-dot"></i>上海</span></div></div></div><section class="main-hero-waves-area waves-area"><svg class="waves-svg" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto"><defs><path id="gentle-wave" d="M -160 44 c 30 0 58 -18 88 -18 s 58 18 88 18 s 58 -18 88 -18 s 58 18 88 18 v 44 h -352 Z"></path></defs><g class="parallax"><use href="#gentle-wave" x="48" y="0"></use><use href="#gentle-wave" x="48" y="3"></use><use href="#gentle-wave" x="48" y="5"></use><use href="#gentle-wave" x="48" y="7"></use></g></svg></section><div id="post-top-cover"><img class="nolazyload" id="post-top-bg" src=""></div></header><main id="blog-container"><div class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container" itemscope itemtype="https://userkangkang.github.io/project/2025/03/06/rdma/"><header><a class="post-meta-categories" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" itemprop="url">计算机网络</a><a href="/tags/RDMA/" tabindex="-1" itemprop="url">RDMA</a><a href="/tags/%E7%9F%A5%E4%B9%8E/" tabindex="-1" itemprop="url">知乎</a><a href="/tags/Coursera/" tabindex="-1" itemprop="url">Coursera</a><h1 id="CrawlerTitle" itemprop="name headline">RDMA入门记录</h1><span itemprop="author" itemscope itemtype="http://schema.org/Person">Weiquan Huang</span><time itemprop="dateCreated datePublished" datetime="2025-03-06T12:32:52.435Z" title="发表于 2025-03-06 20:32:52">2025-03-06</time><time itemprop="dateCreated datePublished" datetime="2025-03-06T13:58:15.653Z" title="更新于 2025-03-06 21:58:15">2025-03-06</time></header><h3 id="chp1-Intro"><a href="#chp1-Intro" class="headerlink" title="chp1 Intro"></a>chp1 Intro</h3><ul>
+<li>通过RDMA传输的数据，会直接跳过操作系统（CPU），从软件层直接到硬件层并直接发送（需要有RDMA网卡）</li>
+<li>传输数据不需要经过操作系统，但是如果是为了传输而创建资源的过程（比如queue、连接、device driver），则需要经过操作系统</li>
+<li>RDMA会直接将数据传送给目标主机的对应内存地址，所以叫做Remote Direct Memory Access</li>
+<li>普通的传输会先将数据复制到内存的某个buffer内，然后传到接收方的buffer内后复制到真正的存储位置；但是RDMA号称Zero Copy，也就是说不会进行buffer的复制，而是直接从对应位置获取数据到物理层，并且直接将数据发送到目标的内存位置</li>
+<li>RDMA的传输一方面具有TCP的可靠性和连接性，另一方面具有UDP的速度和可拓展性（scalability）</li>
+</ul>
+<h5 id="补充"><a href="#补充" class="headerlink" title="补充"></a>补充</h5><ul>
+<li>跳过操作系统主要是跳过CPU，因为内核主要是通过CPU来进行管理的，而CPU在网络通信中充当的是一个copy的角色，比较浪费宝贵的计算资源（因为TCP&#x2F;IP的封装需要内核，因此用户内存区域的数据会复制到内核内存区域，同时封装了TCP&#x2F;IP报头的数据需要复制到内核的网络缓冲区，相当于做了很多次copy）；RDMA封装报头通过硬件封装，主要作用是给CPU腾出计算资源</li>
+<li>RDMA发起的单方面通信，对方的CPU是不感知到的，但是仍然要具有能够访问对面内存空间的key</li>
+<li>DMA是一个用来分担CPU传输RDMA数据的中转站，用于寄存数据，便于RAM和网卡的数据交互</li>
+</ul>
+<h3 id="chp2-Basics"><a href="#chp2-Basics" class="headerlink" title="chp2 Basics"></a>chp2 Basics</h3><ul>
+<li>RDMA的编程接口是Verbs APIs，具有request、completion、queue三种对象，request是应用层发给硬件的“指令”，completion是硬件描述完成request的情况，queue有request&#x2F;completion&#x2F;send&#x2F;receive这4种，其中前两个存在于软件层，后两个存在于硬件层</li>
+<li>RDMA的数据传输流程见下图：首先软件向硬件的send queue发送request期望硬件发送数据给对方，request从send queue出去之后就会被执行，将在某个位置的数据直接传给对应主机，并向软件发送completion表示完成请求；接收方会发送接收准备相关的request，通过receive queue，这会使得数据传向指定的内存区域<img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/Pasted%20image%2020240904203610.png"></li>
+<li>RDMA的内存管理除了具有ICS讲述的内存管理的一系列机制外，还有诸如“权限控制（本地&#x2F;远端访问）”、“内存锁定”、“硬件直接访问内存”的附加功能</li>
+</ul>
+<h5 id="补充-1"><a href="#补充-1" class="headerlink" title="补充"></a>补充</h5><ul>
+<li>rdma 接收端的recv work request实际上是在接收端准备好注册了的内存资源之后就会去预先向接受队列中放入recv work request，这样这些内存空间可以直接被远程的sender写入内存中；内存被写入后，接收方会接收到通知，将recv request标记为完成，根据需要继续放置新的recv work request</li>
+<li>专有名词：<ul>
+<li>work queue WQ 用于存放WQE，在<strong>内存</strong>上</li>
+<li>work queue enrty&#x2F;element WQE 是软件向硬件发送的rdma数据传送指令，这种告知硬件的方式被称为post</li>
+<li>queue pair QP 指的是一对SQ和RQ</li>
+<li>send queue SQ receive queue RQ 都是WQ的一种<img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/Pasted%20image%2020240918203554.png"></li>
+<li>RDMA技术中通信的基本单元是QP，每个进程可以有多个QP，每个本地QP可以关联一个远端的QP；我们用“节点A的QP3给节点B的QP4发送数据”来描述一次RDMA通信<img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/Pasted%20image%2020240918204050.png">QPN是一个节点的编号number</li>
+<li>shared receive queue SRQ 共享接收队列，即几个QP共享同一个RQ的时候，这个RQ就是SRQ；由于RQ相对于SQ使用较少，而且消耗内存资源，因此可以通过这种方式来节省内存</li>
+<li>completion queue CQ 完成队列，其承载的单元为CQE，作为硬件发送给软件的WQE任务报告，描述任务被正确执行与否，以及错误原因</li>
+<li>整个流程，注意硬件是需要在收到send request&#x2F;write request之后才会触发将RQ内的WQE发送给硬件进行处理的动作<img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/Pasted%20image%2020240918210122.png">同时注意如果是非可靠性传输，那么不会有ACK，同时发送端将数据传送到链路层之后直接生成CQE</li>
+<li>work request, work completion WR&#x2F;WC 这是在API语境下的工作请求和工作完成，通过API下发WR&#x2F;WC，驱动会发送WQE&#x2F;CQE给WQ&#x2F;CQ</li>
+<li>根据AI的说法，接收方会先将自己接收队列的信息给发送方，这样发送方可以根据这些信息选择性的去发送数据，做到发送接收的目标地址一一对应</li>
+</ul>
+</li>
+</ul>
+<h3 id="chp3-Operations"><a href="#chp3-Operations" class="headerlink" title="chp3 Operations"></a>chp3 Operations</h3><ul>
+<li><code>send</code> <code>receive</code> 一方面，接收方需要先由软件发送一个RR(receive request)，让RDMA硬件准备好接收数据；另一方面，发送方会由软件发送一个SR(send request)，让RDMA排队处理这个请求，具体是将内存对应位置的数据打包发送到链路层，并且生成一个completion</li>
+<li><code>write</code> <code>read</code> 他们是单方向行为，比如<code>write</code>是发送方单方面将数据写入到接收方的某个内存中（内存位置由发送方指定，接收方负责判断内存的有效&amp;权限），以及<code>read</code>是发送方发送一个读取请求，而接收方负责从指定内存位置中返回数据给发送方</li>
+<li><code>atomic operations</code> 这是一种远程的原子操作，发送方向接收方发送一个操作某个数据的原子指令，接收方做出相应的操作，期间过程不会被打断，比如<code>compare and swap</code> <code>fetch and add</code>两种加锁原子操作序列</li>
+</ul>
+<h5 id="补充-2"><a href="#补充-2" class="headerlink" title="补充"></a>补充</h5><ul>
+<li>单端操作指的是<code>write</code> <code>read</code>，以<code>write</code>为例，具体的流程如下：<img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/Pasted%20image%2020240918212724.png">严谨的说，第6步的ACK只能保证数据报被远端网卡暂存而非发送了</li>
+<li>单端操作需要能够访问远端指定内存区域的key，获取key一般是在send-recv过程获得，因为生成key总归是需要管理内存的CPU来参与的</li>
+<li>事实上send-recv过程也需要CPU的参与，因为recv端分配接收buffer的时候需要告知CPU；而write&#x2F;read才是真的不需要CPU的参与，也是传输大量文件所使用的操作（send-recv是用来传递控制信息的，write-read才是读写数据的大头）</li>
+<li>RDMA的可靠服务：使用了ACK机制、数据校验和机制以及保序机制，基本类似于计网中所学的TCP机制</li>
+<li>RDMA的连接：事实上连接就是一对QP互相具有对方的node和QPN，同时具有自己的一些QPC（queue pair context）上下文，用于存储自身QP信息；基于连接其实也就是基于QPC上记录的对方的QPN和node ip而已；而基于数据报的传送，一个QP不和别的QP建立连接，意味着他的数据可以发送给不同的QP，只需要这些数据自带报头即可<img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/Pasted%20image%2020240918215158.png"></li>
+<li>R代表可靠，U代表不可靠，C代表连接，D代表数据报；因此有RC&#x2F;RC&#x2F;UC&#x2F;UD 4种IB的基本服务类型</li>
+</ul>
+<h3 id="chp4-Fundational-Code"><a href="#chp4-Fundational-Code" class="headerlink" title="chp4 Fundational Code"></a>chp4 Fundational Code</h3><ul>
+<li>注册内存</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> size_t int;</span></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">ibv_pd</span> *pd;</span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">ibv_mr</span> *mr;</span><br><span class="line"></span><br><span class="line"><span class="comment">// memory registration</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">ibv_mr</span> *<span class="built_in">ibv_reg_mr</span>(<span class="keyword">struct</span> ibv_pd *pd, <span class="type">void</span> *addr, <span class="type">size_t</span> length, <span class="keyword">enum</span> ibv_access_flags access); <span class="comment">// access includes request permission to access the buffer and operation supportive like atomic operations.</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* Notice the following fileds in struct ibv_mr:</span></span><br><span class="line"><span class="comment">rkey - The remote key of this MR</span></span><br><span class="line"><span class="comment">lkey - The local key of this MR</span></span><br><span class="line"><span class="comment">addr - The start address of the memory buffer that this MR registerd</span></span><br><span class="line"><span class="comment">length - The size of ...</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// deregister a memory region, when there is no outstanding SR or RR that points to it.</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">ibv_dereg_mr</span><span class="params">(<span class="keyword">struct</span> ibv_mr *mr)</span></span>;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>向send queue发送具有发送指令的work request</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> size_t int </span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> uint64_t int</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> uint32_t int</span></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">ibv_pd</span> *pd;</span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">ibv_mr</span> *mr;</span><br><span class="line"></span><br><span class="line"><span class="comment">//Scatter Gather Entry</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">ibv_sge</span> &#123;</span><br><span class="line">	<span class="type">uint64_t</span> addr; <span class="comment">// Start address of the memory buffer (registered memory)</span></span><br><span class="line">	<span class="type">uint32_t</span> length; <span class="comment">// Size (in bytes) of the memory buffer</span></span><br><span class="line">	<span class="type">uint32_t</span> lkey;   <span class="comment">// lkey of Memory Region associated with this memory buffer</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">//Post Send</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">ibv_post_send</span><span class="params">(<span class="keyword">struct</span> ibv_qp *qp, <span class="keyword">struct</span> ibv_send_wr *wr,</span></span></span><br><span class="line"><span class="params"><span class="function">                  <span class="keyword">struct</span> ibv_send_wr **bad_wr)</span></span>;</span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">ibv_send_wr</span> &#123;</span><br><span class="line">	<span class="type">uint64_t</span> wr_id;            <span class="comment">// Private context that will be available in the corresponding Work Completion</span></span><br><span class="line">	<span class="keyword">struct</span> <span class="title class_">ibv_send_wr</span> *next;  <span class="comment">// Address of the next Send Request. NULL in the last Send Request</span></span><br><span class="line">	<span class="keyword">struct</span> <span class="title class_">ibv_sge</span> *sg_list;   <span class="comment">// Array of scatter/gather elements</span></span><br><span class="line">	<span class="type">int</span> num_sge;               <span class="comment">// Number of elements in sg_list</span></span><br><span class="line">	<span class="keyword">enum</span> <span class="title class_">ibv_wr_opcode</span> opcode; <span class="comment">// The opcode to be used</span></span><br><span class="line">	<span class="type">int</span> send_flags;            <span class="comment">// Send flags. Or of the following flags:</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/* IBV_SEND_FENCE  Prevent process this Send Request until the processing of previous RDMA </span></span><br><span class="line"><span class="comment">    //                   Read and Atomic operations were completed.</span></span><br><span class="line"><span class="comment">    //IBV_SEND_SIGNALED  Generate a Work Completion after processing of this Send Request ends</span></span><br><span class="line"><span class="comment">    //IBV_SEND_SOLICITED  Generate Solicited event for this message in remote side</span></span><br><span class="line"><span class="comment">    IBV_SEND_INLINE  - allow the low-level driver to read the gather buffers*/</span></span><br><span class="line"></span><br><span class="line">	<span class="type">uint32_t</span> imm_data;  <span class="comment">// Send message with immediate data (for supported opcodes)</span></span><br><span class="line"><span class="keyword">union</span> &#123;</span><br><span class="line">	 <span class="keyword">struct</span> &#123;                           <span class="comment">// Attributes for RDMA Read and write opcodes</span></span><br><span class="line">		<span class="type">uint64_t</span> remote_addr;      <span class="comment">// Remote start address (the message size is according to the S/G entries)</span></span><br><span class="line">		<span class="type">uint32_t</span> rkey;             <span class="comment">// rkey of Memory Region that is associated with remote memory buffer</span></span><br><span class="line">	 &#125; rdma;</span><br><span class="line">	 <span class="keyword">struct</span> &#123;                           <span class="comment">// Attributes for Atomic opcodes </span></span><br><span class="line">		<span class="type">uint64_t</span> remote_addr;      <span class="comment">// Remote start address (the message size is according to the S/G entries)</span></span><br><span class="line">		<span class="type">uint64_t</span> compare_add;      <span class="comment">// Value to compare/add (depends on opcode)</span></span><br><span class="line">		<span class="type">uint64_t</span> swap;             <span class="comment">// Value to swap if the comparison passed</span></span><br><span class="line">		<span class="type">uint32_t</span> rkey;             <span class="comment">// rkey of Memory Region that is associated with remote memory buffer</span></span><br><span class="line">	&#125; atomic;</span><br><span class="line">&#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>receive，注意需要先分配空间再处理receive work request；同时支持一次性传入多个send&#x2F;receive work request，这是通过send&#x2F;receive work request的数据结构中蕴含了链表来实现的，在处理函数中会将链表内的请求一并处理掉</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//Post Receive Request</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">ibv_post_recv</span><span class="params">(<span class="keyword">struct</span> ibv_qp *qp, <span class="keyword">struct</span> ibv_recv_wr *wr,</span></span></span><br><span class="line"><span class="params"><span class="function">                  <span class="keyword">struct</span> ibv_recv_wr **bad_wr)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//Post Send Request</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">ibv_post_send</span><span class="params">(<span class="keyword">struct</span> ibv_qp *qp, <span class="keyword">struct</span> ibv_send_wr *wr,</span></span></span><br><span class="line"><span class="params"><span class="function">                  <span class="keyword">struct</span> ibv_send_wr **bad_wr)</span></span>;                  </span><br><span class="line"></span><br><span class="line"><span class="comment">/* Warning: bad_wr is mandatory(必须的); It will be assigned with the address of </span></span><br><span class="line"><span class="comment">the Receive Request that its posting failed */</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">ibv_recv_wr</span> &#123;</span><br><span class="line">	<span class="type">uint64_t</span> wr_id;           <span class="comment">// Private context, available in the corresponding Work Completion</span></span><br><span class="line">	<span class="keyword">struct</span> <span class="title class_">ibv_recv_wr</span> *next; <span class="comment">// Address of the next Receive Request. NULL in the last Request</span></span><br><span class="line">	<span class="keyword">struct</span> <span class="title class_">ibv_sge</span> *sg_list;  <span class="comment">// Array of scatter elements</span></span><br><span class="line">	<span class="type">int</span> num_sge;              <span class="comment">// Number of elements in sg_list</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>查看completion的请求，completion会带上源请求的一些信息，同时会附带一些错误标识符号，具体的解释可以看注释</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">  </span><br><span class="line"><span class="comment">// Polling for work completion</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">ibv_poll_cq</span><span class="params">(<span class="keyword">struct</span> ibv_cq *cq, <span class="type">int</span> num_entries, <span class="keyword">struct</span> ibv_wc *wc)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//Work Completion for each entry</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">ibv_wc</span> &#123;</span><br><span class="line">	<span class="type">uint64_t</span> wr_id;                <span class="comment">// Private context that was posted in the corresponding Work Request</span></span><br><span class="line">	<span class="keyword">enum</span> <span class="title class_">ibv_wc_status</span> status;     <span class="comment">// The status of the Work Completion</span></span><br><span class="line">	<span class="keyword">enum</span> <span class="title class_">ibv_wc_opcode</span> opcode;     <span class="comment">// The opcode of the Work Completion</span></span><br><span class="line">	<span class="type">uint32_t</span> vendor_err;           <span class="comment">// Vendor specific error syndrome</span></span><br><span class="line">	<span class="type">uint32_t</span> byte_len;             <span class="comment">// Number of bytes that were received</span></span><br><span class="line">	<span class="type">uint32_t</span> imm_data;             <span class="comment">// Immediate data, in network order, if the flags indicate that such exists</span></span><br><span class="line">	<span class="type">uint32_t</span> qp_num;               <span class="comment">// The local QP number that this Work Completion ended in</span></span><br><span class="line">	<span class="type">uint32_t</span> src_qp;               <span class="comment">// The remote QP number</span></span><br><span class="line">	<span class="type">int</span> wc_flags;                  <span class="comment">// Work Completion flags. Or of the following flags:</span></span><br><span class="line"></span><br><span class="line">     <span class="comment">/* IBV_WC_GRH  Indicator that the first 40 bytes of the receive buffer(s) contain a valid GRH</span></span><br><span class="line"><span class="comment">      IBV_WC_WITH_IMM  Indicator that the received message contains immediate data */</span></span><br><span class="line"></span><br><span class="line">	<span class="type">uint16_t</span> pkey_index;</span><br><span class="line">	<span class="type">uint16_t</span> slid;                                <span class="comment">// For UD QP: the source LID</span></span><br><span class="line">	<span class="type">uint8_t</span> sl;                                     <span class="comment">// For UD QP: the source Service Level</span></span><br><span class="line">	<span class="type">uint8_t</span> dlid_path_bits;                      <span class="comment">// For UD QP: the destination LID path bits</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// typical completion statuses</span></span><br><span class="line"></span><br><span class="line">IBV_WC_SUCCESS  Operation completed successfully</span><br><span class="line">IBV_WC_LOC_LEN_ERR  Local length error when processing SR <span class="keyword">or</span> RR</span><br><span class="line">IBV_WC_LOC_PROT_ERR  Local Protection error; S/G entries doesn<span class="string">&#x27;t point to a valid MR</span></span><br><span class="line"><span class="string">IBV_WC_WR_FLUSH_ERR  Work Request flush error; it was processed when the QP was in Error state</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">IBV_WC_RETRY_EXC_ERR  Retry exceeded; the remote QP didn&#x27;</span>t send any ACK/NACK, even after</span><br><span class="line">            message retransmission                                                                            </span><br><span class="line"></span><br><span class="line">IBV_WC_RNR_RETRY_EXC_ERR  Receiver Not Ready; a message that <span class="keyword">requires</span> a Receive Request</span><br><span class="line">           was sent, but isn<span class="string">&#x27;t any RR in the remote QP, even after message retransmission</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="chp5-Connection"><a href="#chp5-Connection" class="headerlink" title="chp5 Connection"></a>chp5 Connection</h3><ul>
+<li>RDMA建立连接需要获取地址信息，而地址信息又需要某种连接来交换这些地址；一种方式是out-of-band communication（带外通信），也就是借助不同的传输来交换地址，比如rc-ping-pong；另一种方式是communication manager（通信管理器），首先需要再连接建立之前交换MAC、IP、QP编号（类似于TCP端口）和数据报序列号等，同时还需要就MTU(Max Transfer Unit)达成一致等</li>
+<li>而所谓的connection manager其实和TCP的连接步骤差不多，服务端<code>bind</code> <code>listen</code>，客户端<code>connect</code>，随后可以使用RDMA CM post send或者IBV post send来进行发送操作的编程<img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/Pasted%20image%2020240912182115.png"></li>
+</ul>
+<h3 id="chp6-RCpingpong"><a href="#chp6-RCpingpong" class="headerlink" title="chp6 RCpingpong"></a>chp6 RCpingpong</h3><ul>
+<li>RCpingpong是一个用于性能测试的示例程序，可以测试连接的性能</li>
+<li><code>pingpong_context</code>是一个封装了RDMA操作所需的各个组件和状态信息的结构体，包括可访问内存区域<code>ibv_mr *mr</code>，完成队列<code>ibv_cq *cq</code></li>
+<li><code>pp_init_ctx</code>函数执行了初始化pingpong的上下文，比如<ol>
+<li>创建一个<code>pingpong_context</code>空间，并且分配一个可以用于<code>send/receive</code>的空间</li>
+<li><code>ibv_open_device</code>函数创建了一个应用程序和设备共享的内存空间，以设备作为参数传入，用途是应用程序和硬件设备的直接通信</li>
+<li><code>ibv_create_comp_channel</code>函数用于创建一个<code>completion_channel</code>这可以让<code>ctx</code>和硬件通过一个完成通道来接受完成事件，而不是轮询地去查找完成队列</li>
+<li><code>ibv_alloc_pd</code>函数用于创建<code>protection domain</code>，这可以确保内存区域的访问完全性，确定什么设备可以访问什么内存</li>
+<li><code>ibv_reg_mr</code>函数用于注册内存，传入<code>pd</code>、<code>ctx-&gt;buf</code>、<code>size</code>、访问权限宏来注册内存以及确定访问权限，比如<code>IBV_ACCESS_LOCAL_WRITE</code>表示本地可写可读，但是外部设备无权限</li>
+<li><code>ibv_create_cq</code>函数用于创建<code>completion queue</code>，可以设置队列的长度</li>
+<li><code>ibv_create_qp</code>函数用于创建<code>queue pair</code>，可以设置<code>send/receive</code>的时间完成后的完成队列、容量、单次操作的内存块数量上限等</li>
+<li><code>ibv_modify_qp</code>函数用于修改<code>queue pair</code></li>
+</ol>
+</li>
+<li><code>pp_close_ctx</code>销毁的顺序和创建的顺序相反，因为销毁需要先销毁无依赖关系的项，比如先销毁<code>qp</code>再销毁<code>cq</code>是因为<code>qp</code>用到了<code>cq</code></li>
+<li>data path：数据如何传输<ol>
+<li><code>pp_post_recv</code>将receive request发送给qp，传入context作为参数，以及传入要处理的buf数n，将context的内容封装到自定义结构体后通过<code>ibv_post_recv</code>传给硬件（work request的id可以设置为<code>PINGPONG_RECV_WRID</code>以及<code>PINGPONG_SEND_WRID</code>等</li>
+<li><code>pp_post_send</code>将send request发送给qp，在定义结构体的时候设置了一些参数有一定意义：<code>.opcode = IBV_WR_SEND</code> 表示可读可写<code>.send_flags = IBV_SEND_SIGNALED</code> 表示completion会在成功发送后就之间创建</li>
+<li><code>main</code>函数执行过程中，会先发送初始的<code>send/receive request</code>，同时不断监听<code>cq</code>，获取到完成的请求后检测其为<code>send/receive</code>，前者给<code>scnt</code>计数即可，后者需要根据outstanding receive work request和receive queue的数量比对判断是否要继续发送新的RR</li>
+</ol>
+</li>
+<li>qp’s connection：qp的连接建立<ol>
+<li>RCpingpong利用TCP来分享qp的地址，然后qp会互相连接</li>
+<li>将本地qp和远程qp的信息封装到<code>ctx</code>内，传入<code>pp_connect_ctx</code>中，将qp的状态设置为RTR（Ready to Receive）</li>
+<li><code>path_mtu</code>是指最大传输单元，如果传输的数据超过了这个大小会被分解</li>
+<li><code>dest_qp_num</code>是远端qp在远端的目的号码，类似于TCP port</li>
+<li>再将<code>qp</code>设置为RTS（Ready to Send）状态</li>
+</ol>
+</li>
+</ul>
+<h3 id="chp7-Memory-Region"><a href="#chp7-Memory-Region" class="headerlink" title="chp7 Memory Region"></a>chp7 Memory Region</h3><p>如何控制RDMA操作的可操作空间？如何规避单端操作下，发送端恶意采用关键内存的VA虚拟地址来破坏远端内存？MR的概念被提出</p>
+<p>MR是一块特殊的内存，被注册了的MR才能被RDMA网卡直接访问；正常来说，VA到PA的转换是通过MMU和Page Table来实现的，但是要求RDMA不走CPU，因此对于VA&#x2F;PA的转换需要在各自进程的<strong>内存</strong>中设置一块VA-PA转换表<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/Pasted%20image%2020240918221047.png"></p>
+<p>控制HCA（硬件）访问内存的权限？通过local key和remote key来验证访问权限，local key验证本地的操作能否执行，remote key验证从远端传来的操作能否执行；在真正的RDMA通信之前，都会通过某些方式建立一条交换通信信息的链路并交换信息（建链、握手）</p>
+<p>锁页机制：由于swap out机制可能会让注册的内存被换出，这样VA-PA映射关系就失去了意义，因为这肯定会导致映射关系的改变（该过程绕过CPU）。因此MR这块内存会被pin在物理内存中，完成通信才会让用户主动销毁这片MR</p>
+<h3 id="chp8-Protection-Domain"><a href="#chp8-Protection-Domain" class="headerlink" title="chp8 Protection Domain"></a>chp8 Protection Domain</h3><p>保护域的作用主要在于，将特定的QPs和MRs设定在一个域中，只允许域内的QPs访问域内的MRs，如图，Node1的QP8无法访问Node0的MR1，因为首先QP8的数据会传送给Node0的QP3，而如果其想要访问的物理内存空间是MR1的空间，那么判定QP3和MR1不在一个PD中，就会拒绝访问<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/Pasted%20image%2020240918233954.png"></p>
+<ul>
+<li>IB协议中规定，每个节点至少要有一个PD，每个QP必须属于一个PD，每个MR必须属于一个PD</li>
+<li>PD在节点内可见，节点外不可见</li>
+<li>创建QP和MR之前必须创建PD，然后传入这个PD的指针（或者称为句柄）</li>
+</ul>
+<h3 id="chp9-Address-Handle"><a href="#chp9-Address-Handle" class="headerlink" title="chp9 Address Handle"></a>chp9 Address Handle</h3><p>AH是存放目标节点信息的对象，在进行UD服务类型的通信之前，用户需要先为每个可能的对端节点创建一个AH，每个AH被创建的时候会返回一个索引给用户，用户在下发WR的时候直接传入这个索引，就可以附加上目标节点的信息了。在IB协议中，标识目标主机的是GID和MAC地址</p>
+<p>创建AH的过程是内核态的，AH也受到PD的管理</p>
+<h3 id="chp10-QP"><a href="#chp10-QP" class="headerlink" title="chp10 QP"></a>chp10 QP</h3><p>为什么需要QPC？在硬件中，QP的实体只是一段存储空间，只知道起始地址和大小；需要开辟一块QPC的空间，存储各个QPC的信息，方便查找对应QPN的QP的信息状态等<img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/Pasted%20image%2020240919140625.png"><br>一个QP对上层的接口，有send&#x2F;receive两种，send代表通信过程发起方的操作（包括send&#x2F;write&#x2F;read），receive就是recevie，发送请求的叫法为post send&#x2F;receive request</p>
+<ul>
+<li>SQ Drain表示要处理完旧的WQE才会处理新的WQE<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/Pasted%20image%2020240919141039.png"></li>
+</ul>
+<h3 id="chp11-CQ"><a href="#chp11-CQ" class="headerlink" title="chp11 CQ"></a>chp11 CQ</h3><p>当一个WR对应的WC没有生成的时候，WR对应的内存区域的内容是不可信的，区域是被占用的，因为这意味着传输并没有完成。在RC的通信中，发送方需要接收到接受方的ACK才能生成WC；UD通信，则只需要发送出去就可以生成WC；recv操作则是成功写入后就会生成WC</p>
+<ul>
+<li>一个CQ可以和多个RQ&#x2F;SQ关联，而一对QP中的SQ&#x2F;RQ可以各自关联不同的CQ</li>
+<li>对于同一个WQ的WQE，会按照WQE在WQ的顺序先后生成CQE</li>
+<li>对于WQs之间，不能保证生成并放入CQ的CQE的顺序的<img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/Pasted%20image%2020240919153115.png"></li>
+<li>同样也需要CQC(context)来记录信息，方便硬件查找</li>
+</ul>
+<p>IB协议的3种错误类型：立即错误immediate error、完成错误completion error、异步错误asynchronous error</p>
+<ul>
+<li>立即错误：立即停止操作，返回错误给上级用户；比如post send的时候传入非法操作码（ud write），立即退出post send流程，回收WQE</li>
+<li>完成错误：通过CQE将错误信息返回给上层用户；比如WQE长时间没有接收到ACK，因为WQE到达了硬件，所以硬件会产生对应的CQE</li>
+<li>异步错误：通过中断事件的方式上报给上层用户；软件一直没有取出CQE，过多的CQE导致CQ溢出，没有从CQE中得到信息，IB就会调用事件处理函数</li>
+</ul>
+<p>完成错误：可以是sender在本地检测到的，或者在ACK&#x2F;NAK中检测到的；也可以是receiver在本地检测到的。都会将错误信息添加到CQE中<img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/Pasted%20image%2020240919194044.png"><br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/Pasted%20image%2020240919194212.png"><br>理解软件何时以及如何接收到来自硬件的CQE？</p>
+<ul>
+<li>中断模式request completion notification：网卡收到数据包之后立即打断CPU，让CPU先去处理网卡的数据包（每个RDMA网卡都会注册一个事件处理函数来处理异步事件）</li>
+<li>轮询模式poll completion queue：网卡收到数据先存到缓冲区，CPU每隔一段时间去将缓冲区数据带走一波进行处理</li>
+<li>现在一般根据业务的需求量来动态的确定使用中断模式还是轮询模式</li>
+</ul>
+<h3 id="chp12-SRQ"><a href="#chp12-SRQ" class="headerlink" title="chp12 SRQ"></a>chp12 SRQ</h3><p>SRQ主要就是为了解决由于RQ不被经常使用导致的内存资源浪费的问题，在常规的RQ中，为了预防比较坏的情况，软件都会向QP中的RQ发送足量的接受WQE，而这些WQE不仅本身占据空间，而且他们所蕴含的内存区域也被视作是不可被其他操作占用的，而且这些空间也很难说会被用到很多。<img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/Pasted%20image%2020240919201433.png"><br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/Pasted%20image%2020240919201556.png"><br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/Pasted%20image%2020240919201723.png"><br>和RQ的区别就在于，与之关联的QP<strong>都会</strong>通过这个SRQ来发送WQE</p>
+<h3 id="chp13-Memory-Window"><a href="#chp13-Memory-Window" class="headerlink" title="chp13 Memory Window"></a>chp13 Memory Window</h3><p>可以理解为Memory Region的子集，也是用于数据的获取和访问，但是提供更为灵活的权限控制，本身也是绑定在一个已经注册的MR上<img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/Pasted%20image%2020240919203725.png"><br>首先访问一块远端的内存，需要远端内存支持来自远端的访问（Remote Read&#x2F;Write），还需要访问者持有Memory Key才能访问这段MW&#x2F;MR，Key分为L_Key和R_Key<img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/Pasted%20image%2020240919204642.png"></p>
+<p>MW的作用主要是提供不需要陷入内核态的属性修改，由于MR是内核管理的，因此其修改的时候是需要经过内核态的</p>
+<p>权限之间的关系<img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/Pasted%20image%2020240919205031.png"></p>
+<ul>
+<li><code>bind</code>将MW关联到MR上，并且生成Key，配置读写权限；有MW绑定的MR不能取消注册；方式：post send bind MW WR或者bind MW（前者的封装）<img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/Pasted%20image%2020240919205401.png"></li>
+<li><code>invalidate</code>用于无效化R_Key，分为Local invalidate和Remote invalidate，区别是本地将R_Key取消，还是远端将自己所用的访问本端的R_Key取消</li>
+</ul>
+<p>MW的类型（遇到再学）</p>
+<h3 id="chp14-Verb-API"><a href="#chp14-Verb-API" class="headerlink" title="chp14 Verb API"></a>chp14 Verb API</h3><p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/329198771">12. RDMA之Verbs - 知乎 (zhihu.com)</a><br>控制层面经过了多次陷入内核态的函数调用后，数据层面就不需要通过陷入内核态的调用了；陷入内核态主要是上下文的切换、权限等的更改，比较耗时</p>
+<h3 id="chp15-prp-prepare-study"><a href="#chp15-prp-prepare-study" class="headerlink" title="chp15 prp prepare study"></a>chp15 prp prepare study</h3><h5 id="UD-RC-DCT"><a href="#UD-RC-DCT" class="headerlink" title="UD RC DCT"></a>UD RC DCT</h5><p>UD相对于RC的加速并没有UDP对TCP的加速来的明显，因为TCP&#x2F;UDP经过了软件层，那么握手的耗时确实比较长一些；UD的优势主要是，一组QP可以自由地向不同的QP发送读取请求，而不是像RC一样QP-QP绑定链接</p>
+<ul>
+<li>UD的MTU(Maximum Transfer Unit)比较小，导致需要在接收端重组的频率比较高，需要programming effort</li>
+<li>UD的目标定位头部还是比较大的，40B</li>
+<li>不保序</li>
+<li>会丢包，无保证机制</li>
+</ul>
+<h3 id="chp16-programming-tutorial"><a href="#chp16-programming-tutorial" class="headerlink" title="chp16 programming tutorial"></a>chp16 programming tutorial</h3><p><a target="_blank" rel="noopener" href="https://github.com/jcxue/RDMA-Tutorial/wiki">Home · jcxue&#x2F;RDMA-Tutorial Wiki · GitHub</a></p>
+<h5 id="Example-1-RDMA-send-recv"><a href="#Example-1-RDMA-send-recv" class="headerlink" title="Example 1 RDMA send&#x2F;recv"></a>Example 1 RDMA send&#x2F;recv</h5><p>创建RC类型的连接所需步骤</p>
+<ol>
+<li>本地获取IB设备，打开IB设备，创建基于设备的<code>context</code></li>
+<li>创建<code>protection domain</code>，获取RDMA网卡设备的<code>port</code>等信息（<code>attr</code>）</li>
+<li>注册<code>memory region</code>，基于pd，需要手动管理；允许on demand page，因此不需要强制pin（机制不清楚）</li>
+<li>利用设备中的<code>max_cqe</code>等信息创建<code>cq</code>，基于<code>max_wr</code>创建<code>srq</code></li>
+<li>基于<code>cq</code>和<code>srq</code>创建<code>qp</code>，指定链接方式为RC</li>
+<li>连接<code>qp</code>：以服务器端为例，连接并且交换信息的时候使用<code>socket</code>通信，获取远程RDMA设备的<code>qp_info</code>，将自身和远端各自配对的<code>qp</code>发送给远端（有个<code>rank</code>属性用来标识自身信息，可用于标识连接信息并确认向哪个<code>socket</code>发送），将自身的<code>qp</code>设置为Ready to Send状态</li>
+</ol>
+<p>解析服务端的pingpong操作</p>
+<ul>
+<li>服务端创建“客户端数量个”线程用于处理和客户端的连接</li>
+<li>服务端预先<code>post_recv</code>，并发送一个带有提示对方信息的<code>post_send</code>提示对方请开始请求，随后<code>poll_cq</code>，每次接收到<code>recv</code>类型的完成则计数、继续发<code>post_recv</code>并且发回一个<code>post_send</code>来做pingpong；最后统计到了一定数量达到<code>warmup</code>状态开始计时，达到结束状态结束计时，告知对方结束，并关闭连接</li>
+<li>已经可以确定RDMA在接收到一个<code>send</code>请求时会触发<code>recv</code>的出队，由<code>recv</code>来给数据分配空间，将空间信息传给<code>send</code>的ACK和<code>cqe</code>，以告知双方应用进程</li>
+</ul>
+<p>以前的RDMA硬件不支持处理page fault，无法换页，因此需要将memory region给固定在物理内存上；现在的RDMA硬件支持处理page fault，可以换页也就是on demand paging，因此不需要强制pin；注意在RDMA one-side操作上远程OS与CPU是无感知的，因此远程的软件不会参与page fault的处理</p>
+<h5 id="Example-2-RDMA-write"><a href="#Example-2-RDMA-write" class="headerlink" title="Example 2 RDMA write"></a>Example 2 RDMA write</h5><p>相比较于<code>send/recv</code>，<code>write</code>操作需要提供<code>raddr</code>和<code>rkey</code>，用于远程虚拟地址定位和远程认证；由于<code>write</code>属于one-side操作，对侧无感知，因此对侧需要监控即将要被写的虚拟内存区域来进行接收到信息的确认</p>
+<p><strong>新优化方法：selective completion</strong><br>在发送<code>post_write</code>的时候，设置<code>SEND_SIGNALED</code>会使得时间完成后生成completion，否则默认不生成；然而每次都生成其实意义不大也会增加开销，而每次都不生成，则会导致send queue没有能够出队的wqe，因为只有产生了completion的wr才能够被出队；而只要某个wqe出队了，那么在这之前的都会被出队。所以要选择性完成，比如1000次一个有signal的</p>
+<h5 id="Example-3-Opt-Tech"><a href="#Example-3-Opt-Tech" class="headerlink" title="Example 3 Opt Tech"></a>Example 3 Opt Tech</h5><p>常规下，<code>ibv_post_send</code>返回只代表<code>wr</code>被发送到了RDMA设备的send queue（MMIO方式），而<code>wr</code>维护了指向所欲取内存的地址，执行命令的时候需要通过DMA方式将数据传送到RDMA设备并发送（DMA&gt;MMIO）<br><strong>message inline</strong><br>将小规模的数据附带到WR中，硬件支持的WR大小不确定因此需要软件自己试错并指定，指定WR的<code>send_flags</code>为<code>IBV_SEND_INLINE</code><br>实际上优化效果一般<br><strong>message batch</strong><br>可以给<code>wr</code>设置一个链表，第一次通过MMIO传输<code>wr</code>，后面通过DMA传输message和剩余的<code>wr</code><br>实际优化效果：高并发不好，低并发好；batch size不是越大越好</p>
+<h5 id="Example-4-SRQ"><a href="#Example-4-SRQ" class="headerlink" title="Example 4 SRQ"></a>Example 4 SRQ</h5><p>在创建<code>qp</code>的时候指定<code>srq</code>就会让他的<code>rq</code>被指定到这个<code>srq</code>中，关于节约内存的好处不再分析（知乎文章有）；通过发来信息的<code>rank</code>来确定对侧是谁（因为共用<code>srq</code>就没有单独的连接信息，所以需要指定来获取对侧信息）</p>
+<h5 id="Practical-considerations"><a href="#Practical-considerations" class="headerlink" title="Practical considerations"></a>Practical considerations</h5><h5 id="UD-or-RC"><a href="#UD-or-RC" class="headerlink" title="UD or RC?"></a>UD or RC?</h5><p>UD相对于RC的速度优势并没有UDP相对于TCP的明显，其最主要的优势在于一个qp可以向多个qp发送信息；然而UD具有不少的shortcoming</p>
+<ul>
+<li>MTU的限制使得UD需要切分大数据，需要一定编程工作</li>
+<li>Global Routing Header比较大，占空间</li>
+<li>无序</li>
+<li>不可靠<br>因此一般不用</li>
+</ul>
+<h5 id="polling-imcoming-messages-when-using-RDMA-write"><a href="#polling-imcoming-messages-when-using-RDMA-write" class="headerlink" title="polling imcoming messages when using RDMA write"></a>polling imcoming messages when using RDMA write</h5><p>作为<code>write</code>操作的对侧，监控到哪一片区域被写了还是很重要的，不能老是蹲点守候，因此需要设置<code>write</code>操作的<code>ibv_send_wr.op_code</code>为<code>IBV_WR_RDMA_WRITE_WITH_IMM</code>，这样就可以生成completion并且被应用程序读取了</p>
+</article><div class="post-copyright"><div class="copyright-cc-box"><i class="anzhiyufont anzhiyu-icon-copyright"></i></div><div class="post-copyright__author_box"><a class="post-copyright__author_img" href="/" title="头像"><img class="post-copyright__author_img_back" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://avatars.githubusercontent.com/u/114564389?v=4" title="头像" alt="头像"><img class="post-copyright__author_img_front" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://avatars.githubusercontent.com/u/114564389?v=4" title="头像" alt="头像"></a><div class="post-copyright__author_name">Weiquan Huang</div><div class="post-copyright__author_desc">userKangkang</div></div><div class="post-copyright__post__info"><a class="post-copyright__original" title="该文章为原创文章，注意版权协议" href="https://userkangkang.github.io/project/2025/03/06/rdma/">原创</a><a class="post-copyright-title"><span onclick="rm.copyPageUrl('https://userkangkang.github.io/project/2025/03/06/rdma/')">RDMA入门记录</span></a></div><div class="post-tools" id="post-tools"><div class="post-tools-left"><div class="rewardLeftButton"></div><div class="shareRight"><div class="share-link mobile"><div class="share-qrcode"><div class="share-button" title="使用手机访问这篇文章"><i class="anzhiyufont anzhiyu-icon-qrcode"></i></div><div class="share-main"><div class="share-main-all"><div id="qrcode" title="https://userkangkang.github.io/project/2025/03/06/rdma/"></div><div class="reward-dec">使用手机访问这篇文章</div></div></div></div></div><div class="share-link weibo"><a class="share-button" target="_blank" href="https://service.weibo.com/share/share.php?title=RDMA入门记录&amp;url=https://userkangkang.github.io/project/2025/03/06/rdma/&amp;pic=" rel="external nofollow noreferrer noopener"><i class="anzhiyufont anzhiyu-icon-weibo"></i></a></div><script>function copyCurrentPageUrl() {
+  var currentPageUrl = window.location.href;
+  var input = document.createElement("input");
+  input.setAttribute("value", currentPageUrl);
+  document.body.appendChild(input);
+  input.select();
+  input.setSelectionRange(0, 99999);
+  document.execCommand("copy");
+  document.body.removeChild(input);
+}</script><div class="share-link copyurl"><div class="share-button" id="post-share-url" title="复制链接" onclick="copyCurrentPageUrl()"><i class="anzhiyufont anzhiyu-icon-link"></i></div></div></div></div></div><div class="post-copyright__notice"><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://userKangkang.github.io/project" target="_blank">Hexo</a>！</span></div></div><div class="post-tools-right"><div class="tag_share"><div class="post-meta__box"><div class="post-meta__box__tag-list"><a class="post-meta__box__tags" href="/tags/RDMA/"><span class="tags-punctuation"> <i class="anzhiyufont anzhiyu-icon-tag"></i></span>RDMA<span class="tagsPageCount">1</span></a><a class="post-meta__box__tags" href="/tags/%E7%9F%A5%E4%B9%8E/"><span class="tags-punctuation"> <i class="anzhiyufont anzhiyu-icon-tag"></i></span>知乎<span class="tagsPageCount">1</span></a><a class="post-meta__box__tags" href="/tags/Coursera/"><span class="tags-punctuation"> <i class="anzhiyufont anzhiyu-icon-tag"></i></span>Coursera<span class="tagsPageCount">1</span></a></div></div></div><div class="post_share"><div class="social-share" data-image="https://avatars.githubusercontent.com/u/114564389?v=4" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.cbd.int/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"/><script src="https://cdn.cbd.int/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer="defer"></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-full"><a href="/2025/03/06/network-controlplane/"><img class="prev-cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">科大计网之：网络层——控制平面</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-content"><div class="author-info__sayhi" id="author-info__sayhi" onclick="anzhiyu.changeSayHelloText()"></div><div class="author-info-avatar"><img class="avatar-img" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://avatars.githubusercontent.com/u/114564389?v=4" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/><div class="author-status"><img class="g-status" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://bu.dusays.com/2023/08/24/64e6ce9c507bb.png" alt="status"/></div></div><div class="author-info__description">个人博客，计划在这里记录上海交通大学软件学院本科部分课程，由于本专业主攻计算机系统，因此可能这方面居多</div><div class="author-info__bottom-group"><a class="author-info__bottom-group-left" href="/"><h1 class="author-info__name">Weiquan Huang</h1><div class="author-info__desc">userKangkang</div></a><div class="card-info-social-icons is-center"><a class="social-icon faa-parent animated-hover" href="https://github.com/userKangkang" target="_blank" title="Github"><i class="anzhiyufont anzhiyu-icon-github"></i></a></div></div></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-bars"></i><span>文章目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#chp1-Intro"><span class="toc-number">1.</span> <span class="toc-text">chp1 Intro</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E8%A1%A5%E5%85%85"><span class="toc-number">1.0.1.</span> <span class="toc-text">补充</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#chp2-Basics"><span class="toc-number">2.</span> <span class="toc-text">chp2 Basics</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E8%A1%A5%E5%85%85-1"><span class="toc-number">2.0.1.</span> <span class="toc-text">补充</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#chp3-Operations"><span class="toc-number">3.</span> <span class="toc-text">chp3 Operations</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E8%A1%A5%E5%85%85-2"><span class="toc-number">3.0.1.</span> <span class="toc-text">补充</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#chp4-Fundational-Code"><span class="toc-number">4.</span> <span class="toc-text">chp4 Fundational Code</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#chp5-Connection"><span class="toc-number">5.</span> <span class="toc-text">chp5 Connection</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#chp6-RCpingpong"><span class="toc-number">6.</span> <span class="toc-text">chp6 RCpingpong</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#chp7-Memory-Region"><span class="toc-number">7.</span> <span class="toc-text">chp7 Memory Region</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#chp8-Protection-Domain"><span class="toc-number">8.</span> <span class="toc-text">chp8 Protection Domain</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#chp9-Address-Handle"><span class="toc-number">9.</span> <span class="toc-text">chp9 Address Handle</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#chp10-QP"><span class="toc-number">10.</span> <span class="toc-text">chp10 QP</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#chp11-CQ"><span class="toc-number">11.</span> <span class="toc-text">chp11 CQ</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#chp12-SRQ"><span class="toc-number">12.</span> <span class="toc-text">chp12 SRQ</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#chp13-Memory-Window"><span class="toc-number">13.</span> <span class="toc-text">chp13 Memory Window</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#chp14-Verb-API"><span class="toc-number">14.</span> <span class="toc-text">chp14 Verb API</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#chp15-prp-prepare-study"><span class="toc-number">15.</span> <span class="toc-text">chp15 prp prepare study</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#UD-RC-DCT"><span class="toc-number">15.0.1.</span> <span class="toc-text">UD RC DCT</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#chp16-programming-tutorial"><span class="toc-number">16.</span> <span class="toc-text">chp16 programming tutorial</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#Example-1-RDMA-send-recv"><span class="toc-number">16.0.1.</span> <span class="toc-text">Example 1 RDMA send&#x2F;recv</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Example-2-RDMA-write"><span class="toc-number">16.0.2.</span> <span class="toc-text">Example 2 RDMA write</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Example-3-Opt-Tech"><span class="toc-number">16.0.3.</span> <span class="toc-text">Example 3 Opt Tech</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Example-4-SRQ"><span class="toc-number">16.0.4.</span> <span class="toc-text">Example 4 SRQ</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Practical-considerations"><span class="toc-number">16.0.5.</span> <span class="toc-text">Practical considerations</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#UD-or-RC"><span class="toc-number">16.0.6.</span> <span class="toc-text">UD or RC?</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#polling-imcoming-messages-when-using-RDMA-write"><span class="toc-number">16.0.7.</span> <span class="toc-text">polling imcoming messages when using RDMA write</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-history"></i><span>最近发布</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/03/06/rdma/" title="RDMA入门记录">RDMA入门记录</a><time datetime="2025-03-06T12:32:52.435Z" title="发表于 2025-03-06 20:32:52">2025-03-06</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/03/06/network-controlplane/" title="科大计网之：网络层——控制平面">科大计网之：网络层——控制平面</a><time datetime="2025-03-06T01:46:33.262Z" title="发表于 2025-03-06 09:46:33">2025-03-06</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/03/06/network-dataplane/" title="科大计网之：网络层——数据平面">科大计网之：网络层——数据平面</a><time datetime="2025-03-06T01:38:07.406Z" title="发表于 2025-03-06 09:38:07">2025-03-06</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/03/06/network-trans/" title="科大计网之：传输层">科大计网之：传输层</a><time datetime="2025-03-05T16:01:32.287Z" title="发表于 2025-03-06 00:01:32">2025-03-06</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/03/05/network-app/" title="科大计网之：应用层">科大计网之：应用层</a><time datetime="2025-03-05T15:50:41.947Z" title="发表于 2025-03-05 23:50:41">2025-03-05</time></div></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div id="workboard"><img class="workSituationImg boardsign" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://npm.elemecdn.com/anzhiyu-blog@2.0.4/img/badge/安知鱼-上班摸鱼中.svg" alt="距离月入25k也就还差一个大佬带我~" title="距离月入25k也就还差一个大佬带我~"/><div id="runtimeTextTip"></div></div></div><div id="footer-bar"><div class="footer-bar-links"><div class="footer-bar-left"><div id="footer-bar-tips"><div class="copyright">&copy;2025 By <a class="footer-bar-link" href="/" title="Weiquan Huang" target="_blank">Weiquan Huang</a></div></div><div id="footer-type-tips"></div></div><div class="footer-bar-right"><a class="footer-bar-link" target="_blank" rel="noopener" href="https://github.com/anzhiyu-c/hexo-theme-anzhiyu" title="主题">主题</a></div></div></div></footer></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="sidebar-site-data site-data is-center"><a href="/archives/" title="archive"><div class="headline">文章</div><div class="length-num">16</div></a><a href="/tags/" title="tag"><div class="headline">标签</div><div class="length-num">7</div></a><a href="/categories/" title="category"><div class="headline">分类</div><div class="length-num">5</div></a></div><span class="sidebar-menu-item-title">功能</span><div class="sidebar-menu-item"><a class="darkmode_switchbutton menu-child" href="javascript:void(0);" title="显示模式"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i><span>显示模式</span></a></div><div class="back-menu-list-groups"><div class="back-menu-list-group"><div class="back-menu-list-title">网页</div><div class="back-menu-list"><a class="back-menu-item" target="_blank" rel="noopener" href="https://github.com/userKangkang" title="Github"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/img/github-mark.svg" alt="Github"/><span class="back-menu-item-text">Github</span></a></div></div></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 文章</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/archives/"><i class="anzhiyufont anzhiyu-icon-box-archive faa-tada" style="font-size: 0.9em;"></i><span> 隧道</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/categories/"><i class="anzhiyufont anzhiyu-icon-shapes faa-tada" style="font-size: 0.9em;"></i><span> 分类</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/tags/"><i class="anzhiyufont anzhiyu-icon-tags faa-tada" style="font-size: 0.9em;"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 友链</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/link/"><i class="anzhiyufont anzhiyu-icon-link faa-tada" style="font-size: 0.9em;"></i><span> 友人帐</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/fcircle/"><i class="anzhiyufont anzhiyu-icon-artstation faa-tada" style="font-size: 0.9em;"></i><span> 朋友圈</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/comments/"><i class="anzhiyufont anzhiyu-icon-envelope faa-tada" style="font-size: 0.9em;"></i><span> 留言板</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 我的</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/music/"><i class="anzhiyufont anzhiyu-icon-music faa-tada" style="font-size: 0.9em;"></i><span> 音乐馆</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/bangumis/"><i class="anzhiyufont anzhiyu-icon-bilibili faa-tada" style="font-size: 0.9em;"></i><span> 追番页</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/album/"><i class="anzhiyufont anzhiyu-icon-images faa-tada" style="font-size: 0.9em;"></i><span> 相册集</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/air-conditioner/"><i class="anzhiyufont anzhiyu-icon-fan faa-tada" style="font-size: 0.9em;"></i><span> 小空调</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 关于</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/about/"><i class="anzhiyufont anzhiyu-icon-paper-plane faa-tada" style="font-size: 0.9em;"></i><span> 关于本人</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/essay/"><i class="anzhiyufont anzhiyu-icon-lightbulb faa-tada" style="font-size: 0.9em;"></i><span> 闲言碎语</span></a></li><li><a class="site-page child faa-parent animated-hover" href="javascript:toRandomPost()"><i class="anzhiyufont anzhiyu-icon-shoe-prints1 faa-tada" style="font-size: 0.9em;"></i><span> 随便逛逛</span></a></li></ul></div></div><span class="sidebar-menu-item-title">标签</span><div class="card-tags"><div class="item-headline"></div><div class="card-tag-cloud"><a href="/tags/Coursera/" style="font-size: 0.88rem;">Coursera<sup>1</sup></a><a href="/tags/RDMA/" style="font-size: 0.88rem;">RDMA<sup>1</sup></a><a href="/tags/%E4%B8%AD%E5%9B%BD%E7%A7%91%E5%AD%A6%E6%8A%80%E6%9C%AF%E5%A4%A7%E5%AD%A6/" style="font-size: 0.88rem;">中国科学技术大学<sup>5</sup></a><a href="/tags/%E5%85%A5%E9%97%A8/" style="font-size: 0.88rem;">入门<sup>1</sup></a><a href="/tags/%E7%9F%A5%E4%B9%8E/" style="font-size: 0.88rem;">知乎<sup>1</sup></a><a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E5%B7%A5%E7%A8%8B/" style="font-size: 0.88rem;">计算机系统工程<sup>9</sup></a><a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" style="font-size: 0.88rem;">计算机网络<sup>5</sup></a></div></div><hr/></div></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="anzhiyufont anzhiyu-icon-book-open"></i></button><button id="translateLink" type="button" title="简繁转换">繁</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="anzhiyufont anzhiyu-icon-arrows-left-right"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="anzhiyufont anzhiyu-icon-gear"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="anzhiyufont anzhiyu-icon-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i></button></div></div><div id="nav-music"><a id="nav-music-hoverTips" onclick="anzhiyu.musicToggle()" accesskey="m">播放音乐</a><div id="console-music-bg"></div><meting-js id="8152976493" server="netease" type="playlist" mutex="true" preload="none" theme="var(--anzhiyu-main)" data-lrctype="0" order="random" volume="0.7"></meting-js></div><div id="rightMenu"><div class="rightMenu-group rightMenu-small"><div class="rightMenu-item" id="menu-backward"><i class="anzhiyufont anzhiyu-icon-arrow-left"></i></div><div class="rightMenu-item" id="menu-forward"><i class="anzhiyufont anzhiyu-icon-arrow-right"></i></div><div class="rightMenu-item" id="menu-refresh"><i class="anzhiyufont anzhiyu-icon-arrow-rotate-right" style="font-size: 1rem;"></i></div><div class="rightMenu-item" id="menu-top"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i></div></div><div class="rightMenu-group rightMenu-line rightMenuPlugin"><div class="rightMenu-item" id="menu-copytext"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制选中文本</span></div><div class="rightMenu-item" id="menu-pastetext"><i class="anzhiyufont anzhiyu-icon-paste"></i><span>粘贴文本</span></div><a class="rightMenu-item" id="menu-commenttext"><i class="anzhiyufont anzhiyu-icon-comment-medical"></i><span>引用到评论</span></a><div class="rightMenu-item" id="menu-newwindow"><i class="anzhiyufont anzhiyu-icon-window-restore"></i><span>新窗口打开</span></div><div class="rightMenu-item" id="menu-copylink"><i class="anzhiyufont anzhiyu-icon-link"></i><span>复制链接地址</span></div><div class="rightMenu-item" id="menu-copyimg"><i class="anzhiyufont anzhiyu-icon-images"></i><span>复制此图片</span></div><div class="rightMenu-item" id="menu-downloadimg"><i class="anzhiyufont anzhiyu-icon-download"></i><span>下载此图片</span></div><div class="rightMenu-item" id="menu-newwindowimg"><i class="anzhiyufont anzhiyu-icon-window-restore"></i><span>新窗口打开图片</span></div><div class="rightMenu-item" id="menu-search"><i class="anzhiyufont anzhiyu-icon-magnifying-glass"></i><span>站内搜索</span></div><div class="rightMenu-item" id="menu-searchBaidu"><i class="anzhiyufont anzhiyu-icon-magnifying-glass"></i><span>百度搜索</span></div><div class="rightMenu-item" id="menu-music-toggle"><i class="anzhiyufont anzhiyu-icon-play"></i><span>播放音乐</span></div><div class="rightMenu-item" id="menu-music-back"><i class="anzhiyufont anzhiyu-icon-backward"></i><span>切换到上一首</span></div><div class="rightMenu-item" id="menu-music-forward"><i class="anzhiyufont anzhiyu-icon-forward"></i><span>切换到下一首</span></div><div class="rightMenu-item" id="menu-music-playlist" onclick="window.open(&quot;https://y.qq.com/n/ryqq/playlist/8802438608&quot;, &quot;_blank&quot;);" style="display: none;"><i class="anzhiyufont anzhiyu-icon-radio"></i><span>查看所有歌曲</span></div><div class="rightMenu-item" id="menu-music-copyMusicName"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制歌名</span></div></div><div class="rightMenu-group rightMenu-line rightMenuOther"><a class="rightMenu-item menu-link" id="menu-randomPost"><i class="anzhiyufont anzhiyu-icon-shuffle"></i><span>随便逛逛</span></a><a class="rightMenu-item menu-link" href="/categories/"><i class="anzhiyufont anzhiyu-icon-cube"></i><span>博客分类</span></a><a class="rightMenu-item menu-link" href="/tags/"><i class="anzhiyufont anzhiyu-icon-tags"></i><span>文章标签</span></a></div><div class="rightMenu-group rightMenu-line rightMenuOther"><a class="rightMenu-item" id="menu-copy" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制地址</span></a><a class="rightMenu-item" id="menu-commentBarrage" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-message"></i><span class="menu-commentBarrage-text">关闭热评</span></a><a class="rightMenu-item" id="menu-darkmode" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i><span class="menu-darkmode-text">深色模式</span></a><a class="rightMenu-item" id="menu-translate" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-language"></i><span>轉為繁體</span></a></div></div><div id="rightmenu-mask"></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.cbd.int/@fancyapps/ui@5.0.28/dist/fancybox/fancybox.umd.js"></script><script src="https://cdn.cbd.int/instant.page@5.2.0/instantpage.js" type="module"></script><script src="https://cdn.cbd.int/vanilla-lazyload@17.8.5/dist/lazyload.iife.min.js"></script><script src="https://cdn.cbd.int/node-snackbar@0.1.16/dist/snackbar.min.js"></script><canvas id="universe"></canvas><script async src="https://npm.elemecdn.com/anzhiyu-theme-static@1.0.0/dark/dark.js"></script><script>// 消除控制台打印
+var HoldLog = console.log;
+console.log = function () {};
+let now1 = new Date();
+queueMicrotask(() => {
+  const Log = function () {
+    HoldLog.apply(console, arguments);
+  }; //在恢复前输出日志
+  const grt = new Date("03/03/2025 19:34:34"); //此处修改你的建站时间或者网站上线时间
+  now1.setTime(now1.getTime() + 250);
+  const days = (now1 - grt) / 1000 / 60 / 60 / 24;
+  const dnum = Math.floor(days);
+  const ascll = [
+    `欢迎使用安知鱼!`,
+    `生活明朗, 万物可爱`,
+    `
+        
+       █████╗ ███╗   ██╗███████╗██╗  ██╗██╗██╗   ██╗██╗   ██╗
+      ██╔══██╗████╗  ██║╚══███╔╝██║  ██║██║╚██╗ ██╔╝██║   ██║
+      ███████║██╔██╗ ██║  ███╔╝ ███████║██║ ╚████╔╝ ██║   ██║
+      ██╔══██║██║╚██╗██║ ███╔╝  ██╔══██║██║  ╚██╔╝  ██║   ██║
+      ██║  ██║██║ ╚████║███████╗██║  ██║██║   ██║   ╚██████╔╝
+      ╚═╝  ╚═╝╚═╝  ╚═══╝╚══════╝╚═╝  ╚═╝╚═╝   ╚═╝    ╚═════╝
+        
+        `,
+    "已上线",
+    dnum,
+    "天",
+    "©2025 By 安知鱼 V1.6.14",
+  ];
+  const ascll2 = [`NCC2-036`, `调用前置摄像头拍照成功，识别为【小笨蛋】.`, `Photo captured: `, `🤪`];
+
+  setTimeout(
+    Log.bind(
+      console,
+      `\n%c${ascll[0]} %c ${ascll[1]} %c ${ascll[2]} %c${ascll[3]}%c ${ascll[4]}%c ${ascll[5]}\n\n%c ${ascll[6]}\n`,
+      "color:#425AEF",
+      "",
+      "color:#425AEF",
+      "color:#425AEF",
+      "",
+      "color:#425AEF",
+      ""
+    )
+  );
+  setTimeout(
+    Log.bind(
+      console,
+      `%c ${ascll2[0]} %c ${ascll2[1]} %c \n${ascll2[2]} %c\n${ascll2[3]}\n`,
+      "color:white; background-color:#4fd953",
+      "",
+      "",
+      'background:url("https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/tinggge.gif") no-repeat;font-size:450%'
+    )
+  );
+
+  setTimeout(Log.bind(console, "%c WELCOME %c 你好，小笨蛋.", "color:white; background-color:#4f90d9", ""));
+
+  setTimeout(
+    console.warn.bind(
+      console,
+      "%c ⚡ Powered by 安知鱼 %c 你正在访问 Weiquan Huang 的博客.",
+      "color:white; background-color:#f0ad4e",
+      ""
+    )
+  );
+
+  setTimeout(Log.bind(console, "%c W23-12 %c 你已打开控制台.", "color:white; background-color:#4f90d9", ""));
+
+  setTimeout(
+    console.warn.bind(console, "%c S013-782 %c 你现在正处于监控中.", "color:white; background-color:#d9534f", "")
+  );
+});</script><script async src="/anzhiyu/random.js"></script><script async="async">(function () {
+  var grt = new Date("03/03/2025 19:34:34"); //设置网站上线时间
+  var now = new Date();
+  var dnum;
+  var hnum;
+  var mnum;
+  var snum;
+  var nowHour;
+
+  // 计算并更新天数、小时数、分钟数和秒数
+  function updateTime() {
+    now = new Date(); // 更新 now 的值
+    nowHour = now.getHours(); // 更新 nowHour 的值
+    var days = (now - grt) / 1000 / 60 / 60 / 24;
+    dnum = Math.floor(days);
+    var hours = (now - grt) / 1000 / 60 / 60 - 24 * dnum;
+    hnum = Math.floor(hours);
+    if (String(hnum).length == 1) {
+      hnum = "0" + hnum;
+    }
+    var minutes = (now - grt) / 1000 / 60 - 24 * 60 * dnum - 60 * hnum;
+    mnum = Math.floor(minutes);
+    if (String(mnum).length == 1) {
+      mnum = "0" + mnum;
+    }
+    var seconds = (now - grt) / 1000 - 24 * 60 * 60 * dnum - 60 * 60 * hnum - 60 * mnum;
+    snum = Math.round(seconds);
+    if (String(snum).length == 1) {
+      snum = "0" + snum;
+    }
+  }
+
+  // 更新网页中显示的网站运行时间
+  function updateHtml() {
+    const footer = document.getElementById("footer");
+    if (!footer) return
+    let currentTimeHtml = "";
+    if (nowHour < 18 && nowHour >= 9) {
+      // 如果是上班时间，默认就是"安知鱼-上班摸鱼中.svg"图片，不需要更改
+      currentTimeHtml = `本站居然运行了 ${dnum} 天<span id='runtime'> ${hnum} 小时 ${mnum} 分 ${snum} 秒 </span><i class='anzhiyufont anzhiyu-icon-heartbeat' style='color:red'></i>`;
+    } else {
+      // 如果是下班时间，插入"安知鱼-下班啦.svg"图片
+      let img = document.querySelector("#workboard .workSituationImg");
+      if (img != null) {
+        img.src = "https://npm.elemecdn.com/anzhiyu-blog@2.0.4/img/badge/安知鱼-下班啦.svg";
+        img.title = "下班了就该开开心心的玩耍，嘿嘿~";
+        img.alt = "下班了就该开开心心的玩耍，嘿嘿~";
+      }
+
+      currentTimeHtml = `本站居然运行了 ${dnum} 天<span id='runtime'> ${hnum} 小时 ${mnum} 分 ${snum} 秒 </span><i class='anzhiyufont anzhiyu-icon-heartbeat' style='color:red'></i>`;
+    }
+
+    if (document.getElementById("runtimeTextTip")) {
+      document.getElementById("runtimeTextTip").innerHTML = currentTimeHtml;
+    }
+  }
+
+  setInterval(() => {
+    updateTime();
+    updateHtml();
+  }, 1000);
+})();</script><div class="js-pjax"><input type="hidden" name="page-type" id="page-type" value="post"></div><script>var visitorMail = "";
+</script><script async data-pjax src="https://cdn.cbd.int/anzhiyu-theme-static@1.0.0/waterfall/waterfall.js"></script><script src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/qrcodejs/1.0.0/qrcode.min.js"></script><link rel="stylesheet" href="https://cdn.cbd.int/anzhiyu-theme-static@1.1.9/icon/ali_iconfont_css.css"><link rel="stylesheet" href="https://cdn.cbd.int/anzhiyu-theme-static@1.0.0/aplayer/APlayer.min.css" media="print" onload="this.media='all'"><script src="https://cdn.cbd.int/anzhiyu-blog-static@1.0.1/js/APlayer.min.js"></script><script src="https://cdn.cbd.int/hexo-anzhiyu-music@1.0.1/assets/js/Meting2.min.js"></script><script src="https://cdn.cbd.int/pjax@0.2.8/pjax.min.js"></script><script>let pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+  // removeEventListener scroll 
+  anzhiyu.removeGlobalFnEvent('pjax')
+  anzhiyu.removeGlobalFnEvent('themeChange')
+
+  document.getElementById('rightside').classList.remove('rightside-show')
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+})
+
+document.addEventListener('pjax:error', e => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script charset="UTF-8" src="https://cdn.cbd.int/anzhiyu-theme-static@1.1.5/accesskey/accesskey.js"></script></div><div id="popup-window"><div class="popup-window-title">通知</div><div class="popup-window-divider"></div><div class="popup-window-content"><div class="popup-tip">你好呀</div><div class="popup-link"><i class="anzhiyufont anzhiyu-icon-arrow-circle-right"></i></div></div></div></body></html>

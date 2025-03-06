@@ -1,3 +1,3 @@
-var posts=["2025/03/03/hello-world/","2025/03/03/cse-filesystem/","2025/03/04/cse-rpc/","2025/03/04/cse-dfs/","2025/03/04/cse-kv/","2025/03/04/cse-tx/","2025/03/04/cse-paxos/","2025/03/05/cse-network/","2025/03/05/cse-aicomputing/","2025/03/05/cse-security/","2025/03/05/network-intro/","2025/03/05/network-app/","2025/03/06/network-trans/","2025/03/06/network-dataplane/","2025/03/06/network-controlplane/"];function toRandomPost(){
+var posts=["2025/03/03/hello-world/","2025/03/03/cse-filesystem/","2025/03/04/cse-rpc/","2025/03/04/cse-dfs/","2025/03/04/cse-kv/","2025/03/04/cse-tx/","2025/03/04/cse-paxos/","2025/03/05/cse-network/","2025/03/05/cse-aicomputing/","2025/03/05/cse-security/","2025/03/05/network-intro/","2025/03/05/network-app/","2025/03/06/network-trans/","2025/03/06/network-dataplane/","2025/03/06/network-controlplane/","2025/03/06/rdma/"];function toRandomPost(){
     pjax.loadUrl('/'+posts[Math.floor(Math.random() * posts.length)]);
   };
