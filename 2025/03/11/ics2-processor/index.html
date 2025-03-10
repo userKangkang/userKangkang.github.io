@@ -1,0 +1,482 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"><title>计算机系统基础II之：Y86处理器 | Hexo</title><meta name="keywords" content="计算机系统工程"><meta name="author" content="Weiquan Huang,hwqqz678@sjtu.edu.cn"><meta name="copyright" content="Weiquan Huang"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#f7f9fe"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-touch-fullscreen" content="yes"><meta name="apple-mobile-web-app-title" content="计算机系统基础II之：Y86处理器"><meta name="application-name" content="计算机系统基础II之：Y86处理器"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="#f7f9fe"><meta property="og:type" content="article"><meta property="og:title" content="计算机系统基础II之：Y86处理器"><meta property="og:url" content="https://userkangkang.github.io/project/2025/03/11/ics2-processor/index.html"><meta property="og:site_name" content="Hexo"><meta property="og:description" content="2-1 risc 程序员可见状态是指Y86-64的指令可以查看或者修改的部分 寄存器比X86-64少了一个%r15，因为需要有一个无寄存器的编码$F$ PC程序计数器 条件码只有SF ZF OF(Negative Zero Overflow) 状态码 内存（小端法） 12种指令(V-value D-"><meta property="og:locale" content="zh-CN"><meta property="og:image" content="https://avatars.githubusercontent.com/u/114564389?v=4"><meta property="article:author" content="Weiquan Huang"><meta property="article:tag"><meta name="twitter:card" content="summary"><meta name="twitter:image" content="https://avatars.githubusercontent.com/u/114564389?v=4"><meta name="description" content="2-1 risc 程序员可见状态是指Y86-64的指令可以查看或者修改的部分 寄存器比X86-64少了一个%r15，因为需要有一个无寄存器的编码$F$ PC程序计数器 条件码只有SF ZF OF(Negative Zero Overflow) 状态码 内存（小端法） 12种指令(V-value D-"><link rel="shortcut icon" href="/favicon.ico"><link rel="canonical" href="https://userkangkang.github.io/project/2025/03/11/ics2-processor/"><link rel="preconnect" href="//cdn.cbd.int"/><meta name="google-site-verification" content="xxx"/><meta name="baidu-site-verification" content="code-xxx"/><meta name="msvalidate.01" content="xxx"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.cbd.int/node-snackbar@0.1.16/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.cbd.int/@fancyapps/ui@5.0.28/dist/fancybox/fancybox.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  linkPageTop: undefined,
+  peoplecanvas: {"enable":true,"img":"https://upload-bbs.miyoushe.com/upload/2024/07/27/125766904/ba62475f396df9de3316a08ed9e65d86_5680958632268053399..png"},
+  postHeadAiDescription: {"enable":true,"gptName":"AnZhiYu","mode":"local","switchBtn":false,"btnLink":"https://afdian.net/item/886a79d4db6711eda42a52540025c377","randomNum":3,"basicWordCount":1000,"key":"xxxx","Referer":"https://xx.xx/"},
+  diytitle: {"enable":true,"leaveTitle":"w(ﾟДﾟ)w 不要走！再看看嘛！","backTitle":"♪(^∇^*)欢迎肥来！"},
+  LA51: undefined,
+  greetingBox: undefined,
+  twikooEnvId: '',
+  commentBarrageConfig:undefined,
+  music_page_default: "nav_music",
+  root: '/',
+  preloader: {"source":3},
+  friends_vue_info: undefined,
+  navMusic: true,
+  mainTone: {"mode":"api","api":"https://img2color-go.vercel.app/api?img=","cover_change":true},
+  authorStatus: {"skills":null},
+  algolia: undefined,
+  localSearch: undefined,
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"简","rightMenuMsgToTraditionalChinese":"转为繁体","rightMenuMsgToSimplifiedChinese":"转为简体"},
+  noticeOutdate: {"limitDay":365,"position":"top","messagePrev":"It has been","messageNext":"days since the last update, the content of the article may be outdated."},
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":330},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    simplehomepage: true,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"copy":true,"copyrightEbable":false,"limitCount":50,"languages":{"author":"作者: Weiquan Huang","link":"链接: ","source":"来源: Hexo","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。","copySuccess":"复制成功，复制和转载请标注本文地址"}},
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#425AEF","bgDark":"#1f1f1f","position":"top-center"},
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.cbd.int/flickr-justified-gallery@2.1.2/dist/fjGallery.min.js',
+      css: 'https://cdn.cbd.int/flickr-justified-gallery@2.1.2/dist/fjGallery.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isAnchor: false,
+  shortcutKey: undefined,
+  autoDarkmode: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  configTitle: 'Hexo',
+  title: '计算机系统基础II之：Y86处理器',
+  postAI: '',
+  pageFillDescription: '2-1 risc, OPq的分支注意只允许double register, movq的各个情况, 条件move（double register）, 真实程序中的Y86汇编语言, 2-2 hcl, 2-3 SEQ, 2-4 SEQ Implementation, Fetch, Decode amp Write Back, Execute, Memory, PC Update, 2-5 Pipe, 数据依赖和条件依赖, 流水线实现, Hazards（风险）, 2-6 Hazard, 数据冒险, 条件冒险, Exceptions, 2-7 CPU Implementation, Fetch, Docode amp Write back, Execute amp Memory, Load Use Hazard, Normal amp Stall amp Bubble, CPI, 可能的优化程序员可见状态是指的指令可以查看或者修改的部分寄存器比少了一个因为需要有一个无寄存器的编码程序计数器条件码只有状态码内存小端法种指令每种指令比特数长度固定由第一个确定其长度指令类型以及功能其中前个确定类型后个确定功能运算指令包括等等为上面表格中的所涵盖举例为表示代表的分支注意只允许的各个情况举例条件跳转指令也是由第一个的后确定跳转条件的栈跟差不多往低地址增加栈顶指向栈中的最低地址然后是关于栈的操作注意如果是先保存原来的再改变是将栈顶的值保存到内和包括了很多的操作比如更改将地址压栈更改等等真实程序中的汇编语言解析表示声明此处内存位置为是程序开始执行的位置也就是说刚开始设置的值就是表示对齐也就是说这里的地址如果不是对齐的话会强制填充空位直到遇到对齐地址比如这里的这个是声明的位置作为一个用来代替具体数值的标签比如这里的就是用这个标签来代替而左边实际的机器语言写得就是是程序栈此处将程序栈的栈头地址初始化为他可以向低地址进栈这意味着栈如果太小容易与原来的程序指令冲突如果太大会造成空间浪费这里的指令和二进制码的对照规则就是的规则模拟意味着将诸如内存之类的东西用语言的对象来表示然后写程序来模拟如何执行指令进行数据的运输和修改的理解软件与硬件联系之间的中介汇编语言抽象机器语言抽象目录数字电路逻辑门输出是输入的持续性响应意味着在输入变化时输出会经过一定的延迟才会变化的逻辑表达式可以被部分求值而逻辑电路没有部分求值的规则字级相等判定电路级相等判定逻辑字级多路复用器电路级逻辑为的表达式为情况表达式其框内的每个情况是遵循第一个求值为的情况会被选中有点类似于语言的单个位的多路复用器表达式当的时候选否则选寄存器时钟上沿数据存储原理当未发生的时候其输出端口的值保持不变而输入端口的值不会触发的改变当且仅当发生的时候输入端口的值才会传到输出端口上寄存器文件解析有两个读端口和一个写端口读端口会将寄存器文件中存有的数据写入读端口处的寄存器写端口会通过上面的寄存器时钟上沿更新规则在时钟上沿的时候将文件里面的数据更新为目录状态码遇到错误后不执行类似于对每个指令的机器码分别执行读取头一个获取寄存器和立即数位置获取寄存器值进行计算更新如有如有获取内存位置写回数据更新注意一次性加载个没用到的不读就行所有的指令无论是否需要用到全部的阶段在流程上都需要经过这个阶段举例从上获取获取存在寄存器上的值给到变量上通过计算得到想要的值同时根据情况获得通过获得内存上的值或者写入内存注意内存与有直接通道故一般没有和有联系将获得的数据写入寄存器中所以有的时候会有的类似冗余的阶段根据已有值计算预留的空格意味着预留给其他指令的指令空间同时这些指令并非依次完成的一个执行一条指令在一个同时更新寄存器文件内存的值组合电路不需要即可流入需要再解析一下比如这边标的这里相当于目前个非组合电路寄存器文件内存仍处在结束后的状态而的产出已经到达个非组合电路的门口等待输入此刻只需要一个即可以完成的操作将需要改变状态的非组合电路基于的指令和之前的状态进行更新即可特别注意一下步骤内会保证后面的指令覆盖前面的指令效果总结可能是自动添加的比如像这种需要但是没有明说的设计电路抽象目录重点是灰颜色的组合电路部分的设计如何产出正确的值必用的是会使用在的增量上根据可知此指令是否具有其他如为可选使用项无需使用时也需要经过整个执行周期不过最后会被设置为不对状态进行改变只是会认为非的为错误否则即使是词不达意的其也将其视为合法指令如果内存错误那么会直接把改成假设的组合不属于合法的指令实际上也会被设置为触发不合法的结算是由的内部电路逻辑来触发的灰色的部分是计算过程也就是将要写入的值的计算逻辑而蓝色部分是要写入的值比如写入的就是告诉最后输出是取决于哪一个寄存器以及是告诉最后写入的是输入到哪一个寄存器中表示此处获取不需要寄存器表示此处不需要写入某个寄存器具体还是根据类型来确定两个是读进去或者直接设置为什么值然后再参与的计算确定是否从内存中读值是否将值写入内存确定要执行操作的地址有些情况下新的是取决于写入的立即数地址的或者栈上的一个值目录流水线意在让多条指令同时在一个设计电路周期中运行这样可以节省不少时间实现这种想法理论上来说需要在每个阶段添加保存寄存器状态的阶段也就是说要让一个指令在执行的时候都保有自己执行前一个指令的时候计算得到的且能够用在后续指令的状态值每个时钟周期上升的时候会写入寄存器值比如的时候寄存器的值就会被前面的逻辑组合电路灌满而在非上升阶段则是让指令在每个阶段那边跑不过现实并不是那么美好实际上一个的周期并不可以完美地均分而是要根据执行过程来进行切分以及并不是将整个过程分割的越多块执行效果越好的即使整个计算过程可以分割成无限多块但是由于寄存器存储也是需要时间的所以变成了单条指令计算时长非常长不过吞吐量倒也会相应地优化分的太细就有点得不偿失了在每个时钟周期内变成了写入寄存器文件的耗时为大头数据依赖和条件依赖数据依赖如果是流水线执行的话前后指令有数据依赖那么可能会出现在前面指令尚未更新或者说即使更新了也没有更新到后一个指令依赖的寄存器区域寄存器的值的时候后面的指令就要用到这个寄存器的值了条件依赖如果是有条件跳转数据传送指令的话那么可能会因为前面一条指令的还没计算出来或者还没传到需要指令的寄存器导致无法及时地进行正确的跳转在这个时候就比较需要进行猜测流水线实现我去这什么玩意啊模型前移由于在很多情况下都是由决定的仅少部分情况下不可以立即由这两个决定比如条件跳转所以可以将计算当前通过前面的计算结果进行计算的过程直接挪到的前面这样子就不需要让在整个过程中做长时间的无意义的运输同时这边也展示出了其实里面说的寄存器并不存在在流水线中是通过一个组合电路来计算出值的是立即使用的不过仍然存在其他的寄存器程序员不可见过程寄存器用上面的思路将整个过程用寄存器拆分每个过程的执行基于其之前寄存器的状态值的命名有大小之分开头大写的表示在某个阶段寄存器产生的值比如是写回寄存器产出的要到的是内存寄存器出来的要到的开头小写的标识是在阶段过程中产生的值比如就是在阶段中由产生的值同时在之前增加了一个来获取要执行的命令的值其实是与的共用通道因为这两个的使用基本是互斥的实际的流水线硬件示意图风险以更新为例有许多场景下是允许在当前指令尚未完全执行完成的时候直接去更新的这也符合流水线的要求但是如果是诸如条件跳转指令的话就有可能由于数据传送不到位而导致过早更新从而执行到了错误的指令这个时候流水线也不能停下来只能去也就是为什么那个寄存器叫做猜错了的话只能去还原状态了猜他会跳转摆烂用只能通过返回值来进行可能的修复修复的逻辑目录流水线执行指令的过程并不是一帆风顺的在数据传送和使用的过程中会产生一些冲突导致后面的指令无法完全接收到前一条指令执行过后的结果从而造成错误的计算跳转等首先整个流水线中个寄存器以及都是受到同一个时钟的操控在流水线执行的过程中受到时钟操控的部件能够接收到信号获得一个暂停数据输入输出指令的功能称为数据冒险在这个情境下和需要隔着条指令因为指令目前应该在寄存器前尚且不能进去而在寄存器之前需要让能够计算正确的值只有在的指令效果传到了门前才允许在下一个时钟上沿和这个一起被触发而从寄存器门前到门前有步所以这边要么程序员手动写要么编译器触发机制给你来个这样子相当于数据在寄存器停着不往前走执行空的指令以此来避免数据传送的冲突还能更快一点吗也不是不行我们需要的是获取到对应寄存器的值不过我们不一定非要从寄存器文件去拿我们也可以在中间过程获取这个值在写入寄存器之前先拿来用这样也可以满足我们的要求比如将拿来用那么只需要个如果将拿来用那么可能可以不需要只要来得及将拿给的入口处就可以了不过这个就涉及到一个时间的问题通常来看拿刚从阶段分界处寄存器获取的值会比较保险因为这些值会及时地填充到阶段的逻辑电路这样子能够保证最后流向寄存器的值在时钟周期上升沿之前是预期的值当然如果这几个入口都对下一条寄存器的指令有影响那么肯定是优先选择最靠近该指令的指令在过程产生值优先级由近到远递减当然数据冒险有的时候必须加比如和相邻那么根本无法再阶段获取到需要的寄存器值那么只能等下一个阶段的才能获取到值了条件冒险指令到达寄存器的时候跟在其后面的错误指令在寄存器本身对的更正需要等到其进入到阶段传到才可以运行那么这个过程会有条指令成功突破阶段进入到阶段及以后如果不及时处理会导致其修改寄存器和内存所以需要加个分支预测错误分支预测错误的信息会在阶段通过和实际是传到来修正此时后两个错误指令还在指令在处的指令尚未更改因为还差一个上沿解决办法是发现跳转错误的时候将两条错误指令即将要激发的寄存器改为这样就不会触发更改状态为什么不用和呢是不想吗首先已经在一个时钟周期的较为末端的地方了他如果牵一条线也是签到处那么由于比较慢访问内存某个地址的指令码所以可能的作用还没有施加到这里时钟周期就上升了使用的还是之前逻辑电路产生的旧值这样子意义就不大了没有办法得到一个期望的提前修正的效果在指令执行的时候出现了错误需要去做一些处理每条错误的指令会在的阶段报错不过发现错误的时机要么是要么是如下图在阶段被检测到检测到之后会让之后的指令无法造成副作用修改状态当然这意味着需要接一条线回去前面的指令仍然执行还有一种情况是如果到了错误的指令但是这个指令不会被执行那么会被检测到但是因为还没有到达所以暂时不会让报错后续会在错误指令进入之前直接给这个指令插那么这个指令不会改写状态其状态码也变成了阶段如果指令的状态码不是那么就会触发实现基本上是前面几节思想的复盘主要是这边将具体的线路统统展示了出来其实只是细化了一下前面的流程比如受到的影响取或者受到了跳转阶段的实际上是在不需要跳转的情况下传回来回来的地址的影响则是根据指令的情况是否错误来设置比如错误指令就会被识别然后设置为正常的就传一个就可以了阶段主要是一个提前写回的线路就比如之前提到的由于可以直接在前面阶段将计算出来的值写到所以不需要加顺序问题首先是写入离阶段更近的产出值同样近的优先写除了传数据给其他的阶段以外只需要承担一个更新全局的功能即如果是则设置为否则就按照当前到达阶段的状态去更新全局状态再看看需不需要阶段只要是处理是否更改的问题条件有指令更改是正常的而非错误的这一个条件意味着前面的指令并没有出错以及当前的指令有没有出错因为此时指令已经到了阶段了而是和在在阶段即将进入一起接受时钟上沿更新的阶段如果访问地址异常则设置为这玩意其实是由于要写入寄存器的值在内存里面但是下一条指令就要用到这个寄存器的值由于这个需要用到的值顶多只能在阶段被获取到对于要用这个值的指令必须在门前等一个周期才可以在进入前拿到预期的值所以这边需要加一个这边除了以外也可能出现这种情况同时要确定是否在里面要在阶段获取的寄存器是否是要在阶段使用阶段获取的寄存器正常情况下时钟上沿会导致门口的输入数据进入到这一层寄存器中意味着输入的数据不产生作用没有进去但是之前在寄存器的数据仍然在下一个过程中起作用意味着不仅输入的数据没有进去原来在寄存器的值也被设置为相当于全部不起作用就好比其在指令即将到达阶段的时候保留寄存器之前的状态先让寄存器输出一个指令并让指令去前往阶段然后指令获得寄存器中的值并且将其送到阶段的时候的解除和的解除程序可以继续通畅的运行放弃不要的指令直接在其要进入阶段之前加然后阶段正常运行这样子后面的指令就会把前面的指令推到沙滩上想要保留指令的才是阶段加后面加这样子的效果是延期执行更正对于的理解应该更新一下以为例在阶段就可以检测到条件的异常然后其可以挡住寄存器阶段指令的输入也就是在进入寄存器的时候此时的寄存器被插了此时在阶段流到的数据被擦掉了而又会流将其清洗掉这样相当于并没有发挥任何作用对于这种默认情况不需要调整再来分析一下和的冲突这里的冲突主要是在而在此时发现自己要修改的寄存器在中要用到所以其在进入之前会给寄存器发信号让其变成同时让寄存器住原来的指令在这里为而此时在阶段它的后一步操作是前往并且给寄存器设置清除后续指令这里首先寄存器的冲突了而且如果采用则会让指令直接被擦除所以这边应对冲突的方式是在寄存器只保留的效果单个有效指令耗费时钟周期数一般大于因为需要插的平均插入数加上就是的值目前是可能的优化比如这里将低位和位高位分开计算频繁变动的只有低四位那么就可以在低四位不进位的时候执行高效的运算节省时间',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2025-03-11 00:27:32',
+  postMainColor: '',
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#18171d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#f7f9fe')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+          const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+          const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+          const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+          if (t === undefined) {
+            if (isLightMode) activateLightMode()
+            else if (isDarkMode) activateDarkMode()
+            else if (isNotSpecified || hasNoSupport) {
+              const now = new Date()
+              const hour = now.getHours()
+              const isNight = hour <= 6 || hour >= 18
+              isNight ? activateDarkMode() : activateLightMode()
+            }
+            window.matchMedia('(prefers-color-scheme: dark)').addListener(e => {
+              if (saveToLocal.get('theme') === undefined) {
+                e.matches ? activateDarkMode() : activateLightMode()
+              }
+            })
+          } else if (t === 'light') activateLightMode()
+          else activateDarkMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><meta name="generator" content="Hexo 7.3.0"></head><body data-type="anzhiyu"><div id="web_bg"></div><div id="an_music_bg"></div><div id="loading-box" onclick="document.getElementById(&quot;loading-box&quot;).classList.add(&quot;loaded&quot;)"><div class="loading-bg"><img class="loading-img nolazyload" alt="加载头像" src="https://npm.elemecdn.com/anzhiyu-blog-static@1.0.4/img/avatar.jpg"/><div class="loading-image-dot"></div></div></div><script>const preloader = {
+  endLoading: () => {
+    document.getElementById('loading-box').classList.add("loaded");
+  },
+  initLoading: () => {
+    document.getElementById('loading-box').classList.remove("loaded")
+  }
+}
+window.addEventListener('load',()=> { preloader.endLoading() })
+setTimeout(function(){preloader.endLoading();},10000)
+
+if (true) {
+  document.addEventListener('pjax:send', () => { preloader.initLoading() })
+  document.addEventListener('pjax:complete', () => { preloader.endLoading() })
+}</script><link rel="stylesheet" href="https://cdn.cbd.int/anzhiyu-theme-static@1.1.10/progress_bar/progress_bar.css"/><script async="async" src="https://cdn.cbd.int/pace-js@1.2.4/pace.min.js" data-pace-options="{ &quot;restartOnRequestAfter&quot;:false,&quot;eventLag&quot;:false}"></script><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><div id="nav-group"><span id="blog_name"><div class="back-home-button"><i class="anzhiyufont anzhiyu-icon-grip-vertical"></i><div class="back-menu-list-groups"><div class="back-menu-list-group"><div class="back-menu-list-title">网页</div><div class="back-menu-list"><a class="back-menu-item" target="_blank" rel="noopener" href="https://github.com/userKangkang" title="Github"><img class="back-menu-item-icon" src="/img/github-mark.svg" alt="Github"/><span class="back-menu-item-text">Github</span></a></div></div></div></div><a id="site-name" href="/" accesskey="h"><div class="title">Hexo</div><i class="anzhiyufont anzhiyu-icon-house-chimney"></i></a></span><div class="mask-name-container"><div id="name-container"><a id="page-name" href="javascript:anzhiyu.scrollToDest(0, 500)">PAGE_NAME</a></div></div><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 文章</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/archives/"><i class="anzhiyufont anzhiyu-icon-box-archive faa-tada" style="font-size: 0.9em;"></i><span> 隧道</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/categories/"><i class="anzhiyufont anzhiyu-icon-shapes faa-tada" style="font-size: 0.9em;"></i><span> 分类</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/tags/"><i class="anzhiyufont anzhiyu-icon-tags faa-tada" style="font-size: 0.9em;"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 友链</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/link/"><i class="anzhiyufont anzhiyu-icon-link faa-tada" style="font-size: 0.9em;"></i><span> 友人帐</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/fcircle/"><i class="anzhiyufont anzhiyu-icon-artstation faa-tada" style="font-size: 0.9em;"></i><span> 朋友圈</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/comments/"><i class="anzhiyufont anzhiyu-icon-envelope faa-tada" style="font-size: 0.9em;"></i><span> 留言板</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 我的</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/music/"><i class="anzhiyufont anzhiyu-icon-music faa-tada" style="font-size: 0.9em;"></i><span> 音乐馆</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/bangumis/"><i class="anzhiyufont anzhiyu-icon-bilibili faa-tada" style="font-size: 0.9em;"></i><span> 追番页</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/album/"><i class="anzhiyufont anzhiyu-icon-images faa-tada" style="font-size: 0.9em;"></i><span> 相册集</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/air-conditioner/"><i class="anzhiyufont anzhiyu-icon-fan faa-tada" style="font-size: 0.9em;"></i><span> 小空调</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 关于</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/about/"><i class="anzhiyufont anzhiyu-icon-paper-plane faa-tada" style="font-size: 0.9em;"></i><span> 关于本人</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/essay/"><i class="anzhiyufont anzhiyu-icon-lightbulb faa-tada" style="font-size: 0.9em;"></i><span> 闲言碎语</span></a></li><li><a class="site-page child faa-parent animated-hover" href="javascript:toRandomPost()"><i class="anzhiyufont anzhiyu-icon-shoe-prints1 faa-tada" style="font-size: 0.9em;"></i><span> 随便逛逛</span></a></li></ul></div></div></div><div id="nav-right"><div class="nav-button" id="randomPost_button"><a class="site-page" onclick="toRandomPost()" title="随机前往一个文章" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-dice"></i></a></div><input id="center-console" type="checkbox"/><label class="widget" for="center-console" title="中控台" onclick="anzhiyu.switchConsole();"><i class="left"></i><i class="widget center"></i><i class="widget right"></i></label><div id="console"><div class="console-card-group-reward"><ul class="reward-all console-card"><li class="reward-item"><a href="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-weichat.png" target="_blank"><img class="post-qr-code-img" alt="微信" src="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-weichat.png"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-alipay.png" target="_blank"><img class="post-qr-code-img" alt="支付宝" src="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-alipay.png"/></a><div class="post-qr-code-desc">支付宝</div></li></ul></div><div class="console-card-group"><div class="console-card-group-left"><div class="console-card" id="card-newest-comments"><div class="card-content"><div class="author-content-item-tips">互动</div><span class="author-content-item-title"> 最新评论</span></div><div class="aside-list"><span>正在加载中...</span></div></div></div><div class="console-card-group-right"><div class="console-card tags"><div class="card-content"><div class="author-content-item-tips">兴趣点</div><span class="author-content-item-title">寻找你感兴趣的领域</span><div class="card-tags"><div class="item-headline"></div><div class="card-tag-cloud"><a href="/tags/Coursera/" style="font-size: 1.05rem;">Coursera<sup>1</sup></a><a href="/tags/RDMA/" style="font-size: 1.05rem;">RDMA<sup>1</sup></a><a href="/tags/%E4%B8%AD%E5%9B%BD%E7%A7%91%E5%AD%A6%E6%8A%80%E6%9C%AF%E5%A4%A7%E5%AD%A6/" style="font-size: 1.05rem;">中国科学技术大学<sup>5</sup></a><a href="/tags/%E4%BA%91%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" style="font-size: 1.05rem;">云操作系统<sup>1</sup></a><a href="/tags/%E5%85%A5%E9%97%A8/" style="font-size: 1.05rem;">入门<sup>1</sup></a><a href="/tags/%E7%9F%A5%E4%B9%8E/" style="font-size: 1.05rem;">知乎<sup>1</sup></a><a href="/tags/%E8%99%9A%E6%8B%9F%E6%9C%BA/" style="font-size: 1.05rem;">虚拟机<sup>1</sup></a><a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E5%B7%A5%E7%A8%8B/" style="font-size: 1.05rem;">计算机系统工程<sup>10</sup></a><a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" style="font-size: 1.05rem;">计算机网络<sup>5</sup></a><a href="/tags/%E9%85%8D%E7%8E%AF%E5%A2%83/" style="font-size: 1.05rem;">配环境<sup>1</sup></a></div></div><hr/></div></div><div class="console-card history"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-box-archiv"></i><span>文章</span></div><div class="card-archives"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-archive"></i><span>归档</span></div><ul class="card-archive-list"><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2025/03/"><span class="card-archive-list-date">三月 2025</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">18</span><span>篇</span></div></a></li></ul></div><hr/></div></div></div><div class="button-group"><div class="console-btn-item"><a class="darkmode_switchbutton" title="显示模式切换" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-moon"></i></a></div><div class="console-btn-item" id="consoleHideAside" onclick="anzhiyu.hideAsideBtn()" title="边栏显示控制"><a class="asideSwitch"><i class="anzhiyufont anzhiyu-icon-arrows-left-right"></i></a></div><div class="console-btn-item" id="consoleMusic" onclick="anzhiyu.musicToggle()" title="音乐开关"><a class="music-switch"><i class="anzhiyufont anzhiyu-icon-music"></i></a></div></div><div class="console-mask" onclick="anzhiyu.hideConsole()" href="javascript:void(0);"></div></div><div class="nav-button" id="nav-totop"><a class="totopbtn" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i><span id="percent" onclick="anzhiyu.scrollToDest(0,500)">0</span></a></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);" title="切换"><i class="anzhiyufont anzhiyu-icon-bars"></i></a></div></div></div></nav><div id="post-info"><div id="post-firstinfo"><div class="meta-firstline"><a class="post-meta-original">原创</a><span class="post-meta-categories"><span class="post-meta-separator"></span><i class="anzhiyufont anzhiyu-icon-inbox post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F/" itemprop="url">计算机系统</a><i class="anzhiyufont anzhiyu-icon-angle-right post-meta-separator"></i><i class="anzhiyufont anzhiyu-icon-inbox post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F/AI%E8%AE%A1%E7%AE%97/" itemprop="url">AI计算</a></span><span class="article-meta tags"><a class="article-meta__tags" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E5%B7%A5%E7%A8%8B/" tabindex="-1" itemprop="url"> <span> <i class="anzhiyufont anzhiyu-icon-hashtag"></i>计算机系统工程</span></a></span></div></div><h1 class="post-title" itemprop="name headline">计算机系统基础II之：Y86处理器<a class="post-edit-link" href="undefined_posts/ics2-processor.md" title="在 GitHub 上编辑 - 计算机系统基础II之：Y86处理器" target="_blank"><i class="anzhiyufont anzhiyu-icon-pencil"></i></a></h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="anzhiyufont anzhiyu-icon-calendar-days post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" itemprop="dateCreated datePublished" datetime="2025-03-10T16:19:38.964Z" title="发表于 2025-03-11 00:19:38">2025-03-11</time><span class="post-meta-separator"></span><i class="anzhiyufont anzhiyu-icon-history post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" itemprop="dateCreated datePublished" datetime="2025-03-10T16:27:32.816Z" title="更新于 2025-03-11 00:27:32">2025-03-11</time></span></div><div class="meta-secondline"><span class="post-meta-separator">       </span><span class="post-meta-position" title="作者IP属地为上海"><i class="anzhiyufont anzhiyu-icon-location-dot"></i>上海</span></div></div></div><section class="main-hero-waves-area waves-area"><svg class="waves-svg" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto"><defs><path id="gentle-wave" d="M -160 44 c 30 0 58 -18 88 -18 s 58 18 88 18 s 58 -18 88 -18 s 58 18 88 18 v 44 h -352 Z"></path></defs><g class="parallax"><use href="#gentle-wave" x="48" y="0"></use><use href="#gentle-wave" x="48" y="3"></use><use href="#gentle-wave" x="48" y="5"></use><use href="#gentle-wave" x="48" y="7"></use></g></svg></section><div id="post-top-cover"><img class="nolazyload" id="post-top-bg" src=""></div></header><main id="blog-container"><div class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container" itemscope itemtype="https://userkangkang.github.io/project/2025/03/11/ics2-processor/"><header><a class="post-meta-categories" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F/" itemprop="url">计算机系统</a><a class="post-meta-categories" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F/AI%E8%AE%A1%E7%AE%97/" itemprop="url">AI计算</a><a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E5%B7%A5%E7%A8%8B/" tabindex="-1" itemprop="url">计算机系统工程</a><h1 id="CrawlerTitle" itemprop="name headline">计算机系统基础II之：Y86处理器</h1><span itemprop="author" itemscope itemtype="http://schema.org/Person">Weiquan Huang</span><time itemprop="dateCreated datePublished" datetime="2025-03-10T16:19:38.964Z" title="发表于 2025-03-11 00:19:38">2025-03-11</time><time itemprop="dateCreated datePublished" datetime="2025-03-10T16:27:32.816Z" title="更新于 2025-03-11 00:27:32">2025-03-11</time></header><h3 id="2-1-risc"><a href="#2-1-risc" class="headerlink" title="2-1 risc"></a>2-1 risc</h3><ul>
+<li>程序员可见状态是指Y86-64的指令可以查看或者修改的部分</li>
+<li>寄存器比X86-64少了一个%r15，因为需要有一个无寄存器的编码$F$</li>
+<li>PC程序计数器</li>
+<li>条件码只有SF ZF OF(Negative Zero Overflow)</li>
+<li>状态码</li>
+<li>内存（小端法）</li>
+<li>12种指令(V-value D-address)<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/!%5B%5D(https:/raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/1708306300488.png"><br>每种指令比特数长度固定，<strong>由第一个byte确定</strong>其长度、指令类型以及功能，其中前4个bit确定类型，后4个bit确定功能<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/1708307526992.png"><br>运算指令包括<em>addp subp andp xorp</em>等等，为上面表格中的<em>OPq</em>所涵盖<br>举例：<em>addq %rax, %rsi</em>为<em>60 06</em>，<em>60</em>表示<em>addq</em>，<em>06</em> 代表 <em>%rax,%rsi</em></li>
+</ul>
+<h4 id="OPq的分支，注意只允许double-register"><a href="#OPq的分支，注意只允许double-register" class="headerlink" title="OPq的分支，注意只允许double register"></a><em>OPq</em>的分支，注意只允许double register</h4><p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/1708309763279.png"></p>
+<h4 id="movq的各个情况"><a href="#movq的各个情况" class="headerlink" title="movq的各个情况"></a><em>movq</em>的各个情况</h4><p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/1708309985007.png"><br>举例<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/1708310519591.png"></p>
+<h4 id="条件move（double-register）"><a href="#条件move（double-register）" class="headerlink" title="条件move（double register）"></a>条件move（double register）</h4><p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/1708310716915.png"><br>跳转指令也是由第一个byte的后4bit确定跳转条件<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/1708310767979.png"><br>Y86-64的栈跟X86差不多，往低地址增加，栈顶 <em>%rsp</em> 指向栈中的最低地址；然后是关于栈的操作：<strong>注意如果是pushq %rsp，先保存原来的rsp再改变rsp；popq %rsp是将栈顶的值保存到rsp内</strong><br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/1708311656186.png"><br>call和ret，包括了很多的操作，比如更改rsp、将地址压栈、更改PC等等<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/1708312048780.png"></p>
+<h3 id="真实程序中的Y86汇编语言"><a href="#真实程序中的Y86汇编语言" class="headerlink" title="真实程序中的Y86汇编语言"></a>真实程序中的Y86汇编语言</h3><p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/1708315001522.png"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/1708315422714.png"><br>解析：</p>
+<ul>
+<li><code>.pos 0</code>表示声明此处内存位置为0x0，0x0是程序开始执行的位置，也就是说PC刚开始设置的值就是0x0</li>
+<li><code>.align 8</code>表示8对齐，也就是说这里的地址如果不是8对齐的话会强制填充空位，直到遇到8对齐地址，比如这里的0x18</li>
+<li><code>array:</code>这个是声明<code>array</code>的位置，作为一个用来代替具体数值的标签，比如这里的<code>irmovq array,%rdi</code>就是用这个标签来代替0x18，而左边实际的机器语言写得就是0x18</li>
+<li><code>stack</code>是程序栈，此处将程序栈的栈头地址初始化为0x200，他可以向低地址进栈，这意味着栈如果太小容易与原来的程序指令冲突，如果太大会造成空间浪费</li>
+<li>这里的指令和二进制码的对照规则就是Y86的规则</li>
+</ul>
+<p>模拟（simulate）Y86-64意味着将诸如内存之类的东西用C语言的对象来表示，然后写C程序来模拟CPU如何执行指令，进行数据的运输和修改的</p>
+<p>理解软件与硬件联系之间的中介——ISA（汇编语言抽象、机器语言抽象）<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/1708481492186.png"></p>
+<h3 id="2-2-hcl"><a href="#2-2-hcl" class="headerlink" title="2-2 hcl"></a>2-2 hcl</h3><p>[[#目录)<br>数字电路逻辑门：输出是输入的持续性响应，意味着在输入变化时，输出会经过一定的延迟才会变化；C的逻辑表达式可以被部分求值<code>(a &amp;&amp; !a) &amp;&amp; b</code>，而逻辑电路没有部分求值的规则<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/1708483293046.png"><br>字级相等判定电路，bit级相等判定逻辑<code>(a &amp;&amp; b) || (!a &amp;&amp; !b)</code><br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/1708484674129.png"><br>字级多路复用器电路，bit级逻辑为<code>(s &amp;&amp; a) || (!s &amp;&amp; b)</code><br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/1708484937171.png"><br>HCL的表达式为<em>case expression 情况表达式</em>，其框内的每个情况是遵循“第一个求值为1的情况会被选中”，有点类似于C语言的<code>switch</code>：<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/1708485138514(1).png"><br>单个位的多路复用器表达式，当s&#x3D;1的时候选A，否则选B</p>
+<p>寄存器时钟上沿数据存储原理：当Clock未发生<em>Rising edge</em>的时候，其输出端口O的值保持不变，而输入端口I的值不会触发O的改变；当且仅当发生<em>Rising edge</em>的时候，输入端口的值才会传到输出端口上<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/1708514254294.png"><br>寄存器文件解析：有两个读端口和一个写端口，读端口会将寄存器文件中存有的数据写入读端口处的寄存器<em>srcA,srcB</em>，写端口会通过上面的寄存器时钟上沿更新规则，在时钟上沿的时候将文件里面的数据更新为<em>valW</em><br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/1708514567917.png"></p>
+<h3 id="2-3-SEQ"><a href="#2-3-SEQ" class="headerlink" title="2-3 SEQ"></a>2-3 SEQ</h3><p>[[#目录)<br>状态码：遇到错误后不执行，类似于Python<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/1708913477161.png"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/1708912221266.png"><br>对每个指令的机器码分别执行：读取头一个byte，获取寄存器和立即数位置；获取寄存器值；进行计算，更新CC（如有）；（如有）获取内存位置；写回数据；更新PC<br><strong>注意</strong>：Instruction memory一次性加载10个byte，没用到的不读就行；所有的指令，无论是否需要用到全部的阶段，在流程上都需要经过这6个阶段</p>
+<p>举例：<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/1708913209410.png"></p>
+<ol>
+<li>从PC上获取<em>icode,ifun,rA,rB,valP(next PC),valC(constant)</em></li>
+<li>获取存在寄存器上的值，给到变量<em>valA,valB</em>上</li>
+<li>通过计算得到想要的值<em>valE</em>，同时根据情况获得<em>cond, cc</em></li>
+<li>通过<em>valA, valC, valE</em>获得内存上的值，或者写入内存，注意内存与<em>valA</em>有直接通道，故一般没有和<em>valB</em>有联系</li>
+<li>将获得的数据<em>valE</em>写入寄存器中，所以有的时候会有<em>valE&lt;-valA+0</em>的类似冗余的阶段</li>
+<li>根据已有值计算PC<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/1708916220057.png"><br>预留的空格意味着预留给其他指令的指令空间；同时这些指令并非依次完成的</li>
+</ol>
+<p>一个cycle执行一条指令，在一个clock edge同时更新寄存器文件、内存、PC、CC的值，组合电路不需要clock edge即可流入<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/1708916647239.png"><br>需要再解析一下：比如这边标的<em>cycle 3</em>，这里相当于目前5个非组合电路（寄存器文件、内存、pc、cc、program status）仍处在<em>cycle 2</em>结束后的状态，而ALU的产出已经到达5个非组合电路的门口等待输入；此刻只需要一个<em>clock edge</em>即可以完成<code>0x00c: addq %rdx,%rbx</code>的操作，将需要改变状态的非组合电路基于<em>cycle 3</em>的指令和<em>cycle 3</em>之前的状态进行更新即可<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/1708920049953.png"></p>
+<p>特别注意一下，步骤<em>write back</em>内，会保证后面的指令覆盖前面的指令效果<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/1708918422740.png"></p>
+<p>总结：<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/1708920984958.png"><br><em>val B</em>可能是自动添加的，比如像<em>pushq popq</em>这种需要<em>rsp</em>但是没有明说的<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/1708921125112.png"><br>设计电路抽象：<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/1709086701287.png"></p>
+<h3 id="2-4-SEQ-Implementation"><a href="#2-4-SEQ-Implementation" class="headerlink" title="2-4 SEQ Implementation"></a>2-4 SEQ Implementation</h3><p>[[#目录)<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/1709087094275.png"><br>重点是灰颜色的组合电路部分的设计，如何产出正确的值<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/1709087180389.png"></p>
+<h4 id="Fetch"><a href="#Fetch" class="headerlink" title="Fetch"></a>Fetch</h4><p>必用的是icode ifun，icode会使用在PC的增量上，根据icode可知此指令是否具有reg imm；其他如ifun rA rB valC为可选使用项，无需使用时也需要经过整个执行周期，不过最后会被设置为不对CPU状态进行改变；<em>instr valid</em>只是会认为非0-B的icode为错误，否则即使是词不达意的其也将其视为合法指令；如果<em>imem_error</em>内存错误，那么会直接把icode改成nop(0x1)<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/1709087501001.png"><br>假设icode ifun的组合不属于合法的指令，实际上<em>instr valid</em>也会被设置为0，触发不合法的结算；<em>imem_error</em>是由<em>instruction memory</em>的内部电路逻辑来触发的</p>
+<h4 id="Decode-Write-Back"><a href="#Decode-Write-Back" class="headerlink" title="Decode &amp; Write Back"></a>Decode &amp; Write Back</h4><p>灰色的部分是计算过程，也就是将要写入的值的计算逻辑；而蓝色部分是要写入的值，比如写入的<em>srcA</em>就是告诉<em>register file</em>，最后<em>valA</em>输出是取决于哪一个寄存器；以及<em>dstE</em>是告诉<em>register file</em>，最后写入的<em>valE</em>是输入到哪一个寄存器中<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/1709088292049.png"><br>RNONE表示此处获取<em>valA</em>不需要寄存器<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/1709091207550.png"><br>RNONE表示此处<em>valE</em>不需要写入某个寄存器<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/1709091223928.png"></p>
+<h4 id="Execute"><a href="#Execute" class="headerlink" title="Execute"></a>Execute</h4><p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/1709089871718.png"><br>具体还是根据icode类型来确定两个<em>ALU A&#x2F;B</em>是读进去（或者直接设置为）什么值，然后再参与<em>ALU</em>的计算<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/1709090269080.png"></p>
+<h4 id="Memory"><a href="#Memory" class="headerlink" title="Memory"></a>Memory</h4><p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/1709090381968.png"><br>确定是否从内存中读值&#x2F;是否将值写入内存<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/1709090652969.png"><br>确定要执行操作的地址<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/1709090782865.png"></p>
+<h4 id="PC-Update"><a href="#PC-Update" class="headerlink" title="PC Update"></a>PC Update</h4><p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/1709090442278.png"><br>有些情况下新的PC是取决于写入的立即数地址的，或者栈上的一个值<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/1709090457685.png"></p>
+<h3 id="2-5-Pipe"><a href="#2-5-Pipe" class="headerlink" title="2-5 Pipe"></a>2-5 Pipe</h3><p>[[#目录)<br>流水线意在让多条指令同时在一个设计电路周期中运行，这样可以节省不少时间；实现这种想法，理论上来说需要在每个阶段添加“保存寄存器状态”的阶段，也就是说要让一个指令在执行的时候都保有自己执行前一个指令的时候计算得到的，且能够用在后续指令的状态值<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/1709524824148.png"><br>每个时钟周期上升的时候会写入寄存器值（比如361ps的时候，寄存器的值就会被前面的逻辑组合电路灌满），而在非上升阶段则是让指令在每个阶段那边跑<br>不过现实并不是那么美好，实际上一个300ps的周期并不可以完美地均分，而是要根据执行过程来进行切分：<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/1709525015068.png"><br>以及，并不是将整个过程分割的越多块执行效果越好的，即使整个计算过程可以分割成无限多块，但是由于寄存器存储也是需要时间的，所以变成了单条指令计算时长非常长，不过吞吐量倒也会相应地优化（分的太细就有点得不偿失了，在每个时钟周期内变成了写入寄存器文件的耗时为大头）</p>
+<h4 id="数据依赖和条件依赖"><a href="#数据依赖和条件依赖" class="headerlink" title="数据依赖和条件依赖"></a>数据依赖和条件依赖</h4><p>数据依赖：如果是流水线执行的话，前后指令有数据依赖，那么可能会出现在前面指令尚未更新（或者说，即使更新了，也没有更新到后一个指令依赖的寄存器区域）寄存器的值的时候，后面的指令就要用到这个寄存器的值了<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/1709525262563.png"><br>条件依赖：如果是有条件跳转&#x2F;数据传送指令的话，那么可能会因为前面一条指令的cc还没计算出来或者还没传到需要cc指令的寄存器，导致无法及时地进行正确的跳转；在这个时候就比较需要进行“猜测”<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/1709525639171.png"></p>
+<h4 id="流水线实现"><a href="#流水线实现" class="headerlink" title="流水线实现"></a>流水线实现</h4><p>我去，这什么玩意啊？SEQ+模型<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/1709527482240.png"><br>1，PC前移：由于PC在很多情况下都是由valP valC决定的，仅少部分情况下不可以立即由这两个决定（比如条件跳转、ret），所以可以将<strong>计算当前PC</strong>（通过前面的计算结果进行计算）的过程直接挪到Fetch的前面，这样子就不需要让valP在整个过程中做长时间的无意义的运输；同时，这边也展示出了，其实ISA里面说的PC寄存器并不存在，在流水线中PC是通过一个组合电路来计算出值的，是立即使用的；不过仍然存在其他的寄存器，程序员不可见。<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/1709528113506.png"><br>2，过程寄存器：用上面的思路将整个过程用寄存器拆分，每个过程的执行基于其之前寄存器的状态；值的命名有大小之分，开头大写的表示在某个阶段<strong>寄存器</strong>产生的值，比如：W_valM是写回W寄存器产出的要到Register file的， M_valA是内存M寄存器出来的要到select PC的；开头小写的标识是在阶段<strong>过程中</strong>产生的值，比如d_valA就是在decode阶段中由register file产生的值；同时在PC之前增加了一个<em>predPC</em>来获取要执行的命令的PC值；<em>Select A</em>其实是valA与valP的共用通道，因为这两个的使用基本是互斥的</p>
+<p>实际的流水线硬件示意图：<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/1709541452690.png"></p>
+<h4 id="Hazards（风险）"><a href="#Hazards（风险）" class="headerlink" title="Hazards（风险）"></a>Hazards（风险）</h4><p>以PC更新为例，有许多场景下，PC是允许在当前指令尚未完全执行完成的时候直接去更新的，这也符合流水线的要求；但是，如果是诸如条件跳转、ret指令的话，就有可能由于数据传送不到位而导致PC过早更新，从而执行到了错误的指令；这个时候流水线也不能停下来，只能去predict（也就是为什么那个寄存器叫做<em>predPC</em>）；猜错了的话只能去还原状态了</p>
+<p><em>conditional jumps</em>猜他会跳转，<em>ret</em>摆烂用valP<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/1709542092216.png"><br>只能通过返回值来进行可能的修复<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/1709542186450.png"><br>修复的hcl逻辑：<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/1709542282694.png"></p>
+<h3 id="2-6-Hazard"><a href="#2-6-Hazard" class="headerlink" title="2-6 Hazard"></a>2-6 Hazard</h3><p>[[#目录)<br>流水线执行指令的过程并不是一帆风顺的，在数据传送和使用的过程中，会产生一些冲突，导致后面的指令无法完全接收到前一条指令执行过后的结果，从而造成错误的计算、跳转等</p>
+<p>首先，整个流水线中，5个寄存器以及register file、cc、memory都是受到同一个时钟的操控；在流水线执行的过程中，受到时钟操控的部件能够接收到信号，获得一个“暂停数据输入、输出nop”指令的功能，称为<em>bubble</em> </p>
+<h4 id="数据冒险"><a href="#数据冒险" class="headerlink" title="数据冒险"></a>数据冒险</h4><p>在这个情境下，<code>irmov</code>和<code>add</code>需要隔着3条指令，因为<code>add</code>指令目前应该在D寄存器前尚且不能进去，而<code>irmov</code>在E寄存器之前，需要让<code>add</code>能够计算正确的值，只有在<code>irmov</code>的指令效果传到了<code>register file</code>门前才允许<code>add</code>在下一个时钟上沿和这个<code>irmov</code>一起被触发；而从E寄存器门前，到register file门前有3步（E-&gt;M M-&gt;W W-&gt;register file），所以这边要么程序员手动写<code>nop</code>，要么编译器触发机制给你来个<em>bubble</em>，这样子相当于数据在D F寄存器停着不往前走，E M W执行空的<code>nop</code>指令，以此来避免数据传送的冲突<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/1709705560943.png"></p>
+<p>还能更快一点吗？<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/1709706166999.png"><br>也不是不行，我们需要的是valA valB获取到对应寄存器的值，不过我们不一定非要从寄存器文件去拿，我们也可以在中间过程获取这个值，在写入寄存器之前先拿来用，这样也可以满足我们的要求：比如将W-valE W-valM拿来用，那么只需要2个bubble；如果将e_valE拿来用，那么<strong>可能</strong>可以不需要bubble，只要来得及将e_valE拿给Execute valB的入口处就可以了<br>不过这个就涉及到一个时间的问题，通常来看，拿刚从阶段分界处寄存器获取的值会比较保险，因为这些值会及时地填充到Decode阶段的逻辑电路，这样子能够保证最后流向E寄存器的值在时钟周期上升沿之前是预期的值<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/1709706631880.png"><br>当然，如果这几个入口都对下一条寄存器的指令有影响，那么肯定是优先选择最靠近该指令的指令（在Exe过程产生值），优先级由近到远递减</p>
+<p>当然，数据冒险有的时候必须加bubble，比如<code>mrmov</code>和<code>add</code>相邻，那么根本无法再Execute阶段获取到需要的寄存器值，那么只能等下一个阶段的Memory才能获取到值了<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/1709706998037.png"></p>
+<h4 id="条件冒险"><a href="#条件冒险" class="headerlink" title="条件冒险"></a>条件冒险</h4><p><code>ret</code> 指令到达D寄存器的时候，跟在其后面的错误指令在F寄存器；本身<code>ret</code> 对PC的更正需要等到其进入到write back阶段（W_valM传到PC selector）才可以运行；那么这个过程会有3条指令成功突破Fetch阶段进入到Decode阶段及以后，如果不及时处理会导致其修改寄存器和内存，所以需要加3个bubble<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/1709707224099.png"><br>分支预测错误：分支预测错误的信息会在Memory阶段通过M-cnd和M-valA（实际是valP）传到PC selector来修正PC，此时后两个错误指令还在Execute Decode指令，在Execute处的指令尚未更改cc，因为还差一个clock上沿。解决办法是发现跳转错误的时候，将两条错误指令即将要激发的寄存器改为bubble，这样就不会触发更改状态</p>
+<p>为什么不用e_cnd和E_valA呢？是不想吗？<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/1709708108674.png"><br>首先，e_Cnd已经在一个时钟周期的较为末端的地方了，他如果牵一条线也是签到Select PC处；那么由于<em>instruction memory</em>比较慢（访问内存某个地址的指令码），所以可能e_Cnd的作用还没有施加到这里，时钟周期就上升了，使用的还是之前逻辑电路产生的旧值，这样子意义就不大了，没有办法得到一个期望的提前修正PC的效果</p>
+<h4 id="Exceptions"><a href="#Exceptions" class="headerlink" title="Exceptions"></a>Exceptions</h4><p>在指令执行的时候出现了错误，需要去做一些处理；每条错误的指令会在<em>Write back</em>的阶段报错，不过发现错误的时机要么是<em>Fetch</em>要么是<em>Memery</em>；如下图在<em>Memory</em>阶段被检测到，检测到之后会让之后的指令无法造成副作用（修改状态），当然这意味着需要接一条线回去。前面的指令仍然执行<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/1710125873007.png"></p>
+<p>还有一种情况是，如果JXX到了错误的指令但是这个指令不会被执行，那么exception会被检测到，但是因为还没有到达<em>Write back</em>，所以暂时不会让CPU报错；后续会在错误指令进入<em>Memory</em>之前直接给这个指令插<em>Bubble</em>，那么这个指令不会改写状态，其状态码也变成了<em>SBUB</em><br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/1710129608061.png"><br><em>Write back</em>阶段如果指令的状态码不是<em>AOK</em> <em>SBUB</em>，那么就会触发<em>Exception</em></p>
+<h3 id="2-7-CPU-Implementation"><a href="#2-7-CPU-Implementation" class="headerlink" title="2-7 CPU Implementation"></a>2-7 CPU Implementation</h3><p>CPU实现基本上是前面几节思想的复盘，主要是这边将具体的线路统统展示了出来</p>
+<h4 id="Fetch-1"><a href="#Fetch-1" class="headerlink" title="Fetch"></a>Fetch</h4><p>其实只是细化了一下前面的流程，比如F_predPC受到f_icode的影响，取f_valP或者f_valC；f_PC受到了跳转阶段的M_valA（实际上是valP，在不需要跳转的情况下传回来）、W_valM（ret回来的地址）的影响；f_stat则是根据指令的情况（是否错误、halt、imem_error）来设置，比如错误指令就会被识别然后设置为<em>SINS</em>，正常的就传一个<em>SAOK</em>就可以了<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/1710130054243.png"></p>
+<h4 id="Docode-Write-back"><a href="#Docode-Write-back" class="headerlink" title="Docode &amp; Write back"></a>Docode &amp; Write back</h4><p>decode阶段主要是一个提前写回的线路，就比如之前提到的<em>data hazard</em>，由于可以直接在前面<em>Execute</em>阶段将计算出来的值写到FwdA FwdB，所以不需要加<em>bubble</em>；<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/1710130501396.png"><br>顺序问题：首先是写入离decode阶段更近的产出值，同样近的优先写<em>valM</em>：<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/1710130665261.png"><br><em>Write back</em>除了传数据给其他的阶段以外，只需要承担一个更新全局<em>program status</em>的功能，即如果是<em>SBUB</em>则设置为<em>SAOK</em>，否则就按照当前到达W阶段的状态去更新全局状态，再看看需不需要Exception</p>
+<h4 id="Execute-Memory"><a href="#Execute-Memory" class="headerlink" title="Execute &amp; Memory"></a>Execute &amp; Memory</h4><p><em>Execute</em>阶段只要是处理是否更改<em>CC</em>的问题，条件有：<br>1）OP指令更改CC；2）W_stat m_stat是正常的，而非错误的，这一个条件意味着前面的指令并没有出错，以及当前的OP指令有没有出错（因为此时OP指令已经到了<em>Memory</em>阶段了，而<em>CC</em>是和在<em>OP</em>在<em>Memory</em>阶段即将进入<em>Write back</em>一起接受时钟上沿更新的）</p>
+<p><em>Memory</em>阶段如果访问地址异常则设置m_stat为<em>SADR</em></p>
+<h4 id="Load-Use-Hazard"><a href="#Load-Use-Hazard" class="headerlink" title="Load Use Hazard"></a>Load Use Hazard</h4><p>这玩意其实是由于要写入寄存器的值在内存里面（load)，但是下一条指令就要用到这个寄存器的值（use）；由于这个需要用到的值顶多只能在<em>Memory</em>阶段被获取到，对于要用这个值的指令必须在<em>Decode</em>门前等一个周期，才可以在进入<em>Execute</em>前拿到预期的值，所以这边需要加一个<em>bubble</em>；这边除了<em>mrmovq</em>以外，<em>popq</em>也可能出现这种情况；同时要确定E_dstM是否在d_srcA d_srcB里面（要在M阶段获取的寄存器是否是要在E阶段使用、D阶段获取的寄存器）<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/1710133449164.png"></p>
+<h4 id="Normal-Stall-Bubble"><a href="#Normal-Stall-Bubble" class="headerlink" title="Normal &amp; Stall &amp; Bubble"></a>Normal &amp; Stall &amp; Bubble</h4><p>正常情况下，时钟上沿会导致门口的输入数据进入到这一层寄存器中<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/1710155892572.png"><br><em>Stall</em>意味着输入的数据不产生作用（没有进去），但是之前在寄存器的数据仍然在下一个过程中起作用；<em>Bubble</em>意味着不仅输入的数据没有进去，原来在寄存器的值也被设置为nop，相当于全部不起作用</p>
+<p>就好比<em>load&#x2F;use</em>，其在<em>use</em>指令即将到达<em>execute</em>阶段的时候，保留<em>execute</em>寄存器之前的状态，先让<em>execute</em>寄存器输出一个<em>nop</em>指令，并让<em>load</em>指令去前往<em>memory</em>阶段；然后<em>load</em>指令获得寄存器中的值并且将其送到<em>decode</em>阶段的时候，<em>execute</em>的<em>bubble</em>解除，<em>decode</em>和<em>fetch</em>的<em>stall</em>解除，程序可以继续通畅的运行</p>
+<p>放弃不要的指令直接在其要进入<em>D</em> <em>E</em>阶段之前加<em>bubble</em>，然后<em>F</em>阶段正常运行，这样子后面的指令就会把前面的指令“推到沙滩上”；想要保留指令的才是<em>F D</em>阶段加<em>stall</em>，后面加<em>bubble</em>，这样子的效果是延期执行</p>
+<p><strong>更正：</strong> 对于bubble stall的理解应该更新一下，以jxx+ret为例，jxx在Execude阶段就可以检测到条件的异常，然后其可以挡住E D寄存器阶段指令的输入，也就是jxx在进入M寄存器的时候，此时的E D寄存器被插了bubble；此时ret在D阶段，流到E的数据被bubble擦掉了，而D又会流bubble将其清洗掉，这样相当于ret并没有发挥任何作用，对于这种默认情况不需要调整<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/1710306383929.png"><br>再来分析一下load&#x2F;use和ret的冲突：这里的冲突主要是load在E而ret在D，此时load发现自己要修改的寄存器在ret中要用到（rsp），所以其在进入M之前会给E寄存器发信号让其变成bubble，同时让D寄存器stall住原来的指令（在这里为ret）；而ret此时在D阶段，它的后一步操作是前往E并且给D寄存器设置bubble清除后续指令；这里首先D寄存器的stall bubble冲突了，而且如果采用bubble则会让ret指令直接被擦除，所以这边应对冲突的方式是在D寄存器只保留stall的效果<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/Pasted%20image%2020240313132014.png"></p>
+<h4 id="CPI"><a href="#CPI" class="headerlink" title="CPI"></a>CPI</h4><p>Fetch单个有效指令耗费时钟周期数，一般大于1.0，因为需要插<em>bubble</em>：<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/1710296733859.png"><br>mispredicted，load&#x2F;use，ret的平均插入bubble数加上1就是CPI的值，目前是1.27</p>
+<h4 id="可能的优化"><a href="#可能的优化" class="headerlink" title="可能的优化"></a>可能的优化</h4><p>比如这里将低4位PC和60位高位分开计算，频繁变动的只有低四位，那么就可以在低四位不进位的时候执行高效的运算，节省时间<br><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://raw.githubusercontent.com/userKangkang/Blog_imgbed/refs/heads/main/img/network/1710310034137.png"></p>
+</article><div class="post-copyright"><div class="copyright-cc-box"><i class="anzhiyufont anzhiyu-icon-copyright"></i></div><div class="post-copyright__author_box"><a class="post-copyright__author_img" href="/" title="头像"><img class="post-copyright__author_img_back" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://avatars.githubusercontent.com/u/114564389?v=4" title="头像" alt="头像"><img class="post-copyright__author_img_front" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://avatars.githubusercontent.com/u/114564389?v=4" title="头像" alt="头像"></a><div class="post-copyright__author_name">Weiquan Huang</div><div class="post-copyright__author_desc">userKangkang</div></div><div class="post-copyright__post__info"><a class="post-copyright__original" title="该文章为原创文章，注意版权协议" href="https://userkangkang.github.io/project/2025/03/11/ics2-processor/">原创</a><a class="post-copyright-title"><span onclick="rm.copyPageUrl('https://userkangkang.github.io/project/2025/03/11/ics2-processor/')">计算机系统基础II之：Y86处理器</span></a></div><div class="post-tools" id="post-tools"><div class="post-tools-left"><div class="rewardLeftButton"></div><div class="shareRight"><div class="share-link mobile"><div class="share-qrcode"><div class="share-button" title="使用手机访问这篇文章"><i class="anzhiyufont anzhiyu-icon-qrcode"></i></div><div class="share-main"><div class="share-main-all"><div id="qrcode" title="https://userkangkang.github.io/project/2025/03/11/ics2-processor/"></div><div class="reward-dec">使用手机访问这篇文章</div></div></div></div></div><div class="share-link weibo"><a class="share-button" target="_blank" href="https://service.weibo.com/share/share.php?title=计算机系统基础II之：Y86处理器&amp;url=https://userkangkang.github.io/project/2025/03/11/ics2-processor/&amp;pic=" rel="external nofollow noreferrer noopener"><i class="anzhiyufont anzhiyu-icon-weibo"></i></a></div><script>function copyCurrentPageUrl() {
+  var currentPageUrl = window.location.href;
+  var input = document.createElement("input");
+  input.setAttribute("value", currentPageUrl);
+  document.body.appendChild(input);
+  input.select();
+  input.setSelectionRange(0, 99999);
+  document.execCommand("copy");
+  document.body.removeChild(input);
+}</script><div class="share-link copyurl"><div class="share-button" id="post-share-url" title="复制链接" onclick="copyCurrentPageUrl()"><i class="anzhiyufont anzhiyu-icon-link"></i></div></div></div></div></div><div class="post-copyright__notice"><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://userKangkang.github.io/project" target="_blank">Hexo</a>！</span></div></div><div class="post-tools-right"><div class="tag_share"><div class="post-meta__box"><div class="post-meta__box__tag-list"><a class="post-meta__box__tags" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E5%B7%A5%E7%A8%8B/"><span class="tags-punctuation"> <i class="anzhiyufont anzhiyu-icon-tag"></i></span>计算机系统工程<span class="tagsPageCount">10</span></a></div></div></div><div class="post_share"><div class="social-share" data-image="https://avatars.githubusercontent.com/u/114564389?v=4" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.cbd.int/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"/><script src="https://cdn.cbd.int/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer="defer"></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-full"><a href="/2025/03/07/dpdk-config/"><img class="prev-cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">云操作系统：DPDK配置踩坑</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="anzhiyufont anzhiyu-icon-thumbs-up fa-fw" style="font-size: 1.5rem; margin-right: 4px"></i><span>喜欢这篇文章的人也看了</span></div><div class="relatedPosts-list"><div><a href="/2025/03/03/cse-filesystem/" title="计算机系统工程之：INode文件系统"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/" alt="cover"><div class="content is-center"><div class="date"><i class="anzhiyufont anzhiyu-icon-calendar-days fa-fw"></i> 2025-03-03</div><div class="title">计算机系统工程之：INode文件系统</div></div></a></div><div><a href="/2025/03/04/cse-rpc/" title="计算机系统工程之：RPC"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/" alt="cover"><div class="content is-center"><div class="date"><i class="anzhiyufont anzhiyu-icon-calendar-days fa-fw"></i> 2025-03-04</div><div class="title">计算机系统工程之：RPC</div></div></a></div><div><a href="/2025/03/04/cse-dfs/" title="计算机系统工程之：分布式文件系统"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/" alt="cover"><div class="content is-center"><div class="date"><i class="anzhiyufont anzhiyu-icon-calendar-days fa-fw"></i> 2025-03-04</div><div class="title">计算机系统工程之：分布式文件系统</div></div></a></div><div><a href="/2025/03/04/cse-kv/" title="计算机系统工程之：键值存储系统"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/" alt="cover"><div class="content is-center"><div class="date"><i class="anzhiyufont anzhiyu-icon-calendar-days fa-fw"></i> 2025-03-04</div><div class="title">计算机系统工程之：键值存储系统</div></div></a></div><div><a href="/2025/03/04/cse-tx/" title="计算机系统工程之：事务与分布式事务"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/" alt="cover"><div class="content is-center"><div class="date"><i class="anzhiyufont anzhiyu-icon-calendar-days fa-fw"></i> 2025-03-04</div><div class="title">计算机系统工程之：事务与分布式事务</div></div></a></div><div><a href="/2025/03/04/cse-paxos/" title="计算机系统工程之：Paxos"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/" alt="cover"><div class="content is-center"><div class="date"><i class="anzhiyufont anzhiyu-icon-calendar-days fa-fw"></i> 2025-03-04</div><div class="title">计算机系统工程之：Paxos</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-content"><div class="author-info__sayhi" id="author-info__sayhi" onclick="anzhiyu.changeSayHelloText()"></div><div class="author-info-avatar"><img class="avatar-img" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://avatars.githubusercontent.com/u/114564389?v=4" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/><div class="author-status"><img class="g-status" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://bu.dusays.com/2023/08/24/64e6ce9c507bb.png" alt="status"/></div></div><div class="author-info__description">个人博客，计划在这里记录上海交通大学软件学院本科部分课程，由于本专业主攻计算机系统，因此可能这方面居多</div><div class="author-info__bottom-group"><a class="author-info__bottom-group-left" href="/"><h1 class="author-info__name">Weiquan Huang</h1><div class="author-info__desc">userKangkang</div></a><div class="card-info-social-icons is-center"><a class="social-icon faa-parent animated-hover" href="https://github.com/userKangkang" target="_blank" title="Github"><i class="anzhiyufont anzhiyu-icon-github"></i></a></div></div></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-bars"></i><span>文章目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-risc"><span class="toc-number">1.</span> <span class="toc-text">2-1 risc</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#OPq%E7%9A%84%E5%88%86%E6%94%AF%EF%BC%8C%E6%B3%A8%E6%84%8F%E5%8F%AA%E5%85%81%E8%AE%B8double-register"><span class="toc-number">1.1.</span> <span class="toc-text">OPq的分支，注意只允许double register</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#movq%E7%9A%84%E5%90%84%E4%B8%AA%E6%83%85%E5%86%B5"><span class="toc-number">1.2.</span> <span class="toc-text">movq的各个情况</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9D%A1%E4%BB%B6move%EF%BC%88double-register%EF%BC%89"><span class="toc-number">1.3.</span> <span class="toc-text">条件move（double register）</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9C%9F%E5%AE%9E%E7%A8%8B%E5%BA%8F%E4%B8%AD%E7%9A%84Y86%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80"><span class="toc-number">2.</span> <span class="toc-text">真实程序中的Y86汇编语言</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-hcl"><span class="toc-number">3.</span> <span class="toc-text">2-2 hcl</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-SEQ"><span class="toc-number">4.</span> <span class="toc-text">2-3 SEQ</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-4-SEQ-Implementation"><span class="toc-number">5.</span> <span class="toc-text">2-4 SEQ Implementation</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Fetch"><span class="toc-number">5.1.</span> <span class="toc-text">Fetch</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Decode-Write-Back"><span class="toc-number">5.2.</span> <span class="toc-text">Decode &amp; Write Back</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Execute"><span class="toc-number">5.3.</span> <span class="toc-text">Execute</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Memory"><span class="toc-number">5.4.</span> <span class="toc-text">Memory</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#PC-Update"><span class="toc-number">5.5.</span> <span class="toc-text">PC Update</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-5-Pipe"><span class="toc-number">6.</span> <span class="toc-text">2-5 Pipe</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E4%BE%9D%E8%B5%96%E5%92%8C%E6%9D%A1%E4%BB%B6%E4%BE%9D%E8%B5%96"><span class="toc-number">6.1.</span> <span class="toc-text">数据依赖和条件依赖</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B5%81%E6%B0%B4%E7%BA%BF%E5%AE%9E%E7%8E%B0"><span class="toc-number">6.2.</span> <span class="toc-text">流水线实现</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Hazards%EF%BC%88%E9%A3%8E%E9%99%A9%EF%BC%89"><span class="toc-number">6.3.</span> <span class="toc-text">Hazards（风险）</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-6-Hazard"><span class="toc-number">7.</span> <span class="toc-text">2-6 Hazard</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%86%92%E9%99%A9"><span class="toc-number">7.1.</span> <span class="toc-text">数据冒险</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9D%A1%E4%BB%B6%E5%86%92%E9%99%A9"><span class="toc-number">7.2.</span> <span class="toc-text">条件冒险</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Exceptions"><span class="toc-number">7.3.</span> <span class="toc-text">Exceptions</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-7-CPU-Implementation"><span class="toc-number">8.</span> <span class="toc-text">2-7 CPU Implementation</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Fetch-1"><span class="toc-number">8.1.</span> <span class="toc-text">Fetch</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Docode-Write-back"><span class="toc-number">8.2.</span> <span class="toc-text">Docode &amp; Write back</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Execute-Memory"><span class="toc-number">8.3.</span> <span class="toc-text">Execute &amp; Memory</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Load-Use-Hazard"><span class="toc-number">8.4.</span> <span class="toc-text">Load Use Hazard</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Normal-Stall-Bubble"><span class="toc-number">8.5.</span> <span class="toc-text">Normal &amp; Stall &amp; Bubble</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#CPI"><span class="toc-number">8.6.</span> <span class="toc-text">CPI</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8F%AF%E8%83%BD%E7%9A%84%E4%BC%98%E5%8C%96"><span class="toc-number">8.7.</span> <span class="toc-text">可能的优化</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-history"></i><span>最近发布</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/03/11/ics2-processor/" title="计算机系统基础II之：Y86处理器">计算机系统基础II之：Y86处理器</a><time datetime="2025-03-10T16:19:38.964Z" title="发表于 2025-03-11 00:19:38">2025-03-11</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/03/07/dpdk-config/" title="云操作系统：DPDK配置踩坑">云操作系统：DPDK配置踩坑</a><time datetime="2025-03-07T14:45:16.876Z" title="发表于 2025-03-07 22:45:16">2025-03-07</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/03/06/rdma/" title="RDMA入门记录">RDMA入门记录</a><time datetime="2025-03-06T12:32:52.435Z" title="发表于 2025-03-06 20:32:52">2025-03-06</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/03/06/network-controlplane/" title="科大计网之：网络层——控制平面">科大计网之：网络层——控制平面</a><time datetime="2025-03-06T01:46:33.262Z" title="发表于 2025-03-06 09:46:33">2025-03-06</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/03/06/network-dataplane/" title="科大计网之：网络层——数据平面">科大计网之：网络层——数据平面</a><time datetime="2025-03-06T01:38:07.406Z" title="发表于 2025-03-06 09:38:07">2025-03-06</time></div></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div id="workboard"><img class="workSituationImg boardsign" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://npm.elemecdn.com/anzhiyu-blog@2.0.4/img/badge/安知鱼-上班摸鱼中.svg" alt="距离月入25k也就还差一个大佬带我~" title="距离月入25k也就还差一个大佬带我~"/><div id="runtimeTextTip"></div></div></div><div id="footer-bar"><div class="footer-bar-links"><div class="footer-bar-left"><div id="footer-bar-tips"><div class="copyright">&copy;2025 By <a class="footer-bar-link" href="/" title="Weiquan Huang" target="_blank">Weiquan Huang</a></div></div><div id="footer-type-tips"></div></div><div class="footer-bar-right"><a class="footer-bar-link" target="_blank" rel="noopener" href="https://github.com/anzhiyu-c/hexo-theme-anzhiyu" title="主题">主题</a></div></div></div></footer></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="sidebar-site-data site-data is-center"><a href="/archives/" title="archive"><div class="headline">文章</div><div class="length-num">18</div></a><a href="/tags/" title="tag"><div class="headline">标签</div><div class="length-num">10</div></a><a href="/categories/" title="category"><div class="headline">分类</div><div class="length-num">6</div></a></div><span class="sidebar-menu-item-title">功能</span><div class="sidebar-menu-item"><a class="darkmode_switchbutton menu-child" href="javascript:void(0);" title="显示模式"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i><span>显示模式</span></a></div><div class="back-menu-list-groups"><div class="back-menu-list-group"><div class="back-menu-list-title">网页</div><div class="back-menu-list"><a class="back-menu-item" target="_blank" rel="noopener" href="https://github.com/userKangkang" title="Github"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/img/github-mark.svg" alt="Github"/><span class="back-menu-item-text">Github</span></a></div></div></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 文章</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/archives/"><i class="anzhiyufont anzhiyu-icon-box-archive faa-tada" style="font-size: 0.9em;"></i><span> 隧道</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/categories/"><i class="anzhiyufont anzhiyu-icon-shapes faa-tada" style="font-size: 0.9em;"></i><span> 分类</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/tags/"><i class="anzhiyufont anzhiyu-icon-tags faa-tada" style="font-size: 0.9em;"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 友链</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/link/"><i class="anzhiyufont anzhiyu-icon-link faa-tada" style="font-size: 0.9em;"></i><span> 友人帐</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/fcircle/"><i class="anzhiyufont anzhiyu-icon-artstation faa-tada" style="font-size: 0.9em;"></i><span> 朋友圈</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/comments/"><i class="anzhiyufont anzhiyu-icon-envelope faa-tada" style="font-size: 0.9em;"></i><span> 留言板</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 我的</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/music/"><i class="anzhiyufont anzhiyu-icon-music faa-tada" style="font-size: 0.9em;"></i><span> 音乐馆</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/bangumis/"><i class="anzhiyufont anzhiyu-icon-bilibili faa-tada" style="font-size: 0.9em;"></i><span> 追番页</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/album/"><i class="anzhiyufont anzhiyu-icon-images faa-tada" style="font-size: 0.9em;"></i><span> 相册集</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/air-conditioner/"><i class="anzhiyufont anzhiyu-icon-fan faa-tada" style="font-size: 0.9em;"></i><span> 小空调</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 关于</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/about/"><i class="anzhiyufont anzhiyu-icon-paper-plane faa-tada" style="font-size: 0.9em;"></i><span> 关于本人</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/essay/"><i class="anzhiyufont anzhiyu-icon-lightbulb faa-tada" style="font-size: 0.9em;"></i><span> 闲言碎语</span></a></li><li><a class="site-page child faa-parent animated-hover" href="javascript:toRandomPost()"><i class="anzhiyufont anzhiyu-icon-shoe-prints1 faa-tada" style="font-size: 0.9em;"></i><span> 随便逛逛</span></a></li></ul></div></div><span class="sidebar-menu-item-title">标签</span><div class="card-tags"><div class="item-headline"></div><div class="card-tag-cloud"><a href="/tags/Coursera/" style="font-size: 0.88rem;">Coursera<sup>1</sup></a><a href="/tags/RDMA/" style="font-size: 0.88rem;">RDMA<sup>1</sup></a><a href="/tags/%E4%B8%AD%E5%9B%BD%E7%A7%91%E5%AD%A6%E6%8A%80%E6%9C%AF%E5%A4%A7%E5%AD%A6/" style="font-size: 0.88rem;">中国科学技术大学<sup>5</sup></a><a href="/tags/%E4%BA%91%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" style="font-size: 0.88rem;">云操作系统<sup>1</sup></a><a href="/tags/%E5%85%A5%E9%97%A8/" style="font-size: 0.88rem;">入门<sup>1</sup></a><a href="/tags/%E7%9F%A5%E4%B9%8E/" style="font-size: 0.88rem;">知乎<sup>1</sup></a><a href="/tags/%E8%99%9A%E6%8B%9F%E6%9C%BA/" style="font-size: 0.88rem;">虚拟机<sup>1</sup></a><a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E5%B7%A5%E7%A8%8B/" style="font-size: 0.88rem;">计算机系统工程<sup>10</sup></a><a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" style="font-size: 0.88rem;">计算机网络<sup>5</sup></a><a href="/tags/%E9%85%8D%E7%8E%AF%E5%A2%83/" style="font-size: 0.88rem;">配环境<sup>1</sup></a></div></div><hr/></div></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="anzhiyufont anzhiyu-icon-book-open"></i></button><button id="translateLink" type="button" title="简繁转换">繁</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="anzhiyufont anzhiyu-icon-arrows-left-right"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="anzhiyufont anzhiyu-icon-gear"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="anzhiyufont anzhiyu-icon-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i></button></div></div><div id="nav-music"><a id="nav-music-hoverTips" onclick="anzhiyu.musicToggle()" accesskey="m">播放音乐</a><div id="console-music-bg"></div><meting-js id="8152976493" server="netease" type="playlist" mutex="true" preload="none" theme="var(--anzhiyu-main)" data-lrctype="0" order="random" volume="0.7"></meting-js></div><div id="rightMenu"><div class="rightMenu-group rightMenu-small"><div class="rightMenu-item" id="menu-backward"><i class="anzhiyufont anzhiyu-icon-arrow-left"></i></div><div class="rightMenu-item" id="menu-forward"><i class="anzhiyufont anzhiyu-icon-arrow-right"></i></div><div class="rightMenu-item" id="menu-refresh"><i class="anzhiyufont anzhiyu-icon-arrow-rotate-right" style="font-size: 1rem;"></i></div><div class="rightMenu-item" id="menu-top"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i></div></div><div class="rightMenu-group rightMenu-line rightMenuPlugin"><div class="rightMenu-item" id="menu-copytext"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制选中文本</span></div><div class="rightMenu-item" id="menu-pastetext"><i class="anzhiyufont anzhiyu-icon-paste"></i><span>粘贴文本</span></div><a class="rightMenu-item" id="menu-commenttext"><i class="anzhiyufont anzhiyu-icon-comment-medical"></i><span>引用到评论</span></a><div class="rightMenu-item" id="menu-newwindow"><i class="anzhiyufont anzhiyu-icon-window-restore"></i><span>新窗口打开</span></div><div class="rightMenu-item" id="menu-copylink"><i class="anzhiyufont anzhiyu-icon-link"></i><span>复制链接地址</span></div><div class="rightMenu-item" id="menu-copyimg"><i class="anzhiyufont anzhiyu-icon-images"></i><span>复制此图片</span></div><div class="rightMenu-item" id="menu-downloadimg"><i class="anzhiyufont anzhiyu-icon-download"></i><span>下载此图片</span></div><div class="rightMenu-item" id="menu-newwindowimg"><i class="anzhiyufont anzhiyu-icon-window-restore"></i><span>新窗口打开图片</span></div><div class="rightMenu-item" id="menu-search"><i class="anzhiyufont anzhiyu-icon-magnifying-glass"></i><span>站内搜索</span></div><div class="rightMenu-item" id="menu-searchBaidu"><i class="anzhiyufont anzhiyu-icon-magnifying-glass"></i><span>百度搜索</span></div><div class="rightMenu-item" id="menu-music-toggle"><i class="anzhiyufont anzhiyu-icon-play"></i><span>播放音乐</span></div><div class="rightMenu-item" id="menu-music-back"><i class="anzhiyufont anzhiyu-icon-backward"></i><span>切换到上一首</span></div><div class="rightMenu-item" id="menu-music-forward"><i class="anzhiyufont anzhiyu-icon-forward"></i><span>切换到下一首</span></div><div class="rightMenu-item" id="menu-music-playlist" onclick="window.open(&quot;https://y.qq.com/n/ryqq/playlist/8802438608&quot;, &quot;_blank&quot;);" style="display: none;"><i class="anzhiyufont anzhiyu-icon-radio"></i><span>查看所有歌曲</span></div><div class="rightMenu-item" id="menu-music-copyMusicName"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制歌名</span></div></div><div class="rightMenu-group rightMenu-line rightMenuOther"><a class="rightMenu-item menu-link" id="menu-randomPost"><i class="anzhiyufont anzhiyu-icon-shuffle"></i><span>随便逛逛</span></a><a class="rightMenu-item menu-link" href="/categories/"><i class="anzhiyufont anzhiyu-icon-cube"></i><span>博客分类</span></a><a class="rightMenu-item menu-link" href="/tags/"><i class="anzhiyufont anzhiyu-icon-tags"></i><span>文章标签</span></a></div><div class="rightMenu-group rightMenu-line rightMenuOther"><a class="rightMenu-item" id="menu-copy" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制地址</span></a><a class="rightMenu-item" id="menu-commentBarrage" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-message"></i><span class="menu-commentBarrage-text">关闭热评</span></a><a class="rightMenu-item" id="menu-darkmode" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i><span class="menu-darkmode-text">深色模式</span></a><a class="rightMenu-item" id="menu-translate" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-language"></i><span>轉為繁體</span></a></div></div><div id="rightmenu-mask"></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.cbd.int/@fancyapps/ui@5.0.28/dist/fancybox/fancybox.umd.js"></script><script src="https://cdn.cbd.int/instant.page@5.2.0/instantpage.js" type="module"></script><script src="https://cdn.cbd.int/vanilla-lazyload@17.8.5/dist/lazyload.iife.min.js"></script><script src="https://cdn.cbd.int/node-snackbar@0.1.16/dist/snackbar.min.js"></script><canvas id="universe"></canvas><script async src="https://npm.elemecdn.com/anzhiyu-theme-static@1.0.0/dark/dark.js"></script><script>// 消除控制台打印
+var HoldLog = console.log;
+console.log = function () {};
+let now1 = new Date();
+queueMicrotask(() => {
+  const Log = function () {
+    HoldLog.apply(console, arguments);
+  }; //在恢复前输出日志
+  const grt = new Date("03/03/2025 19:34:34"); //此处修改你的建站时间或者网站上线时间
+  now1.setTime(now1.getTime() + 250);
+  const days = (now1 - grt) / 1000 / 60 / 60 / 24;
+  const dnum = Math.floor(days);
+  const ascll = [
+    `欢迎使用安知鱼!`,
+    `生活明朗, 万物可爱`,
+    `
+        
+       █████╗ ███╗   ██╗███████╗██╗  ██╗██╗██╗   ██╗██╗   ██╗
+      ██╔══██╗████╗  ██║╚══███╔╝██║  ██║██║╚██╗ ██╔╝██║   ██║
+      ███████║██╔██╗ ██║  ███╔╝ ███████║██║ ╚████╔╝ ██║   ██║
+      ██╔══██║██║╚██╗██║ ███╔╝  ██╔══██║██║  ╚██╔╝  ██║   ██║
+      ██║  ██║██║ ╚████║███████╗██║  ██║██║   ██║   ╚██████╔╝
+      ╚═╝  ╚═╝╚═╝  ╚═══╝╚══════╝╚═╝  ╚═╝╚═╝   ╚═╝    ╚═════╝
+        
+        `,
+    "已上线",
+    dnum,
+    "天",
+    "©2025 By 安知鱼 V1.6.14",
+  ];
+  const ascll2 = [`NCC2-036`, `调用前置摄像头拍照成功，识别为【小笨蛋】.`, `Photo captured: `, `🤪`];
+
+  setTimeout(
+    Log.bind(
+      console,
+      `\n%c${ascll[0]} %c ${ascll[1]} %c ${ascll[2]} %c${ascll[3]}%c ${ascll[4]}%c ${ascll[5]}\n\n%c ${ascll[6]}\n`,
+      "color:#425AEF",
+      "",
+      "color:#425AEF",
+      "color:#425AEF",
+      "",
+      "color:#425AEF",
+      ""
+    )
+  );
+  setTimeout(
+    Log.bind(
+      console,
+      `%c ${ascll2[0]} %c ${ascll2[1]} %c \n${ascll2[2]} %c\n${ascll2[3]}\n`,
+      "color:white; background-color:#4fd953",
+      "",
+      "",
+      'background:url("https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/tinggge.gif") no-repeat;font-size:450%'
+    )
+  );
+
+  setTimeout(Log.bind(console, "%c WELCOME %c 你好，小笨蛋.", "color:white; background-color:#4f90d9", ""));
+
+  setTimeout(
+    console.warn.bind(
+      console,
+      "%c ⚡ Powered by 安知鱼 %c 你正在访问 Weiquan Huang 的博客.",
+      "color:white; background-color:#f0ad4e",
+      ""
+    )
+  );
+
+  setTimeout(Log.bind(console, "%c W23-12 %c 你已打开控制台.", "color:white; background-color:#4f90d9", ""));
+
+  setTimeout(
+    console.warn.bind(console, "%c S013-782 %c 你现在正处于监控中.", "color:white; background-color:#d9534f", "")
+  );
+});</script><script async src="/anzhiyu/random.js"></script><script async="async">(function () {
+  var grt = new Date("03/03/2025 19:34:34"); //设置网站上线时间
+  var now = new Date();
+  var dnum;
+  var hnum;
+  var mnum;
+  var snum;
+  var nowHour;
+
+  // 计算并更新天数、小时数、分钟数和秒数
+  function updateTime() {
+    now = new Date(); // 更新 now 的值
+    nowHour = now.getHours(); // 更新 nowHour 的值
+    var days = (now - grt) / 1000 / 60 / 60 / 24;
+    dnum = Math.floor(days);
+    var hours = (now - grt) / 1000 / 60 / 60 - 24 * dnum;
+    hnum = Math.floor(hours);
+    if (String(hnum).length == 1) {
+      hnum = "0" + hnum;
+    }
+    var minutes = (now - grt) / 1000 / 60 - 24 * 60 * dnum - 60 * hnum;
+    mnum = Math.floor(minutes);
+    if (String(mnum).length == 1) {
+      mnum = "0" + mnum;
+    }
+    var seconds = (now - grt) / 1000 - 24 * 60 * 60 * dnum - 60 * 60 * hnum - 60 * mnum;
+    snum = Math.round(seconds);
+    if (String(snum).length == 1) {
+      snum = "0" + snum;
+    }
+  }
+
+  // 更新网页中显示的网站运行时间
+  function updateHtml() {
+    const footer = document.getElementById("footer");
+    if (!footer) return
+    let currentTimeHtml = "";
+    if (nowHour < 18 && nowHour >= 9) {
+      // 如果是上班时间，默认就是"安知鱼-上班摸鱼中.svg"图片，不需要更改
+      currentTimeHtml = `本站居然运行了 ${dnum} 天<span id='runtime'> ${hnum} 小时 ${mnum} 分 ${snum} 秒 </span><i class='anzhiyufont anzhiyu-icon-heartbeat' style='color:red'></i>`;
+    } else {
+      // 如果是下班时间，插入"安知鱼-下班啦.svg"图片
+      let img = document.querySelector("#workboard .workSituationImg");
+      if (img != null) {
+        img.src = "https://npm.elemecdn.com/anzhiyu-blog@2.0.4/img/badge/安知鱼-下班啦.svg";
+        img.title = "下班了就该开开心心的玩耍，嘿嘿~";
+        img.alt = "下班了就该开开心心的玩耍，嘿嘿~";
+      }
+
+      currentTimeHtml = `本站居然运行了 ${dnum} 天<span id='runtime'> ${hnum} 小时 ${mnum} 分 ${snum} 秒 </span><i class='anzhiyufont anzhiyu-icon-heartbeat' style='color:red'></i>`;
+    }
+
+    if (document.getElementById("runtimeTextTip")) {
+      document.getElementById("runtimeTextTip").innerHTML = currentTimeHtml;
+    }
+  }
+
+  setInterval(() => {
+    updateTime();
+    updateHtml();
+  }, 1000);
+})();</script><div class="js-pjax"><input type="hidden" name="page-type" id="page-type" value="post"></div><script>var visitorMail = "";
+</script><script async data-pjax src="https://cdn.cbd.int/anzhiyu-theme-static@1.0.0/waterfall/waterfall.js"></script><script src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/qrcodejs/1.0.0/qrcode.min.js"></script><link rel="stylesheet" href="https://cdn.cbd.int/anzhiyu-theme-static@1.1.9/icon/ali_iconfont_css.css"><link rel="stylesheet" href="https://cdn.cbd.int/anzhiyu-theme-static@1.0.0/aplayer/APlayer.min.css" media="print" onload="this.media='all'"><script src="https://cdn.cbd.int/anzhiyu-blog-static@1.0.1/js/APlayer.min.js"></script><script src="https://cdn.cbd.int/hexo-anzhiyu-music@1.0.1/assets/js/Meting2.min.js"></script><script src="https://cdn.cbd.int/pjax@0.2.8/pjax.min.js"></script><script>let pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+  // removeEventListener scroll 
+  anzhiyu.removeGlobalFnEvent('pjax')
+  anzhiyu.removeGlobalFnEvent('themeChange')
+
+  document.getElementById('rightside').classList.remove('rightside-show')
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+})
+
+document.addEventListener('pjax:error', e => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script charset="UTF-8" src="https://cdn.cbd.int/anzhiyu-theme-static@1.1.5/accesskey/accesskey.js"></script></div><div id="popup-window"><div class="popup-window-title">通知</div><div class="popup-window-divider"></div><div class="popup-window-content"><div class="popup-tip">你好呀</div><div class="popup-link"><i class="anzhiyufont anzhiyu-icon-arrow-circle-right"></i></div></div></div></body></html>
