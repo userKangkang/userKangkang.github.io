@@ -1,0 +1,673 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"><title>C++多线程面经 | Hexo</title><meta name="keywords" content="C++,多线程"><meta name="author" content="Weiquan Huang,hwqqz678@sjtu.edu.cn"><meta name="copyright" content="Weiquan Huang"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#f7f9fe"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-touch-fullscreen" content="yes"><meta name="apple-mobile-web-app-title" content="C++多线程面经"><meta name="application-name" content="C++多线程面经"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="#f7f9fe"><meta property="og:type" content="article"><meta property="og:title" content="C++多线程面经"><meta property="og:url" content="https://userkangkang.github.io/project/2025/04/08/cpp-concurrency/index.html"><meta property="og:site_name" content="Hexo"><meta property="og:description" content="协程与线程辨析 协程与线程的区别：  协程只在用户态进行切换，协程上下文切换开销比较小（仅寄存器和栈），协程栈大小灵活且通常来说比较小，一个线程有多个协程，同一时间内一个线程仅执行一个协程，协程在C++通过主动让出来调度 线程切换需要进入内核态，调度由操作系统控制，如果同CPU切换了属于不同进程的线"><meta property="og:locale" content="zh-CN"><meta property="og:image" content="https://avatars.githubusercontent.com/u/114564389?v=4"><meta property="article:author" content="Weiquan Huang"><meta property="article:tag"><meta name="twitter:card" content="summary"><meta name="twitter:image" content="https://avatars.githubusercontent.com/u/114564389?v=4"><meta name="description" content="协程与线程辨析 协程与线程的区别：  协程只在用户态进行切换，协程上下文切换开销比较小（仅寄存器和栈），协程栈大小灵活且通常来说比较小，一个线程有多个协程，同一时间内一个线程仅执行一个协程，协程在C++通过主动让出来调度 线程切换需要进入内核态，调度由操作系统控制，如果同CPU切换了属于不同进程的线"><link rel="shortcut icon" href="/favicon.ico"><link rel="canonical" href="https://userkangkang.github.io/project/2025/04/08/cpp-concurrency/"><link rel="preconnect" href="//cdn.cbd.int"/><meta name="google-site-verification" content="xxx"/><meta name="baidu-site-verification" content="code-xxx"/><meta name="msvalidate.01" content="xxx"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.cbd.int/node-snackbar@0.1.16/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.cbd.int/@fancyapps/ui@5.0.28/dist/fancybox/fancybox.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  linkPageTop: undefined,
+  peoplecanvas: {"enable":true,"img":"https://upload-bbs.miyoushe.com/upload/2024/07/27/125766904/ba62475f396df9de3316a08ed9e65d86_5680958632268053399..png"},
+  postHeadAiDescription: {"enable":true,"gptName":"AnZhiYu","mode":"local","switchBtn":false,"btnLink":"https://afdian.net/item/886a79d4db6711eda42a52540025c377","randomNum":3,"basicWordCount":1000,"key":"xxxx","Referer":"https://xx.xx/"},
+  diytitle: {"enable":true,"leaveTitle":"w(ﾟДﾟ)w 不要走！再看看嘛！","backTitle":"♪(^∇^*)欢迎肥来！"},
+  LA51: undefined,
+  greetingBox: undefined,
+  twikooEnvId: '',
+  commentBarrageConfig:undefined,
+  music_page_default: "nav_music",
+  root: '/',
+  preloader: {"source":3},
+  friends_vue_info: undefined,
+  navMusic: true,
+  mainTone: {"mode":"api","api":"https://img2color-go.vercel.app/api?img=","cover_change":true},
+  authorStatus: {"skills":null},
+  algolia: undefined,
+  localSearch: undefined,
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"简","rightMenuMsgToTraditionalChinese":"转为繁体","rightMenuMsgToSimplifiedChinese":"转为简体"},
+  noticeOutdate: {"limitDay":365,"position":"top","messagePrev":"It has been","messageNext":"days since the last update, the content of the article may be outdated."},
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":330},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    simplehomepage: true,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"copy":true,"copyrightEbable":false,"limitCount":50,"languages":{"author":"作者: Weiquan Huang","link":"链接: ","source":"来源: Hexo","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。","copySuccess":"复制成功，复制和转载请标注本文地址"}},
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#425AEF","bgDark":"#1f1f1f","position":"top-center"},
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.cbd.int/flickr-justified-gallery@2.1.2/dist/fjGallery.min.js',
+      css: 'https://cdn.cbd.int/flickr-justified-gallery@2.1.2/dist/fjGallery.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isAnchor: false,
+  shortcutKey: undefined,
+  autoDarkmode: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  configTitle: 'Hexo',
+  title: 'C++多线程面经',
+  postAI: '',
+  pageFillDescription: '协程与线程辨析, 线程和进程辨析, 线程安全, 线程池, stdatomic内存顺序一致性, STL, 迭代器失效协程与线程辨析协程与线程的区别协程只在用户态进行切换协程上下文切换开销比较小仅寄存器和栈协程栈大小灵活且通常来说比较小一个线程有多个协程同一时间内一个线程仅执行一个协程协程在通过主动让出来调度线程切换需要进入内核态调度由操作系统控制如果同切换了属于不同进程的线程会导致上下文切换开销大如等线程栈固定且通常大很多线程是调度的最小单元同一个时间内只执行一个线程创建线程数的上限和虚拟内存空间有关协程的栈比线程的栈小好处在有限内存内能够创建更多协程支持更多的并发坏处运行在协程上的程序函数调用不能太深不然会爆栈如何解决爆栈问题有栈协程可以手动设置栈的大小或者部分语言可以设置动态扩容的栈无栈协程通过将协程内语句抽象为有限状态机将各个状态离散地存在堆上来避免爆栈不过这就比较费时间协程通常用在密集型的任务比如一个设计就是操作会同时对多个发出获取该指向的远端数据节点的请求当一个进程给某一个发出请求的时候如果没有协程会直接阻塞等有了协程之后就可以在等前直接让出线程的控制权给下一个协程去根据发请求维护一个等待中的协程队列如果协程用尽或者当前层的没有需要再发请求的那么就将等待队列中的协程唤醒到那个时候应该数据也到位了中如何创建线程并且安全退出避免使用因为无法被主线程回收会导致僵尸进程等问题空耗内存线程和进程辨析区别点线程进程基本单位调度的基本单位资源分配独立地址空间的基本单位同单位之间关系相同进程的线程共享相同地址空间不同进程地址空间隔离性强同单位之间通信共享内存地址空间通信比较方便需要使用比如管道共享内存等隔离性一个线程崩溃可能会让同进程其他线程崩溃隔离性好切换开销同进程线程切换需要切栈寄存器非同进程线程切换需要额外切等创建开销仅创建用户态和内核态进程栈寄存器即可创建一份完全独立的地址空间执行相同程序的话会完全复制一份相同的代码和数据线程安全线程安全主要是指对访问共享资源时候如何保证程序按照期望目标进行执行不出现数据竞争以及未定义行为互斥锁读写锁原子操作硬件指令通常能够用在最多字节的数据类型读写锁允许多读单写条件变量信号量无锁数据结构如线程局部存储如一个线程一份变量数据资源获取即初始化原理使用局部对象存在栈的对象来管理资源的技术可以认为是一种对资源申请和释放的利用栈内对象自动创建销毁的特性进行的封装比如智能指针管理互斥锁网络套接字等对象创建在栈上存一个的引用创建的时候加锁析构的时候解锁当然也可以设置参数来进行创建时先暂时不加锁的设置也是通过类似方式自己的指针创建在栈上在构造函数内将传入的指针赋给内部成员指针析构的时候根据情况释放指针所指向的资源互斥非递归即不可重入尝试重复锁定会直接死锁比如最近的操作系统内核管理在写函数处理逻辑的时候由于内存管理不善在触发了的时候直接调用了内核里的处理函数直接重复进入锁很麻烦需要查看调用栈无拷贝构造函数和移动构造函数在定义中直接了这两个构造函数其实是超时锁超过一定时间放弃拿锁无竞争情况倾向于用轻量级原子操作快速加锁或者解锁有竞争情况会进入内核态阻塞所有线程维护等待队列锁释放的时候唤醒队列内下一个线程如当前已经被占用的时候就会让进程阻塞并且加入等待队列依赖于实现并发控制不可复制或者移动陷入等待状态的线程需要被唤醒才能继续执行且陷入等待状态的线程会释放传入的锁可以设置唤醒条件如果被虚假唤醒了条件未满足就被唤醒那么会内置循环在条件满足的时候才会退出循环否则继续等唤醒之后会竞争锁唤醒队列中的一个全部线程最大计数表示允许多少线程同时访问资源对于信号量的加减并无严格顺序同线程的要求计数计数为则阻塞相反超时尝试获取不依赖本身无需额外的锁对象直接用原子操作实现底层可能是等下表来自特性功能互斥访问条件等待与通知计数资源控制依赖锁是是否复杂度简单较高中等延迟开销中等锁竞争高高锁内核切换低轻量计数典型场景保护临界区生产者消费者资源限制线程池线程池线程池是限定一定数量线程的任务处理队列封装函数包装器封装特定返回参数类型的函数性能开销构造和赋值涉及堆分配如果有捕获了大量变量的被包装可能导致额外的内存使用该类型本身线程不安全可能被多个线程同时访问或者修改函数指针的性能比它好可能因为函数指针就是一个地址让跳转即可性能开销的来源类型擦除因为该接口需要能够适应多种可调用类型如普通函数函数仿函数等所以其自身的实现是有一个基类具体定制可调用类型的实现由继承类实现就一定程度涉及到内存拷贝虚函数表间接调用等性能开销的优化小对象优化简要来说该对象对于实现了一个栈上的缓冲区如果要接受的数据量不是很大那就直接存在缓冲区里即可如果一个捕获了很多变量的函数缓冲区不够那就只能在堆上分配空间顺便回顾一下虚函数当基类有虚函数的时候就会有一个该虚函数的表当该类的指针或者引用调用虚函数的时候程序会去查阅虚函数表找到实际调用类的函数从而正确调用函数推导调用函数并且传入参数后的返回类型比如那么就是将对于函数且传入参数的函数调用绑定为无参数的函数对象用于后续获取任务执行的结果捕获的副本解引用之后调用它用封装之后就满足了上面构造函数的对于类型的要求完美转发用于保持参数的左值和右值属性本身不可以拷贝但是需要将其存入中所以用管理共享任务对象其作用是将任务与绑定实现异步获取结果有关的读写还是加锁保护为好毕竟可能出现问题内存顺序一致性内存顺序参数特点只保证原子性不保证顺序性能最高但需谨慎使用依赖当前数据的后续操作能看到之前的结果极少使用当前线程的后续读操作必须在此操作之后执行防止读乱序当前线程之前的写操作必须在此操作之前完成防止写乱序同时包含和语义用于读修改写操作严格顺序一致性默认选项性能最低但行为最直观指定顺序一致性的原因是现代和编译器会为了性能对指令重排顺序但是在多线程中可能导致意外结果所以要显式告诉编译器和哪些指令的顺序是有限制的生产者线程保证之前的写操作先完成消费者线程保证之后的读操作在之后一定能看到具体来说编译器会阻止之前的任何读写操作被重排到之后而之后的任何操作会被重排到之前对来说相当于一个写屏障其之前的写操作必须也对其他线程可见同时相当于读屏障确保之后的读操作在之后那么后续的读操作就可以看到及以前的写操作了与的区别严格顺序一致性保证每个线程看到的所有原子指令的操作顺序这里特指结果完全一模一样且在线程内部在原子操作前的操作必须早于原子操作执行反之亦然只保证原子性意味着他不会约束原子操作之间的顺序也不会约束原子操作附近的非原子操作的顺序和辨析特性所有权拥有对象所有权参与生命周期管理仅观察对象不拥有所有权引用计数增加强引用计数不增加强引用计数但增加弱引用计数对象销毁时机当强引用计数归零时销毁对象不影响对象销毁仅依赖强引用计数访问对象直接通过或访问需通过转为后访问循环引用可能导致循环引用内存泄漏用于打破循环引用计数为的时候对象立即销毁但是控制块不立即销毁控制块等到也全部销毁之后销毁失效的表现或者返回空的是一个有指针的数组会动态扩容是散列表一般散列表的指针列表大小为素数而且大约为倍增长的比例是红黑树是分段连续的动态数组每一段地址连续用一个数组存指针是双向链表的底层是基于的他们是容器适配器底层基于用堆数据结构组织元素迭代器失效容器迭代器失效总结超级详细什么时候失效博客补充在索引数组重排的时候由于其迭代器不仅仅包含了指向内存块对应元素的指针而且还需要能够支持在不同的内存块中游走需要存储索引数组以及当前位于哪一个内存块的下标所以当索引数组重排的时候和都会失效在的时候会迭代器失效而其他场景下除了被删除元素的迭代器会失效以外其余的都太会失效类似于的迭代器失效只会发生在删除元素后对应元素迭代器失效其余的由于他是链表为主的结构所以一般不会怎么样',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2025-04-08 00:29:29',
+  postMainColor: '',
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#18171d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#f7f9fe')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+          const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+          const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+          const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+          if (t === undefined) {
+            if (isLightMode) activateLightMode()
+            else if (isDarkMode) activateDarkMode()
+            else if (isNotSpecified || hasNoSupport) {
+              const now = new Date()
+              const hour = now.getHours()
+              const isNight = hour <= 6 || hour >= 18
+              isNight ? activateDarkMode() : activateLightMode()
+            }
+            window.matchMedia('(prefers-color-scheme: dark)').addListener(e => {
+              if (saveToLocal.get('theme') === undefined) {
+                e.matches ? activateDarkMode() : activateLightMode()
+              }
+            })
+          } else if (t === 'light') activateLightMode()
+          else activateDarkMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><meta name="generator" content="Hexo 7.3.0"></head><body data-type="anzhiyu"><div id="web_bg"></div><div id="an_music_bg"></div><div id="loading-box" onclick="document.getElementById(&quot;loading-box&quot;).classList.add(&quot;loaded&quot;)"><div class="loading-bg"><img class="loading-img nolazyload" alt="加载头像" src="https://npm.elemecdn.com/anzhiyu-blog-static@1.0.4/img/avatar.jpg"/><div class="loading-image-dot"></div></div></div><script>const preloader = {
+  endLoading: () => {
+    document.getElementById('loading-box').classList.add("loaded");
+  },
+  initLoading: () => {
+    document.getElementById('loading-box').classList.remove("loaded")
+  }
+}
+window.addEventListener('load',()=> { preloader.endLoading() })
+setTimeout(function(){preloader.endLoading();},10000)
+
+if (true) {
+  document.addEventListener('pjax:send', () => { preloader.initLoading() })
+  document.addEventListener('pjax:complete', () => { preloader.endLoading() })
+}</script><link rel="stylesheet" href="https://cdn.cbd.int/anzhiyu-theme-static@1.1.10/progress_bar/progress_bar.css"/><script async="async" src="https://cdn.cbd.int/pace-js@1.2.4/pace.min.js" data-pace-options="{ &quot;restartOnRequestAfter&quot;:false,&quot;eventLag&quot;:false}"></script><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><div id="nav-group"><span id="blog_name"><div class="back-home-button"><i class="anzhiyufont anzhiyu-icon-grip-vertical"></i><div class="back-menu-list-groups"><div class="back-menu-list-group"><div class="back-menu-list-title">网页</div><div class="back-menu-list"><a class="back-menu-item" target="_blank" rel="noopener" href="https://github.com/userKangkang" title="Github"><img class="back-menu-item-icon" src="/img/github-mark.svg" alt="Github"/><span class="back-menu-item-text">Github</span></a></div></div></div></div><a id="site-name" href="/" accesskey="h"><div class="title">Hexo</div><i class="anzhiyufont anzhiyu-icon-house-chimney"></i></a></span><div class="mask-name-container"><div id="name-container"><a id="page-name" href="javascript:anzhiyu.scrollToDest(0, 500)">PAGE_NAME</a></div></div><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 文章</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/archives/"><i class="anzhiyufont anzhiyu-icon-box-archive faa-tada" style="font-size: 0.9em;"></i><span> 隧道</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/categories/"><i class="anzhiyufont anzhiyu-icon-shapes faa-tada" style="font-size: 0.9em;"></i><span> 分类</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/tags/"><i class="anzhiyufont anzhiyu-icon-tags faa-tada" style="font-size: 0.9em;"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 友链</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/link/"><i class="anzhiyufont anzhiyu-icon-link faa-tada" style="font-size: 0.9em;"></i><span> 友人帐</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/fcircle/"><i class="anzhiyufont anzhiyu-icon-artstation faa-tada" style="font-size: 0.9em;"></i><span> 朋友圈</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/comments/"><i class="anzhiyufont anzhiyu-icon-envelope faa-tada" style="font-size: 0.9em;"></i><span> 留言板</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 我的</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/music/"><i class="anzhiyufont anzhiyu-icon-music faa-tada" style="font-size: 0.9em;"></i><span> 音乐馆</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/bangumis/"><i class="anzhiyufont anzhiyu-icon-bilibili faa-tada" style="font-size: 0.9em;"></i><span> 追番页</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/album/"><i class="anzhiyufont anzhiyu-icon-images faa-tada" style="font-size: 0.9em;"></i><span> 相册集</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/air-conditioner/"><i class="anzhiyufont anzhiyu-icon-fan faa-tada" style="font-size: 0.9em;"></i><span> 小空调</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 关于</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/about/"><i class="anzhiyufont anzhiyu-icon-paper-plane faa-tada" style="font-size: 0.9em;"></i><span> 关于本人</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/essay/"><i class="anzhiyufont anzhiyu-icon-lightbulb faa-tada" style="font-size: 0.9em;"></i><span> 闲言碎语</span></a></li><li><a class="site-page child faa-parent animated-hover" href="javascript:toRandomPost()"><i class="anzhiyufont anzhiyu-icon-shoe-prints1 faa-tada" style="font-size: 0.9em;"></i><span> 随便逛逛</span></a></li></ul></div></div></div><div id="nav-right"><div class="nav-button" id="randomPost_button"><a class="site-page" onclick="toRandomPost()" title="随机前往一个文章" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-dice"></i></a></div><input id="center-console" type="checkbox"/><label class="widget" for="center-console" title="中控台" onclick="anzhiyu.switchConsole();"><i class="left"></i><i class="widget center"></i><i class="widget right"></i></label><div id="console"><div class="console-card-group-reward"><ul class="reward-all console-card"><li class="reward-item"><a href="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-weichat.png" target="_blank"><img class="post-qr-code-img" alt="微信" src="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-weichat.png"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-alipay.png" target="_blank"><img class="post-qr-code-img" alt="支付宝" src="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-alipay.png"/></a><div class="post-qr-code-desc">支付宝</div></li></ul></div><div class="console-card-group"><div class="console-card-group-left"><div class="console-card" id="card-newest-comments"><div class="card-content"><div class="author-content-item-tips">互动</div><span class="author-content-item-title"> 最新评论</span></div><div class="aside-list"><span>正在加载中...</span></div></div></div><div class="console-card-group-right"><div class="console-card tags"><div class="card-content"><div class="author-content-item-tips">兴趣点</div><span class="author-content-item-title">寻找你感兴趣的领域</span><div class="card-tags"><div class="item-headline"></div><div class="card-tag-cloud"><a href="/tags/C/" style="font-size: 1.05rem;">C++<sup>1</sup></a><a href="/tags/Coursera/" style="font-size: 1.05rem;">Coursera<sup>1</sup></a><a href="/tags/RDMA/" style="font-size: 1.05rem;">RDMA<sup>2</sup></a><a href="/tags/shell/" style="font-size: 1.05rem;">shell<sup>1</sup></a><a href="/tags/%E4%B8%AD%E5%9B%BD%E7%A7%91%E5%AD%A6%E6%8A%80%E6%9C%AF%E5%A4%A7%E5%AD%A6/" style="font-size: 1.05rem;">中国科学技术大学<sup>5</sup></a><a href="/tags/%E4%BA%91%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" style="font-size: 1.05rem;">云操作系统<sup>1</sup></a><a href="/tags/%E5%85%A5%E9%97%A8/" style="font-size: 1.05rem;">入门<sup>1</sup></a><a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" style="font-size: 1.05rem;">多线程<sup>1</sup></a><a href="/tags/%E7%9F%A5%E4%B9%8E/" style="font-size: 1.05rem;">知乎<sup>1</sup></a><a href="/tags/%E8%99%9A%E6%8B%9F%E6%9C%BA/" style="font-size: 1.05rem;">虚拟机<sup>1</sup></a><a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/" style="font-size: 1.05rem;">计算机系统基础<sup>8</sup></a><a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E5%B7%A5%E7%A8%8B/" style="font-size: 1.05rem;">计算机系统工程<sup>9</sup></a><a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" style="font-size: 1.05rem;">计算机网络<sup>5</sup></a><a href="/tags/%E9%85%8D%E7%8E%AF%E5%A2%83/" style="font-size: 1.05rem;">配环境<sup>1</sup></a></div></div><hr/></div></div><div class="console-card history"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-box-archiv"></i><span>文章</span></div><div class="card-archives"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-archive"></i><span>归档</span></div><ul class="card-archive-list"><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2025/04/"><span class="card-archive-list-date">四月 2025</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">2</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2025/03/"><span class="card-archive-list-date">三月 2025</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">25</span><span>篇</span></div></a></li></ul></div><hr/></div></div></div><div class="button-group"><div class="console-btn-item"><a class="darkmode_switchbutton" title="显示模式切换" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-moon"></i></a></div><div class="console-btn-item" id="consoleHideAside" onclick="anzhiyu.hideAsideBtn()" title="边栏显示控制"><a class="asideSwitch"><i class="anzhiyufont anzhiyu-icon-arrows-left-right"></i></a></div><div class="console-btn-item" id="consoleMusic" onclick="anzhiyu.musicToggle()" title="音乐开关"><a class="music-switch"><i class="anzhiyufont anzhiyu-icon-music"></i></a></div></div><div class="console-mask" onclick="anzhiyu.hideConsole()" href="javascript:void(0);"></div></div><div class="nav-button" id="nav-totop"><a class="totopbtn" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i><span id="percent" onclick="anzhiyu.scrollToDest(0,500)">0</span></a></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);" title="切换"><i class="anzhiyufont anzhiyu-icon-bars"></i></a></div></div></div></nav><div id="post-info"><div id="post-firstinfo"><div class="meta-firstline"><a class="post-meta-original">原创</a><span class="post-meta-categories"><span class="post-meta-separator"></span><i class="anzhiyufont anzhiyu-icon-inbox post-meta-icon"></i><a class="post-meta-categories" href="/categories/C/" itemprop="url">C++</a><i class="anzhiyufont anzhiyu-icon-angle-right post-meta-separator"></i><i class="anzhiyufont anzhiyu-icon-inbox post-meta-icon"></i><a class="post-meta-categories" href="/categories/C/%E9%9D%A2%E7%BB%8F/" itemprop="url">面经</a></span><span class="article-meta tags"><a class="article-meta__tags" href="/tags/C/" tabindex="-1" itemprop="url"> <span> <i class="anzhiyufont anzhiyu-icon-hashtag"></i>C++</span></a><a class="article-meta__tags" href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" tabindex="-1" itemprop="url"> <span> <i class="anzhiyufont anzhiyu-icon-hashtag"></i>多线程</span></a></span></div></div><h1 class="post-title" itemprop="name headline">C++多线程面经<a class="post-edit-link" href="undefined_posts/cpp-concurrency.md" title="在 GitHub 上编辑 - C++多线程面经" target="_blank"><i class="anzhiyufont anzhiyu-icon-pencil"></i></a></h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="anzhiyufont anzhiyu-icon-calendar-days post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" itemprop="dateCreated datePublished" datetime="2025-04-07T16:24:25.129Z" title="发表于 2025-04-08 00:24:25">2025-04-08</time><span class="post-meta-separator"></span><i class="anzhiyufont anzhiyu-icon-history post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" itemprop="dateCreated datePublished" datetime="2025-04-07T16:29:29.301Z" title="更新于 2025-04-08 00:29:29">2025-04-08</time></span></div><div class="meta-secondline"><span class="post-meta-separator">       </span><span class="post-meta-position" title="作者IP属地为上海"><i class="anzhiyufont anzhiyu-icon-location-dot"></i>上海</span></div></div></div><section class="main-hero-waves-area waves-area"><svg class="waves-svg" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto"><defs><path id="gentle-wave" d="M -160 44 c 30 0 58 -18 88 -18 s 58 18 88 18 s 58 -18 88 -18 s 58 18 88 18 v 44 h -352 Z"></path></defs><g class="parallax"><use href="#gentle-wave" x="48" y="0"></use><use href="#gentle-wave" x="48" y="3"></use><use href="#gentle-wave" x="48" y="5"></use><use href="#gentle-wave" x="48" y="7"></use></g></svg></section><div id="post-top-cover"><img class="nolazyload" id="post-top-bg" src=""></div></header><main id="blog-container"><div class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container" itemscope itemtype="https://userkangkang.github.io/project/2025/04/08/cpp-concurrency/"><header><a class="post-meta-categories" href="/categories/C/" itemprop="url">C++</a><a class="post-meta-categories" href="/categories/C/%E9%9D%A2%E7%BB%8F/" itemprop="url">面经</a><a href="/tags/C/" tabindex="-1" itemprop="url">C++</a><a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" tabindex="-1" itemprop="url">多线程</a><h1 id="CrawlerTitle" itemprop="name headline">C++多线程面经</h1><span itemprop="author" itemscope itemtype="http://schema.org/Person">Weiquan Huang</span><time itemprop="dateCreated datePublished" datetime="2025-04-07T16:24:25.129Z" title="发表于 2025-04-08 00:24:25">2025-04-08</time><time itemprop="dateCreated datePublished" datetime="2025-04-07T16:29:29.301Z" title="更新于 2025-04-08 00:29:29">2025-04-08</time></header><h4 id="协程与线程辨析"><a href="#协程与线程辨析" class="headerlink" title="协程与线程辨析"></a>协程与线程辨析</h4><ul>
+<li><p>协程与线程的区别：</p>
+<ul>
+<li>协程只在用户态进行切换，协程上下文切换开销比较小（仅寄存器和栈），协程栈大小灵活且通常来说比较小，一个线程有多个协程，同一时间内一个线程仅执行一个协程，协程在C++通过主动让出来调度</li>
+<li>线程切换需要进入内核态，调度由操作系统控制，如果同CPU切换了属于不同进程的线程会导致上下文切换开销大（如PCB&#x2F;VMA&#x2F;CR3等），线程栈固定且通常大很多，线程是CPU调度的最小单元，CPU同一个时间内只执行一个线程（创建线程数的上限和虚拟内存空间有关！！！）</li>
+</ul>
+</li>
+<li><p>协程的栈比线程的栈小</p>
+<ul>
+<li>好处：在有限内存内能够创建更多协程，支持更多的并发</li>
+<li>坏处：运行在协程上的程序，函数调用不能太深，不然会爆栈</li>
+</ul>
+</li>
+<li><p>如何解决爆栈问题</p>
+<ul>
+<li>有栈协程可以手动设置栈的大小，或者部分语言可以设置动态扩容的栈</li>
+<li>无栈协程通过将协程内语句抽象为有限状态机，将各个状态离散地存在堆上来避免爆栈，不过这就比较费时间</li>
+</ul>
+</li>
+<li><p>协程通常用在I&#x2F;O密集型的任务，比如<em><strong>DART</strong></em>一个设计就是，<code>scan</code>操作会同时对多个<code>slot</code>发出获取该<code>slot</code>指向的远端数据节点的RDMA read请求，当一个进程给某一个<code>slot</code>发出请求的时候，如果没有协程会直接阻塞等IO；有了协程之后就可以在等IO前直接让出线程的控制权，给下一个协程去根据<code>slot</code>发RDMA请求，维护一个等待中的协程队列，如果协程用尽或者当前层的<code>scan</code>没有需要再发请求的<code>slot</code>，那么就将等待队列中的协程唤醒，到那个时候IO应该数据也到位了</p>
+</li>
+<li><p>C++中如何创建线程并且安全退出？</p>
+<ul>
+<li><code>create</code>、 <code>join</code> 避免使用 <code>detach</code>，因为<code>detach</code>无法被主线程回收，会导致僵尸进程等问题，空耗内存</li>
+</ul>
+</li>
+</ul>
+<h4 id="线程和进程辨析"><a href="#线程和进程辨析" class="headerlink" title="线程和进程辨析"></a>线程和进程辨析</h4><table>
+<thead>
+<tr>
+<th>区别点</th>
+<th>线程</th>
+<th>进程</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>基本单位</td>
+<td>CPU调度的基本单位</td>
+<td>资源分配、独立地址空间的基本单位</td>
+</tr>
+<tr>
+<td>同单位之间关系</td>
+<td>相同进程的线程共享相同地址空间</td>
+<td>不同进程地址空间隔离性强</td>
+</tr>
+<tr>
+<td>同单位之间通信</td>
+<td>共享内存地址空间，通信比较方便</td>
+<td>需要使用IPC比如管道、共享内存等</td>
+</tr>
+<tr>
+<td>隔离性</td>
+<td>一个线程崩溃可能会让同进程其他线程崩溃</td>
+<td>隔离性好</td>
+</tr>
+<tr>
+<td>切换开销</td>
+<td>同进程线程切换需要切TCB(栈、寄存器)</td>
+<td>非同进程线程切换需要额外切PCB(CR3&#x2F;VMA&#x2F;TLB等)</td>
+</tr>
+<tr>
+<td>创建开销</td>
+<td>仅创建用户态和内核态进程栈、寄存器即可</td>
+<td>创建一份完全独立的地址空间，执行相同程序的话会完全复制一份相同的代码和数据</td>
+</tr>
+</tbody></table>
+<h4 id="线程安全"><a href="#线程安全" class="headerlink" title="线程安全"></a>线程安全</h4><p>线程安全主要是指对访问共享资源时候如何保证程序按照期望目标进行执行，不出现数据竞争以及未定义行为</p>
+<ul>
+<li>互斥锁、读写锁 <code>std::mutex</code></li>
+<li>原子操作<code>std::atomic</code>，硬件指令，通常能够用在最多8字节的数据类型</li>
+<li>读写锁 <code>std::shared_mutex</code>，允许多读单写</li>
+<li>条件变量</li>
+<li>信号量</li>
+<li>无锁数据结构，如CAS</li>
+<li>线程局部存储TLS 如<code>thread_local</code>，一个线程一份变量数据</li>
+</ul>
+<p><strong>RAII</strong>：资源获取即初始化</p>
+<ul>
+<li>原理：使用局部对象（存在栈的对象）来管理资源的技术，可以认为是一种对资源申请和释放的利用栈内对象自动创建销毁的特性进行的封装，比如智能指针、<code>lock_guard</code>管理互斥锁、网络套接字（？）等</li>
+<li><code>std::lock_guard</code> <code>std::unique_lock</code> 对象创建在栈上，存一个<code>mutex</code>的引用，创建的时候加锁，析构的时候解锁；当然也可以设置<code>std::defer</code>参数来进行创建时先暂时不加锁的设置</li>
+<li><code>std::unique_ptr</code> <code>std::shared_ptr</code>也是通过类似方式，自己的指针创建在栈上，在构造函数内将传入的指针赋给内部成员指针，析构的时候根据情况释放指针所指向的资源</li>
+</ul>
+<p><code>std::mutex</code></p>
+<ul>
+<li>互斥、非递归即不可重入（尝试重复锁定会直接死锁，比如最近的操作系统内核管理Lab2，在写PF函数处理逻辑的时候由于内存管理不善，在触发了PF的时候直接调用了内核里的处理PF函数，直接重复进入锁，很麻烦，需要<code>print</code>查看调用栈）</li>
+<li>无拷贝构造函数和移动构造函数（在C++定义中直接<code>delete</code>了这两个构造函数）</li>
+<li><code>try_lock</code>其实是超时锁，超过一定时间放弃拿锁</li>
+<li>无竞争情况，<code>mutex</code>倾向于用轻量级原子操作<code>test-and-set</code> <code>compare-and-swap</code>快速加锁或者解锁；有竞争情况会进入内核态，阻塞所有线程，维护等待队列，锁释放的时候唤醒队列内下一个线程（如当前已经被占用的时候就会让进程阻塞并且加入等待队列）</li>
+</ul>
+<p><code>std::condition_variable</code></p>
+<ul>
+<li>依赖于<code>mutex</code>实现并发控制，不可复制或者移动</li>
+<li>陷入等待状态的线程需要被唤醒才能继续执行，且陷入等待状态的线程会释放传入的锁</li>
+<li>可以设置唤醒条件，<code>wait(unique_lock &amp;lock, Predicate pred)</code>，如果被虚假唤醒了（条件未满足就被唤醒），那么会内置循环，在条件满足的时候才会退出循环，否则继续等；唤醒之后会竞争锁</li>
+<li><code>notify_one()/notify_all()</code> 唤醒队列中的一个&#x2F;全部线程</li>
+</ul>
+<p><code>std::semaphore</code></p>
+<ul>
+<li>最大计数表示允许多少线程同时访问资源，对于信号量的加减并无严格顺序&#x2F;同线程的要求</li>
+<li><code>acquire()</code> 计数-1，计数为0则阻塞 <code>release</code>相反</li>
+<li><code>try_acquire</code> <code>try_acquire_until</code> 超时尝试获取</li>
+<li>不依赖<code>mutex</code>，本身无需额外的锁对象</li>
+<li>直接用原子操作实现，底层可能是<code>sem_t</code> <code>futex</code>等<blockquote>
+<p>下表来自Grok</p>
+</blockquote>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>特性</th>
+<th>std::mutex</th>
+<th>std::condition_variable</th>
+<th>std::semaphore</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>功能</strong></td>
+<td>互斥访问</td>
+<td>条件等待与通知</td>
+<td>计数资源控制</td>
+</tr>
+<tr>
+<td><strong>依赖锁</strong></td>
+<td>是</td>
+<td>是</td>
+<td>否</td>
+</tr>
+<tr>
+<td><strong>复杂度</strong></td>
+<td>简单</td>
+<td>较高</td>
+<td>中等</td>
+</tr>
+<tr>
+<td><strong>延迟开销</strong></td>
+<td>中等（锁竞争高）</td>
+<td>高（锁+内核切换）</td>
+<td>低（轻量计数）</td>
+</tr>
+<tr>
+<td><strong>典型场景</strong></td>
+<td>保护临界区</td>
+<td>生产者-消费者</td>
+<td>资源限制&#x2F;线程池</td>
+</tr>
+</tbody></table>
+<h4 id="线程池"><a href="#线程池" class="headerlink" title="线程池"></a>线程池</h4><p>线程池是限定一定数量线程的任务处理队列封装</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">ThreadPool</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="built_in">ThreadPool</span>(<span class="type">size_t</span> threads) : <span class="built_in">stop</span>(<span class="literal">false</span>) &#123;</span><br><span class="line">		<span class="keyword">for</span> (<span class="type">size_t</span> i = <span class="number">0</span>; i &lt; threads; i++) &#123;</span><br><span class="line">			workers.<span class="built_in">emplace_back</span>([<span class="keyword">this</span>]&#123;</span><br><span class="line">				<span class="keyword">for</span> (;;) &#123;</span><br><span class="line">					std::function&lt;<span class="built_in">void</span>()&gt; task; <span class="comment">// 函数包装器，封装特定返回/参数类型的函数</span></span><br><span class="line">					&#123;</span><br><span class="line">						std::unique_lock&lt;std::mutex&gt; <span class="built_in">lock</span>(<span class="keyword">this</span>-&gt;queue_mutex);</span><br><span class="line">						<span class="keyword">this</span>-&gt;condition.<span class="built_in">wait</span>(lock, [<span class="keyword">this</span>] &#123;</span><br><span class="line">							<span class="keyword">return</span> <span class="keyword">this</span>-&gt;stop || !<span class="keyword">this</span>-&gt;tasks.<span class="built_in">empty</span>();</span><br><span class="line">						&#125;);</span><br><span class="line">						<span class="keyword">if</span> (<span class="keyword">this</span>-&gt;stop &amp;&amp; <span class="keyword">this</span>-&gt;tasks.<span class="built_in">empty</span>())</span><br><span class="line">							<span class="keyword">return</span>;</span><br><span class="line">						task = std::<span class="built_in">move</span>(<span class="keyword">this</span>-&gt;tasks.<span class="built_in">front</span>());</span><br><span class="line">						<span class="keyword">this</span>-&gt;tasks.<span class="built_in">pop</span>();</span><br><span class="line">					&#125;</span><br><span class="line">					<span class="built_in">task</span>();</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>std::function&lt;T&gt;</code></p>
+<ul>
+<li>性能开销：构造和赋值涉及堆分配，如果有捕获了大量变量的<code>lambda</code>被包装，可能导致额外的内存使用</li>
+<li>该类型本身线程不安全，可能被多个线程同时访问或者修改</li>
+<li>函数指针的性能比它好，可能因为函数指针就是一个地址，让PC跳转即可</li>
+<li>性能开销的来源：类型擦除，因为该接口需要能够适应多种可调用类型，如普通函数、lambda函数、仿函数等，所以其自身的实现是有一个基类，具体定制可调用类型的实现由继承类实现，就一定程度涉及到内存拷贝、<strong>虚函数</strong>表间接调用等</li>
+<li>性能开销的优化：SBO（小对象优化），简要来说，该对象对于<code>std::function</code>实现了一个栈上的缓冲区，如果要接受的数据量不是很大那就直接存在缓冲区里即可；如果一个捕获了很多变量的lambda函数，缓冲区不够那就只能在堆上分配空间</li>
+</ul>
+<p>顺便回顾一下虚函数</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Base* ptr = <span class="keyword">new</span> <span class="built_in">Derived</span>();</span><br><span class="line">ptr-&gt;<span class="built_in">speak</span>();</span><br></pre></td></tr></table></figure>
+<p>当基类有虚函数的时候，就会有一个该虚函数的表；当该类的指针或者引用调用虚函数的时候，程序会去查阅虚函数表找到实际调用类的函数，从而正确调用函数</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">template</span>&lt;<span class="keyword">class</span> F, <span class="keyword">class</span>... Args&gt;</span></span><br><span class="line"><span class="function"><span class="keyword">auto</span> <span class="title">enqueue</span><span class="params">(F&amp;&amp; f, Args&amp;&amp;... args)</span> <span class="comment">// left and right value</span></span></span><br><span class="line"><span class="function">	-&gt; std::future&lt;<span class="keyword">typename</span> std::result_of&lt;<span class="title">F</span><span class="params">(Args...)</span>&gt;::type&gt; </span>&#123;</span><br><span class="line">	<span class="keyword">using</span> return_type = <span class="keyword">typename</span> std::result_of&lt;<span class="built_in">F</span>(Args...)&gt;::type; <span class="comment">// 推导调用函数F并且传入参数Args后的返回类型，比如`int foo(double)`，那么`result_of&lt;F(Args...)&gt;::type`就是`int`</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">auto</span> task = std::make_shared&lt;std::packaged_task&lt;<span class="built_in">return_type</span>()&gt;&gt;(</span><br><span class="line">		std::<span class="built_in">bind</span>(std::forward&lt;F&gt;(f), std::forward&lt;Args&gt;(args)...)</span><br><span class="line">	); <span class="comment">// bind the call of f and args... to a non-param function object，将对于函数f且传入args...参数的函数调用绑定为无参数的函数对象</span></span><br><span class="line"></span><br><span class="line">	std::future&lt;return_type&gt; res = task-&gt;<span class="built_in">get_future</span>(); <span class="comment">// 用于后续获取任务执行的结果</span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="function">std::unique_lock&lt;std::mutex&gt; <span class="title">lock</span><span class="params">(queue_mutex)</span></span>;</span><br><span class="line">		<span class="keyword">if</span> (stop) &#123;</span><br><span class="line">			<span class="keyword">throw</span> std::<span class="built_in">runtime_error</span>(<span class="string">&quot;..&quot;</span>);</span><br><span class="line">		&#125;</span><br><span class="line">		tasks.<span class="built_in">emplace</span>([task]()&#123;(*task)();&#125;); <span class="comment">// 捕获shared_ptr的副本，解引用之后调用它，用lambda封装之后就满足了上面构造函数的对于std::function类型的要求</span></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	condition.<span class="built_in">notify_one</span>();</span><br><span class="line">	<span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>std::forward</code>完美转发，用于保持参数的左值和右值属性<br><code>std::packaged_task</code>本身不可以拷贝，但是需要将其存入lambda中，所以用<code>shared_ptr</code>管理共享任务对象；其作用是将任务与future绑定，实现异步获取结果</p>
+<p>有关<code>stop</code>的读写还是加锁保护为好，毕竟可能出现<em>update after check</em>问题</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">~<span class="built_in">ThreadPool</span>() &#123;</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="function">std::unique_lock&lt;std::mutex&gt; <span class="title">lock</span><span class="params">(queue_mutex)</span></span>;</span><br><span class="line">		<span class="keyword">this</span>-&gt;stop = <span class="literal">true</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	condition.<span class="built_in">notify_all</span>();</span><br><span class="line">	<span class="keyword">for</span> (std::thread &amp;worker: workers) &#123;</span><br><span class="line">		worker.<span class="built_in">join</span>();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h4 id="std-atomic内存顺序一致性"><a href="#std-atomic内存顺序一致性" class="headerlink" title="std::atomic内存顺序一致性"></a><code>std::atomic</code>内存顺序一致性</h4><table>
+<thead>
+<tr>
+<th>内存顺序参数</th>
+<th>特点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>memory_order_relaxed</code></td>
+<td>只保证原子性，不保证顺序（性能最高，但需谨慎使用）</td>
+</tr>
+<tr>
+<td><code>memory_order_consume</code></td>
+<td>依赖当前数据的后续操作能看到之前的结果（极少使用）</td>
+</tr>
+<tr>
+<td><code>memory_order_acquire</code></td>
+<td>当前线程的后续<strong>读操作</strong>必须在此操作之后执行（防止读乱序）</td>
+</tr>
+<tr>
+<td><code>memory_order_release</code></td>
+<td>当前线程之前的<strong>写操作</strong>必须在此操作之前完成（防止写乱序）</td>
+</tr>
+<tr>
+<td><code>memory_order_acq_rel</code></td>
+<td>同时包含 <code>acquire</code> 和 <code>release</code> 语义（用于读-修改-写操作）</td>
+</tr>
+<tr>
+<td><code>memory_order_seq_cst</code></td>
+<td>严格顺序一致性（默认选项，性能最低，但行为最直观）</td>
+</tr>
+<tr>
+<td>指定顺序一致性的原因是现代CPU和编译器会为了性能对指令重排顺序，但是在多线程中可能导致意外结果；所以要显式告诉编译器和CPU，哪些指令的顺序是有限制的！</td>
+<td></td>
+</tr>
+</tbody></table>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">std::atomic&lt;<span class="type">bool</span>&gt; <span class="title">ready</span><span class="params">(<span class="literal">false</span>)</span></span>;</span><br><span class="line"><span class="type">int</span> data = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 生产者线程</span></span><br><span class="line">data = <span class="number">42</span>;</span><br><span class="line">ready.<span class="built_in">store</span>(<span class="literal">true</span>, std::memory_order_release); <span class="comment">// 保证之前的写操作先完成</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 消费者线程</span></span><br><span class="line"><span class="keyword">while</span> (!ready.<span class="built_in">load</span>(std::memory_order_acquire)); <span class="comment">// 保证之后的读操作在之后</span></span><br><span class="line">std::cout &lt;&lt; data; <span class="comment">// 一定能看到 data=42</span></span><br></pre></td></tr></table></figure>
+<p>具体来说，编译器会阻止<code>release</code>之前的任何读写操作被重排到<code>release</code>之后，而<code>acquire</code>之后的任何操作会被重排到<code>acquire</code>之前；对CPU来说，<code>release</code>相当于一个写屏障，其之前的写操作必须也对其他线程可见；同时<code>acquire</code>相当于读屏障，确保之后的读操作在<code>acquire</code>之后，那么后续的读操作就可以看到<code>release</code>及以前的写操作了</p>
+<p>与<code>memory_order_seq_cst</code>的区别：严格顺序一致性保证每个线程看到的所有原子指令的操作顺序（这里特指结果）完全一模一样，且在线程内部，在原子操作前的操作必须早于原子操作执行，反之亦然</p>
+<p><code>relaxed</code>只保证原子性，意味着他不会约束原子操作之间的顺序，也不会约束原子操作附近的非原子操作的顺序</p>
+<p><code>weak_ptr</code>和<code>shared_ptr</code>辨析</p>
+<table>
+<thead>
+<tr>
+<th><strong>特性</strong></th>
+<th><strong><code>shared_ptr</code></strong></th>
+<th><strong><code>weak_ptr</code></strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>所有权</strong></td>
+<td>拥有对象所有权，参与生命周期管理</td>
+<td>仅观察对象，不拥有所有权</td>
+</tr>
+<tr>
+<td><strong>引用计数</strong></td>
+<td>增加强引用计数（<code>use_count</code>）</td>
+<td>不增加强引用计数，但增加弱引用计数</td>
+</tr>
+<tr>
+<td><strong>对象销毁时机</strong></td>
+<td>当强引用计数归零时销毁对象</td>
+<td>不影响对象销毁，仅依赖强引用计数</td>
+</tr>
+<tr>
+<td><strong>访问对象</strong></td>
+<td>直接通过<code>operator-&gt;</code>或<code>operator*</code>访问</td>
+<td>需通过<code>lock()</code>转为<code>shared_ptr</code>后访问</td>
+</tr>
+<tr>
+<td><strong>循环引用</strong></td>
+<td>可能导致循环引用（内存泄漏）</td>
+<td>用于打破循环引用</td>
+</tr>
+</tbody></table>
+<ul>
+<li><code>shared_ptr</code>计数为0的时候，对象立即销毁，但是控制块不立即销毁，控制块等到<code>weak_ptr</code>也全部销毁之后销毁</li>
+<li><code>weak_ptr</code>失效的表现：<code>expired() -&gt; true</code>或者<code>lock()</code>返回空的<code>shared_ptr</code></li>
+</ul>
+<h4 id="STL"><a href="#STL" class="headerlink" title="STL"></a>STL</h4><ul>
+<li><code>std::vector</code> 是一个有<code>size</code> <code>capacity</code>指针的数组，会动态扩容</li>
+<li><code>std::unordered_map/set</code> 是散列表，一般散列表的指针列表大小为素数而且大约为2倍增长的比例</li>
+<li><code>std::map/set</code> 是红黑树</li>
+<li><code>std::deque</code> 是分段连续的动态数组，每一段地址连续，用一个数组存指针</li>
+<li><code>std::list</code> 是双向链表</li>
+<li><code>std::queue</code> <code>std::stack</code> 的底层是基于<code>std::deque</code>的，他们是容器适配器</li>
+<li><code>std::priority_queue</code> 底层基于<code>std::vector</code>，用堆数据结构组织元素</li>
+</ul>
+<h4 id="迭代器失效"><a href="#迭代器失效" class="headerlink" title="迭代器失效"></a>迭代器失效</h4><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/xp178171640/article/details/104905338">STL 容器迭代器失效总结(超级详细)_begin()什么时候失效-CSDN博客</a></p>
+<p>补充</p>
+<ul>
+<li><code>std::deque</code>在索引数组重排的时候，由于其迭代器不仅仅包含了指向内存块对应元素的指针，而且还需要能够支持在不同的内存块中游走（需要存储索引数组以及当前位于哪一个内存块的下标），所以当索引数组重排的时候，<code>begin()</code>和<code>end()</code>都会失效</li>
+<li><code>std::unordered_map/set</code>在<code>rehash</code>的时候会迭代器失效，而其他场景下除了被删除元素的迭代器会失效以外其余的都太会失效，类似于<code>std::list</code></li>
+<li><code>std::map/set</code>的迭代器失效只会发生在删除元素后对应元素迭代器失效，其余的由于他是链表为主的结构所以一般不会怎么样</li>
+</ul>
+</article><div class="post-copyright"><div class="copyright-cc-box"><i class="anzhiyufont anzhiyu-icon-copyright"></i></div><div class="post-copyright__author_box"><a class="post-copyright__author_img" href="/" title="头像"><img class="post-copyright__author_img_back" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://avatars.githubusercontent.com/u/114564389?v=4" title="头像" alt="头像"><img class="post-copyright__author_img_front" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://avatars.githubusercontent.com/u/114564389?v=4" title="头像" alt="头像"></a><div class="post-copyright__author_name">Weiquan Huang</div><div class="post-copyright__author_desc">userKangkang</div></div><div class="post-copyright__post__info"><a class="post-copyright__original" title="该文章为原创文章，注意版权协议" href="https://userkangkang.github.io/project/2025/04/08/cpp-concurrency/">原创</a><a class="post-copyright-title"><span onclick="rm.copyPageUrl('https://userkangkang.github.io/project/2025/04/08/cpp-concurrency/')">C++多线程面经</span></a></div><div class="post-tools" id="post-tools"><div class="post-tools-left"><div class="rewardLeftButton"></div><div class="shareRight"><div class="share-link mobile"><div class="share-qrcode"><div class="share-button" title="使用手机访问这篇文章"><i class="anzhiyufont anzhiyu-icon-qrcode"></i></div><div class="share-main"><div class="share-main-all"><div id="qrcode" title="https://userkangkang.github.io/project/2025/04/08/cpp-concurrency/"></div><div class="reward-dec">使用手机访问这篇文章</div></div></div></div></div><div class="share-link weibo"><a class="share-button" target="_blank" href="https://service.weibo.com/share/share.php?title=C++多线程面经&amp;url=https://userkangkang.github.io/project/2025/04/08/cpp-concurrency/&amp;pic=" rel="external nofollow noreferrer noopener"><i class="anzhiyufont anzhiyu-icon-weibo"></i></a></div><script>function copyCurrentPageUrl() {
+  var currentPageUrl = window.location.href;
+  var input = document.createElement("input");
+  input.setAttribute("value", currentPageUrl);
+  document.body.appendChild(input);
+  input.select();
+  input.setSelectionRange(0, 99999);
+  document.execCommand("copy");
+  document.body.removeChild(input);
+}</script><div class="share-link copyurl"><div class="share-button" id="post-share-url" title="复制链接" onclick="copyCurrentPageUrl()"><i class="anzhiyufont anzhiyu-icon-link"></i></div></div></div></div></div><div class="post-copyright__notice"><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://userKangkang.github.io/project" target="_blank">Hexo</a>！</span></div></div><div class="post-tools-right"><div class="tag_share"><div class="post-meta__box"><div class="post-meta__box__tag-list"><a class="post-meta__box__tags" href="/tags/C/"><span class="tags-punctuation"> <i class="anzhiyufont anzhiyu-icon-tag"></i></span>C++<span class="tagsPageCount">1</span></a><a class="post-meta__box__tags" href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/"><span class="tags-punctuation"> <i class="anzhiyufont anzhiyu-icon-tag"></i></span>多线程<span class="tagsPageCount">1</span></a></div></div></div><div class="post_share"><div class="social-share" data-image="https://avatars.githubusercontent.com/u/114564389?v=4" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.cbd.int/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"/><script src="https://cdn.cbd.int/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer="defer"></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-full"><a href="/2025/04/08/multi-node-shell/"><img class="prev-cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">多节点通信配置实录</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-content"><div class="author-info__sayhi" id="author-info__sayhi" onclick="anzhiyu.changeSayHelloText()"></div><div class="author-info-avatar"><img class="avatar-img" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://avatars.githubusercontent.com/u/114564389?v=4" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/><div class="author-status"><img class="g-status" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://bu.dusays.com/2023/08/24/64e6ce9c507bb.png" alt="status"/></div></div><div class="author-info__description">个人博客，计划在这里记录上海交通大学软件学院本科部分课程，由于本专业主攻计算机系统，因此可能这方面居多</div><div class="author-info__bottom-group"><a class="author-info__bottom-group-left" href="/"><h1 class="author-info__name">Weiquan Huang</h1><div class="author-info__desc">userKangkang</div></a><div class="card-info-social-icons is-center"><a class="social-icon faa-parent animated-hover" href="https://github.com/userKangkang" target="_blank" title="Github"><i class="anzhiyufont anzhiyu-icon-github"></i></a></div></div></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-bars"></i><span>文章目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8D%8F%E7%A8%8B%E4%B8%8E%E7%BA%BF%E7%A8%8B%E8%BE%A8%E6%9E%90"><span class="toc-number">1.</span> <span class="toc-text">协程与线程辨析</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BA%BF%E7%A8%8B%E5%92%8C%E8%BF%9B%E7%A8%8B%E8%BE%A8%E6%9E%90"><span class="toc-number">2.</span> <span class="toc-text">线程和进程辨析</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8"><span class="toc-number">3.</span> <span class="toc-text">线程安全</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BA%BF%E7%A8%8B%E6%B1%A0"><span class="toc-number">4.</span> <span class="toc-text">线程池</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#std-atomic%E5%86%85%E5%AD%98%E9%A1%BA%E5%BA%8F%E4%B8%80%E8%87%B4%E6%80%A7"><span class="toc-number">5.</span> <span class="toc-text">std::atomic内存顺序一致性</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#STL"><span class="toc-number">6.</span> <span class="toc-text">STL</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%BF%AD%E4%BB%A3%E5%99%A8%E5%A4%B1%E6%95%88"><span class="toc-number">7.</span> <span class="toc-text">迭代器失效</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-history"></i><span>最近发布</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/04/08/cpp-concurrency/" title="C++多线程面经">C++多线程面经</a><time datetime="2025-04-07T16:24:25.129Z" title="发表于 2025-04-08 00:24:25">2025-04-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/04/08/multi-node-shell/" title="多节点通信配置实录">多节点通信配置实录</a><time datetime="2025-04-07T16:24:25.129Z" title="发表于 2025-04-08 00:24:25">2025-04-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/03/11/ics2-concurrency/" title="计算机系统基础II之：并发编程与锁">计算机系统基础II之：并发编程与锁</a><time datetime="2025-03-10T16:46:23.450Z" title="发表于 2025-03-11 00:46:23">2025-03-11</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/03/11/ics2-network/" title="计算机系统基础II之：网络">计算机系统基础II之：网络</a><time datetime="2025-03-10T16:43:34.652Z" title="发表于 2025-03-11 00:43:34">2025-03-11</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/03/11/ics2-robustio/" title="计算机系统基础II之：I/O（仅鲁棒IO）">计算机系统基础II之：I/O（仅鲁棒IO）</a><time datetime="2025-03-10T16:40:58.855Z" title="发表于 2025-03-11 00:40:58">2025-03-11</time></div></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div id="workboard"><img class="workSituationImg boardsign" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://npm.elemecdn.com/anzhiyu-blog@2.0.4/img/badge/安知鱼-上班摸鱼中.svg" alt="距离月入25k也就还差一个大佬带我~" title="距离月入25k也就还差一个大佬带我~"/><div id="runtimeTextTip"></div></div></div><div id="footer-bar"><div class="footer-bar-links"><div class="footer-bar-left"><div id="footer-bar-tips"><div class="copyright">&copy;2025 By <a class="footer-bar-link" href="/" title="Weiquan Huang" target="_blank">Weiquan Huang</a></div></div><div id="footer-type-tips"></div></div><div class="footer-bar-right"><a class="footer-bar-link" target="_blank" rel="noopener" href="https://github.com/anzhiyu-c/hexo-theme-anzhiyu" title="主题">主题</a></div></div></div></footer></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="sidebar-site-data site-data is-center"><a href="/archives/" title="archive"><div class="headline">文章</div><div class="length-num">27</div></a><a href="/tags/" title="tag"><div class="headline">标签</div><div class="length-num">14</div></a><a href="/categories/" title="category"><div class="headline">分类</div><div class="length-num">11</div></a></div><span class="sidebar-menu-item-title">功能</span><div class="sidebar-menu-item"><a class="darkmode_switchbutton menu-child" href="javascript:void(0);" title="显示模式"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i><span>显示模式</span></a></div><div class="back-menu-list-groups"><div class="back-menu-list-group"><div class="back-menu-list-title">网页</div><div class="back-menu-list"><a class="back-menu-item" target="_blank" rel="noopener" href="https://github.com/userKangkang" title="Github"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/img/github-mark.svg" alt="Github"/><span class="back-menu-item-text">Github</span></a></div></div></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 文章</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/archives/"><i class="anzhiyufont anzhiyu-icon-box-archive faa-tada" style="font-size: 0.9em;"></i><span> 隧道</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/categories/"><i class="anzhiyufont anzhiyu-icon-shapes faa-tada" style="font-size: 0.9em;"></i><span> 分类</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/tags/"><i class="anzhiyufont anzhiyu-icon-tags faa-tada" style="font-size: 0.9em;"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 友链</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/link/"><i class="anzhiyufont anzhiyu-icon-link faa-tada" style="font-size: 0.9em;"></i><span> 友人帐</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/fcircle/"><i class="anzhiyufont anzhiyu-icon-artstation faa-tada" style="font-size: 0.9em;"></i><span> 朋友圈</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/comments/"><i class="anzhiyufont anzhiyu-icon-envelope faa-tada" style="font-size: 0.9em;"></i><span> 留言板</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 我的</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/music/"><i class="anzhiyufont anzhiyu-icon-music faa-tada" style="font-size: 0.9em;"></i><span> 音乐馆</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/bangumis/"><i class="anzhiyufont anzhiyu-icon-bilibili faa-tada" style="font-size: 0.9em;"></i><span> 追番页</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/album/"><i class="anzhiyufont anzhiyu-icon-images faa-tada" style="font-size: 0.9em;"></i><span> 相册集</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/air-conditioner/"><i class="anzhiyufont anzhiyu-icon-fan faa-tada" style="font-size: 0.9em;"></i><span> 小空调</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 关于</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/about/"><i class="anzhiyufont anzhiyu-icon-paper-plane faa-tada" style="font-size: 0.9em;"></i><span> 关于本人</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/essay/"><i class="anzhiyufont anzhiyu-icon-lightbulb faa-tada" style="font-size: 0.9em;"></i><span> 闲言碎语</span></a></li><li><a class="site-page child faa-parent animated-hover" href="javascript:toRandomPost()"><i class="anzhiyufont anzhiyu-icon-shoe-prints1 faa-tada" style="font-size: 0.9em;"></i><span> 随便逛逛</span></a></li></ul></div></div><span class="sidebar-menu-item-title">标签</span><div class="card-tags"><div class="item-headline"></div><div class="card-tag-cloud"><a href="/tags/C/" style="font-size: 0.88rem;">C++<sup>1</sup></a><a href="/tags/Coursera/" style="font-size: 0.88rem;">Coursera<sup>1</sup></a><a href="/tags/RDMA/" style="font-size: 0.88rem;">RDMA<sup>2</sup></a><a href="/tags/shell/" style="font-size: 0.88rem;">shell<sup>1</sup></a><a href="/tags/%E4%B8%AD%E5%9B%BD%E7%A7%91%E5%AD%A6%E6%8A%80%E6%9C%AF%E5%A4%A7%E5%AD%A6/" style="font-size: 0.88rem;">中国科学技术大学<sup>5</sup></a><a href="/tags/%E4%BA%91%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" style="font-size: 0.88rem;">云操作系统<sup>1</sup></a><a href="/tags/%E5%85%A5%E9%97%A8/" style="font-size: 0.88rem;">入门<sup>1</sup></a><a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" style="font-size: 0.88rem;">多线程<sup>1</sup></a><a href="/tags/%E7%9F%A5%E4%B9%8E/" style="font-size: 0.88rem;">知乎<sup>1</sup></a><a href="/tags/%E8%99%9A%E6%8B%9F%E6%9C%BA/" style="font-size: 0.88rem;">虚拟机<sup>1</sup></a><a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/" style="font-size: 0.88rem;">计算机系统基础<sup>8</sup></a><a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E5%B7%A5%E7%A8%8B/" style="font-size: 0.88rem;">计算机系统工程<sup>9</sup></a><a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" style="font-size: 0.88rem;">计算机网络<sup>5</sup></a><a href="/tags/%E9%85%8D%E7%8E%AF%E5%A2%83/" style="font-size: 0.88rem;">配环境<sup>1</sup></a></div></div><hr/></div></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="anzhiyufont anzhiyu-icon-book-open"></i></button><button id="translateLink" type="button" title="简繁转换">繁</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="anzhiyufont anzhiyu-icon-arrows-left-right"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="anzhiyufont anzhiyu-icon-gear"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="anzhiyufont anzhiyu-icon-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i></button></div></div><div id="nav-music"><a id="nav-music-hoverTips" onclick="anzhiyu.musicToggle()" accesskey="m">播放音乐</a><div id="console-music-bg"></div><meting-js id="8152976493" server="netease" type="playlist" mutex="true" preload="none" theme="var(--anzhiyu-main)" data-lrctype="0" order="random" volume="0.7"></meting-js></div><div id="rightMenu"><div class="rightMenu-group rightMenu-small"><div class="rightMenu-item" id="menu-backward"><i class="anzhiyufont anzhiyu-icon-arrow-left"></i></div><div class="rightMenu-item" id="menu-forward"><i class="anzhiyufont anzhiyu-icon-arrow-right"></i></div><div class="rightMenu-item" id="menu-refresh"><i class="anzhiyufont anzhiyu-icon-arrow-rotate-right" style="font-size: 1rem;"></i></div><div class="rightMenu-item" id="menu-top"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i></div></div><div class="rightMenu-group rightMenu-line rightMenuPlugin"><div class="rightMenu-item" id="menu-copytext"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制选中文本</span></div><div class="rightMenu-item" id="menu-pastetext"><i class="anzhiyufont anzhiyu-icon-paste"></i><span>粘贴文本</span></div><a class="rightMenu-item" id="menu-commenttext"><i class="anzhiyufont anzhiyu-icon-comment-medical"></i><span>引用到评论</span></a><div class="rightMenu-item" id="menu-newwindow"><i class="anzhiyufont anzhiyu-icon-window-restore"></i><span>新窗口打开</span></div><div class="rightMenu-item" id="menu-copylink"><i class="anzhiyufont anzhiyu-icon-link"></i><span>复制链接地址</span></div><div class="rightMenu-item" id="menu-copyimg"><i class="anzhiyufont anzhiyu-icon-images"></i><span>复制此图片</span></div><div class="rightMenu-item" id="menu-downloadimg"><i class="anzhiyufont anzhiyu-icon-download"></i><span>下载此图片</span></div><div class="rightMenu-item" id="menu-newwindowimg"><i class="anzhiyufont anzhiyu-icon-window-restore"></i><span>新窗口打开图片</span></div><div class="rightMenu-item" id="menu-search"><i class="anzhiyufont anzhiyu-icon-magnifying-glass"></i><span>站内搜索</span></div><div class="rightMenu-item" id="menu-searchBaidu"><i class="anzhiyufont anzhiyu-icon-magnifying-glass"></i><span>百度搜索</span></div><div class="rightMenu-item" id="menu-music-toggle"><i class="anzhiyufont anzhiyu-icon-play"></i><span>播放音乐</span></div><div class="rightMenu-item" id="menu-music-back"><i class="anzhiyufont anzhiyu-icon-backward"></i><span>切换到上一首</span></div><div class="rightMenu-item" id="menu-music-forward"><i class="anzhiyufont anzhiyu-icon-forward"></i><span>切换到下一首</span></div><div class="rightMenu-item" id="menu-music-playlist" onclick="window.open(&quot;https://y.qq.com/n/ryqq/playlist/8802438608&quot;, &quot;_blank&quot;);" style="display: none;"><i class="anzhiyufont anzhiyu-icon-radio"></i><span>查看所有歌曲</span></div><div class="rightMenu-item" id="menu-music-copyMusicName"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制歌名</span></div></div><div class="rightMenu-group rightMenu-line rightMenuOther"><a class="rightMenu-item menu-link" id="menu-randomPost"><i class="anzhiyufont anzhiyu-icon-shuffle"></i><span>随便逛逛</span></a><a class="rightMenu-item menu-link" href="/categories/"><i class="anzhiyufont anzhiyu-icon-cube"></i><span>博客分类</span></a><a class="rightMenu-item menu-link" href="/tags/"><i class="anzhiyufont anzhiyu-icon-tags"></i><span>文章标签</span></a></div><div class="rightMenu-group rightMenu-line rightMenuOther"><a class="rightMenu-item" id="menu-copy" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制地址</span></a><a class="rightMenu-item" id="menu-commentBarrage" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-message"></i><span class="menu-commentBarrage-text">关闭热评</span></a><a class="rightMenu-item" id="menu-darkmode" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i><span class="menu-darkmode-text">深色模式</span></a><a class="rightMenu-item" id="menu-translate" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-language"></i><span>轉為繁體</span></a></div></div><div id="rightmenu-mask"></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.cbd.int/@fancyapps/ui@5.0.28/dist/fancybox/fancybox.umd.js"></script><script src="https://cdn.cbd.int/instant.page@5.2.0/instantpage.js" type="module"></script><script src="https://cdn.cbd.int/vanilla-lazyload@17.8.5/dist/lazyload.iife.min.js"></script><script src="https://cdn.cbd.int/node-snackbar@0.1.16/dist/snackbar.min.js"></script><canvas id="universe"></canvas><script async src="https://npm.elemecdn.com/anzhiyu-theme-static@1.0.0/dark/dark.js"></script><script>// 消除控制台打印
+var HoldLog = console.log;
+console.log = function () {};
+let now1 = new Date();
+queueMicrotask(() => {
+  const Log = function () {
+    HoldLog.apply(console, arguments);
+  }; //在恢复前输出日志
+  const grt = new Date("03/03/2025 19:34:34"); //此处修改你的建站时间或者网站上线时间
+  now1.setTime(now1.getTime() + 250);
+  const days = (now1 - grt) / 1000 / 60 / 60 / 24;
+  const dnum = Math.floor(days);
+  const ascll = [
+    `欢迎使用安知鱼!`,
+    `生活明朗, 万物可爱`,
+    `
+        
+       █████╗ ███╗   ██╗███████╗██╗  ██╗██╗██╗   ██╗██╗   ██╗
+      ██╔══██╗████╗  ██║╚══███╔╝██║  ██║██║╚██╗ ██╔╝██║   ██║
+      ███████║██╔██╗ ██║  ███╔╝ ███████║██║ ╚████╔╝ ██║   ██║
+      ██╔══██║██║╚██╗██║ ███╔╝  ██╔══██║██║  ╚██╔╝  ██║   ██║
+      ██║  ██║██║ ╚████║███████╗██║  ██║██║   ██║   ╚██████╔╝
+      ╚═╝  ╚═╝╚═╝  ╚═══╝╚══════╝╚═╝  ╚═╝╚═╝   ╚═╝    ╚═════╝
+        
+        `,
+    "已上线",
+    dnum,
+    "天",
+    "©2025 By 安知鱼 V1.6.14",
+  ];
+  const ascll2 = [`NCC2-036`, `调用前置摄像头拍照成功，识别为【小笨蛋】.`, `Photo captured: `, `🤪`];
+
+  setTimeout(
+    Log.bind(
+      console,
+      `\n%c${ascll[0]} %c ${ascll[1]} %c ${ascll[2]} %c${ascll[3]}%c ${ascll[4]}%c ${ascll[5]}\n\n%c ${ascll[6]}\n`,
+      "color:#425AEF",
+      "",
+      "color:#425AEF",
+      "color:#425AEF",
+      "",
+      "color:#425AEF",
+      ""
+    )
+  );
+  setTimeout(
+    Log.bind(
+      console,
+      `%c ${ascll2[0]} %c ${ascll2[1]} %c \n${ascll2[2]} %c\n${ascll2[3]}\n`,
+      "color:white; background-color:#4fd953",
+      "",
+      "",
+      'background:url("https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/tinggge.gif") no-repeat;font-size:450%'
+    )
+  );
+
+  setTimeout(Log.bind(console, "%c WELCOME %c 你好，小笨蛋.", "color:white; background-color:#4f90d9", ""));
+
+  setTimeout(
+    console.warn.bind(
+      console,
+      "%c ⚡ Powered by 安知鱼 %c 你正在访问 Weiquan Huang 的博客.",
+      "color:white; background-color:#f0ad4e",
+      ""
+    )
+  );
+
+  setTimeout(Log.bind(console, "%c W23-12 %c 你已打开控制台.", "color:white; background-color:#4f90d9", ""));
+
+  setTimeout(
+    console.warn.bind(console, "%c S013-782 %c 你现在正处于监控中.", "color:white; background-color:#d9534f", "")
+  );
+});</script><script async src="/anzhiyu/random.js"></script><script async="async">(function () {
+  var grt = new Date("03/03/2025 19:34:34"); //设置网站上线时间
+  var now = new Date();
+  var dnum;
+  var hnum;
+  var mnum;
+  var snum;
+  var nowHour;
+
+  // 计算并更新天数、小时数、分钟数和秒数
+  function updateTime() {
+    now = new Date(); // 更新 now 的值
+    nowHour = now.getHours(); // 更新 nowHour 的值
+    var days = (now - grt) / 1000 / 60 / 60 / 24;
+    dnum = Math.floor(days);
+    var hours = (now - grt) / 1000 / 60 / 60 - 24 * dnum;
+    hnum = Math.floor(hours);
+    if (String(hnum).length == 1) {
+      hnum = "0" + hnum;
+    }
+    var minutes = (now - grt) / 1000 / 60 - 24 * 60 * dnum - 60 * hnum;
+    mnum = Math.floor(minutes);
+    if (String(mnum).length == 1) {
+      mnum = "0" + mnum;
+    }
+    var seconds = (now - grt) / 1000 - 24 * 60 * 60 * dnum - 60 * 60 * hnum - 60 * mnum;
+    snum = Math.round(seconds);
+    if (String(snum).length == 1) {
+      snum = "0" + snum;
+    }
+  }
+
+  // 更新网页中显示的网站运行时间
+  function updateHtml() {
+    const footer = document.getElementById("footer");
+    if (!footer) return
+    let currentTimeHtml = "";
+    if (nowHour < 18 && nowHour >= 9) {
+      // 如果是上班时间，默认就是"安知鱼-上班摸鱼中.svg"图片，不需要更改
+      currentTimeHtml = `本站居然运行了 ${dnum} 天<span id='runtime'> ${hnum} 小时 ${mnum} 分 ${snum} 秒 </span><i class='anzhiyufont anzhiyu-icon-heartbeat' style='color:red'></i>`;
+    } else {
+      // 如果是下班时间，插入"安知鱼-下班啦.svg"图片
+      let img = document.querySelector("#workboard .workSituationImg");
+      if (img != null) {
+        img.src = "https://npm.elemecdn.com/anzhiyu-blog@2.0.4/img/badge/安知鱼-下班啦.svg";
+        img.title = "下班了就该开开心心的玩耍，嘿嘿~";
+        img.alt = "下班了就该开开心心的玩耍，嘿嘿~";
+      }
+
+      currentTimeHtml = `本站居然运行了 ${dnum} 天<span id='runtime'> ${hnum} 小时 ${mnum} 分 ${snum} 秒 </span><i class='anzhiyufont anzhiyu-icon-heartbeat' style='color:red'></i>`;
+    }
+
+    if (document.getElementById("runtimeTextTip")) {
+      document.getElementById("runtimeTextTip").innerHTML = currentTimeHtml;
+    }
+  }
+
+  setInterval(() => {
+    updateTime();
+    updateHtml();
+  }, 1000);
+})();</script><div class="js-pjax"><input type="hidden" name="page-type" id="page-type" value="post"></div><script>var visitorMail = "";
+</script><script async data-pjax src="https://cdn.cbd.int/anzhiyu-theme-static@1.0.0/waterfall/waterfall.js"></script><script src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/qrcodejs/1.0.0/qrcode.min.js"></script><link rel="stylesheet" href="https://cdn.cbd.int/anzhiyu-theme-static@1.1.9/icon/ali_iconfont_css.css"><link rel="stylesheet" href="https://cdn.cbd.int/anzhiyu-theme-static@1.0.0/aplayer/APlayer.min.css" media="print" onload="this.media='all'"><script src="https://cdn.cbd.int/anzhiyu-blog-static@1.0.1/js/APlayer.min.js"></script><script src="https://cdn.cbd.int/hexo-anzhiyu-music@1.0.1/assets/js/Meting2.min.js"></script><script src="https://cdn.cbd.int/pjax@0.2.8/pjax.min.js"></script><script>let pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+  // removeEventListener scroll 
+  anzhiyu.removeGlobalFnEvent('pjax')
+  anzhiyu.removeGlobalFnEvent('themeChange')
+
+  document.getElementById('rightside').classList.remove('rightside-show')
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+})
+
+document.addEventListener('pjax:error', e => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script charset="UTF-8" src="https://cdn.cbd.int/anzhiyu-theme-static@1.1.5/accesskey/accesskey.js"></script></div><div id="popup-window"><div class="popup-window-title">通知</div><div class="popup-window-divider"></div><div class="popup-window-content"><div class="popup-tip">你好呀</div><div class="popup-link"><i class="anzhiyufont anzhiyu-icon-arrow-circle-right"></i></div></div></div></body></html>
